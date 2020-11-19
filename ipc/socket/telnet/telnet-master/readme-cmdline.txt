@@ -5,3 +5,7 @@
 *** libtelnet: test/ipc/socket/telnet/libtelnet-develop
 *** telnet SC: test/ipc/socket/telnet/telnet-master
 *** DPDK CLI:  test/dpdk/dpdk-20.05/lib/librte_cmdline (DPDK 20.05的命令行)
+*** Redis:	test/redis/cmdline
+*** Redis linenoise: test/redis/linenoise
+
+

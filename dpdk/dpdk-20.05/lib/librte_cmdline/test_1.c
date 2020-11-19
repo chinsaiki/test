@@ -12,9 +12,9 @@
 #include <errno.h>
 #include <netinet/in.h>
 #include <termios.h>
-#ifdef RTE_EXEC_ENV_FREEBSD
+#include <sys/queue.h>
 #include <sys/socket.h>
-#endif
+
 
 #include <cmdline_rdline.h>
 #include <cmdline_parse.h>
@@ -23,22 +23,6 @@
 #include <cmdline_parse_string.h>
 #include <cmdline.h>
 #include <cmdline_socket.h>
-
-
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2010-2014 Intel Corporation.
- * Copyright (c) 2009, Olivier MATZ <zer0@droids-corp.org>
- * All rights reserved.
- */
-
-#ifndef _PARSE_OBJ_LIST_H_
-#define _PARSE_OBJ_LIST_H_
-
-/* This file is an example of extension of libcmdline. It provides an
- * example of objects stored in a list. */
-
-#include <sys/queue.h>
-#include <cmdline_parse.h>
 
 #define OBJ_NAME_LEN_MAX 64
 
@@ -62,13 +46,9 @@ struct token_obj_list {
 };
 typedef struct token_obj_list parse_token_obj_list_t;
 
-extern struct cmdline_token_ops token_obj_list_ops;
-
-int parse_obj_list(cmdline_parse_token_hdr_t *tk, const char *srcbuf, void *res,
-	unsigned ressize);
+int parse_obj_list(cmdline_parse_token_hdr_t *tk, const char *srcbuf, void *res, unsigned ressize);
 int complete_get_nb_obj_list(cmdline_parse_token_hdr_t *tk);
-int complete_get_elt_obj_list(cmdline_parse_token_hdr_t *tk, int idx,
-			      char *dstbuf, unsigned int size);
+int complete_get_elt_obj_list(cmdline_parse_token_hdr_t *tk, int idx, char *dstbuf, unsigned int size);
 int get_help_obj_list(cmdline_parse_token_hdr_t *tk, char *dstbuf, unsigned int size);
 
 #define TOKEN_OBJ_LIST_INITIALIZER(structure, field, obj_list_ptr)  \
@@ -82,26 +62,6 @@ int get_help_obj_list(cmdline_parse_token_hdr_t *tk, char *dstbuf, unsigned int 
 	},							    \
 }
 
-#endif /* _PARSE_OBJ_LIST_H_ */
-
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2010-2014 Intel Corporation.
- * Copyright (c) 2009, Olivier MATZ <zer0@droids-corp.org>
- * All rights reserved.
- */
-
-#include <stdio.h>
-#include <inttypes.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <ctype.h>
-#include <string.h>
-#include <netinet/in.h>
-
-#include <cmdline_parse.h>
-#include <cmdline_parse_ipaddr.h>
-
-
 
 /* This file is an example of extension of libcmdline. It provides an
  * example of objects stored in a list. */
@@ -113,8 +73,7 @@ struct cmdline_token_ops token_obj_list_ops = {
 	.get_help = get_help_obj_list,
 };
 
-int
-parse_obj_list(cmdline_parse_token_hdr_t *tk, const char *buf, void *res,
+int parse_obj_list(cmdline_parse_token_hdr_t *tk, const char *buf, void *res,
 	unsigned ressize)
 {
 	struct token_obj_list *tk2 = (struct token_obj_list *)tk;
@@ -435,50 +394,6 @@ cmdline_parse_ctx_t main_ctx[] = {
  * All rights reserved.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <errno.h>
-#include <termios.h>
-#include <sys/queue.h>
-
-#include <cmdline_rdline.h>
-#include <cmdline_parse.h>
-#include <cmdline_socket.h>
-#include <cmdline.h>
-
-
-//启动
-//# ./build/cmdline 
-//    EAL: Detected 40 lcore(s)
-//    EAL: Detected 2 NUMA nodes
-//    EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
-//    EAL: Selected IOVA mode 'PA'
-//    EAL: Probing VFIO support...
-//    EAL: VFIO support initialized
-//    EAL: PCI device 0000:3b:00.0 on NUMA socket 0
-//    EAL:   probe driver: 8086:154d net_ixgbe
-//    EAL: PCI device 0000:3b:00.1 on NUMA socket 0
-//    EAL:   probe driver: 8086:154d net_ixgbe
-//    example> help
-//    Demo example of command line interface in RTE
-//    
-//    This is a readline-like interface that can be used to
-//    debug your RTE application. It supports some features
-//    of GNU readline like completion, cut/paste, and some
-//    other special bindings.
-//    
-//    This demo shows how rte_cmdline library can be
-//    extended to handle a list of objects. There are
-//    3 commands:
-//    - add obj_name IP
-//    - del obj_name
-//    - quit
-//    - show obj_name
-//    
-//    example> quit
-//    >>>>>>>>>>>>quit<<<<<<<<<<<
-//    
 
 int main(int argc, char **argv)
 {

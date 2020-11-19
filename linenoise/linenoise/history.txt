@@ -8,3 +8,5 @@ exit
 quit
 ls
 help
+list
+ls
