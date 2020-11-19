@@ -7,5 +7,6 @@
 *** DPDK CLI:  test/dpdk/dpdk-20.05/lib/librte_cmdline (DPDK 20.05的命令行)
 *** Redis:	test/redis/cmdline
 *** Redis linenoise: test/redis/linenoise
+*** Redis linenoise: test/redis/linenoise/linenoise [*一个完整的实例*]
 
 
