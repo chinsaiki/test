@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
  
-struct syscall {
+struct syscall_name {
     int  code;
     char *name;
 } syscall_table[] = {
@@ -400,7 +400,7 @@ struct syscall {
 };
  
 char *find_syscall_symbol(int code) {
-    struct syscall *sc;
+    struct syscall_name *sc;
  
     for (sc = syscall_table; sc->code >= 0; sc++) {
         if (sc->code == code) {

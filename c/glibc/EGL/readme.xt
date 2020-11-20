@@ -1,0 +1,35 @@
+什么是 EGL？
+-----------------------------------------------------------------------------------
+EGL 是 OpenGL ES 渲染 API 和本地窗口系统(native platform window system)之间的一个中间接口层，它主要由系统制造商实现。EGL提供如下机制：
+
+与设备的原生窗口系统通信
+查询绘图表面的可用类型和配置
+创建绘图表面
+在OpenGL ES 和其他图形渲染API之间同步渲染
+管理纹理贴图等渲染资源
+为了让OpenGL ES能够绘制在当前设备上，我们需要EGL作为OpenGL ES与设备的桥梁。
+
+使用 EGL 绘图的基本步骤
+Display(EGLDisplay) 是对实际显示设备的抽象。
+Surface（EGLSurface）是对用来存储图像的内存区域
+FrameBuffer 的抽象，包括 Color Buffer， Stencil Buffer ，Depth Buffer。Context (EGLContext) 存储 OpenGL ES绘图的一些状态信息。
+使用EGL的绘图的一般步骤：
+
+获取 EGL Display 对象：eglGetDisplay()
+初始化与 EGLDisplay 之间的连接：eglInitialize()
+获取 EGLConfig 对象：eglChooseConfig()
+创建 EGLContext 实例：eglCreateContext()
+创建 EGLSurface 实例：eglCreateWindowSurface()
+连接 EGLContext 和 EGLSurface：eglMakeCurrent()
+使用 OpenGL ES API 绘制图形：gl_*()
+切换 front buffer 和 back buffer 送显：eglSwapBuffer()
+断开并释放与 EGLSurface 关联的 EGLContext 对象：eglRelease()
+删除 EGLSurface 对象
+删除 EGLContext 对象
+终止与 EGLDisplay 之间的连接
+
+
+>作者：可乐爱加菲猫
+>链接：https://www.jianshu.com/p/d0efd72cff43
+>来源：简书
+>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
