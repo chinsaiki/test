@@ -1,0 +1,49 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FRAME_BORDER	main.cpp	14;"	d	file:
+FRAME_HEIGHT	main.cpp	13;"	d	file:
+FRAME_ORIGIN_X	main.cpp	10;"	d	file:
+FRAME_ORIGIN_Y	main.cpp	11;"	d	file:
+FRAME_WIDTH	main.cpp	12;"	d	file:
+PIECE_H	Piece.h	2;"	d
+Piece	Piece.cpp	/^Piece::Piece(const Piece& other)$/;"	f	class:Piece
+Piece	Piece.cpp	/^Piece::Piece(int type, const TetrisBox& b)$/;"	f	class:Piece
+Piece	Piece.h	/^class Piece$/;"	c
+TETRIS_BOX_H	TetrisBox.h	2;"	d
+TetrisBox	TetrisBox.cpp	/^TetrisBox::TetrisBox(int x, int y, int w, int h)$/;"	f	class:TetrisBox
+TetrisBox	TetrisBox.h	/^class TetrisBox$/;"	c
+addPiece	TetrisBox.cpp	/^void TetrisBox::addPiece(const Piece& pie)$/;"	f	class:TetrisBox
+blocks	Piece.h	/^    int blocks[4][4];$/;"	m	class:Piece
+blocksHeight	Piece.h	/^    int blocksHeight;$/;"	m	class:Piece
+blocksWidth	Piece.h	/^    int blocksWidth;$/;"	m	class:Piece
+box	Piece.h	/^    const TetrisBox& box;$/;"	m	class:Piece
+checkFullLine	TetrisBox.cpp	/^void TetrisBox::checkFullLine()$/;"	f	class:TetrisBox
+drawTerisFrame	main.cpp	/^void drawTerisFrame()$/;"	f
+finish	main.cpp	/^bool finish = false;$/;"	v
+grids	TetrisBox.h	/^    std::vector<std::vector<int>> grids;$/;"	m	class:TetrisBox
+height	TetrisBox.h	/^    int height;$/;"	m	class:TetrisBox
+initCurses	main.cpp	/^void initCurses()$/;"	f
+isCollision	Piece.cpp	/^bool Piece::isCollision()$/;"	f	class:Piece
+layout	TetrisBox.cpp	/^int TetrisBox::layout(int raw, int col) const$/;"	f	class:TetrisBox
+main	main.cpp	/^int main()$/;"	f
+moveDown	Piece.cpp	/^void Piece::moveDown()$/;"	f	class:Piece
+moveLeft	Piece.cpp	/^void Piece::moveLeft()$/;"	f	class:Piece
+moveRight	Piece.cpp	/^void Piece::moveRight()$/;"	f	class:Piece
+operator =	Piece.cpp	/^Piece& Piece::operator=(const Piece& other) $/;"	f	class:Piece
+orignX	TetrisBox.h	/^    int orignX;$/;"	m	class:TetrisBox
+orignY	TetrisBox.h	/^    int orignY;$/;"	m	class:TetrisBox
+posX	Piece.h	/^    int posX;$/;"	m	class:Piece
+posY	Piece.h	/^    int posY;$/;"	m	class:Piece
+randomShape	Piece.cpp	/^void Piece::randomShape()$/;"	f	class:Piece
+reachBottom	Piece.cpp	/^bool Piece::reachBottom()$/;"	f	class:Piece
+rotate	Piece.cpp	/^void Piece::rotate() {$/;"	f	class:Piece
+setShape	Piece.cpp	/^void Piece::setShape(int type) {$/;"	f	class:Piece
+shape	Piece.h	/^    int shape;$/;"	m	class:Piece
+waitKeyOrTimer	main.cpp	/^int waitKeyOrTimer()$/;"	f
+width	TetrisBox.h	/^    int width;$/;"	m	class:TetrisBox
+~Piece	Piece.h	/^    ~Piece() {}$/;"	f	class:Piece
+~TetrisBox	TetrisBox.cpp	/^TetrisBox::~TetrisBox()$/;"	f	class:TetrisBox
