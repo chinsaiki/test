@@ -1,0 +1,117 @@
+splice()
+splice函数是linux系统提供的高级I/
+O函数，同sendfile系统调用函数一样，也是零拷贝操作函数。splice函数用于在两个文件描述符之间的移动数据。
+
+
+函数原型:
+#include <fcntl.h>  
+ssize_t splice(int fd_in, loff_t *off_in, int fd_out, loff_t* off_out, size_t len, unsigned int flags);  
+
+函数参数:
+fd_in参数是待输入描述符。如果它是一个管道文件描述符，则off_in必须设置为NULL；如果off_i
+n不是一个管道文件描述符（比如socket），那么off_in表示从输入数据流的何处开始读取数据，此时若为NULL，则从输入数据流的当前偏移位置读入。
+
+fd_out/off_out参数的含义与fd_in/off_in相同，不过用于输出数据流。
+len参数指定移动数据的长度。
+flags参数则控制数据如何移动，它可以设置成下表中的某些值的按位或。
+splice的flags参数的常用值及其含义：
+
+常用值	含义
+SPLICE_F_MOVE	
+如果合适的话，按整页内存移动数据。这只是给内核的一个提示。不过，因为它的实现存在BUG，所以自内核2.6.21后，它实际上没有任何效果
+
+SPLICE_F_NONBLOCK	非阻塞的splice操作，但实际效果还会受文件描述符本身的阻塞状态影响
+SPLICE_F_MORE	告知操作系统内核下一个 splice 系统调用将会有更多的数据传来
+SPLICE_F_GIFT	对splice没有效果
+注意：使用splice函数时，fd_in和fd_out必须至少有一个是管道文件描述符。
+
+函数返回值：
+调用成功时返回移动的字节数量。它可能返回0，表示没有数据需要移动，这通常发生在从管道中读数据（fd_in是管道文件描述符）而该管道没有被写入任何数据时。
+
+失败时返回-1，并设置errno。常见的errno如下表所示。
+
+splice函数可能产生的errno及其含义：
+
+错误	含义
+EBADF	参数所指文件描述符有错
+EINVAL	
+目标文件系统不支持splice，或者目标文件以追加方式打开，或者两个文件描述符都不是管道文件描述符，
+或者某个offset参数被用于不支持随机访问的设备（比如字符设备）
+
+ENOMEM	内存不够
+ESPIPE	参数fd_in（或fd_out）是管道文件描述符，而off_in（或off_out）不为NULL
+使用splice函数实现简单的回射服务器：
+我们通过使用splice函数，实现一个简单的echo服务器。
+
+//使用splice实现的回显服务器  
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <unistd.h>  
+#include <sys/socket.h>  
+#include <netinet/in.h>  
+#include <arpa/inet.h>  
+#include <assert.h>  
+#include <errno.h>  
+#include <string.h>  
+#include <fcntl.h>  
+
+
+int main(int argc, char **argv)  
+{  
+
+    if (argc <= 2) {  
+        printf("usage: %s ip port\n", basename(argv[0]));  
+        return 1;  
+    }  
+
+    const char *ip = argv[1];  
+    int port = atoi(argv[2]);  
+
+    struct sockaddr_in address;  
+    bzero(&address, sizeof(address));  
+    address.sin_family = AF_INET;  
+    address.sin_port = htons(port);  
+    inet_pton(AF_INET, ip, &address.sin_addr);  
+
+    int sock = socket(PF_INET, SOCK_STREAM, 0);  
+    assert(sock >= 0);  
+
+    int reuse = 1;  
+    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));  
+
+    int ret = bind(sock, (struct sockaddr*)&address, sizeof(address));  
+    assert(ret != -1);  
+
+    ret = listen(sock, 5);  
+    assert(ret != -1);  
+
+    struct sockaddr_in client;  
+    socklen_t client_addrlength = sizeof(client);  
+
+    int connfd = accept(sock, (struct sockaddr*)&client, &client_addrlength);  
+    if (connfd < 0) {  
+        printf("errno is: %s\n", strerror(errno));  
+    }  
+    else {  
+        int pipefd[2];  
+
+        ret = pipe(pipefd);  //创建管道  
+        assert(ret != -1);  
+
+        //将connfd上流入的客户端数据定向到管道中  
+        ret = splice(connfd, NULL, pipefd[1], NULL,  
+                        32768, SPLICE_F_MORE | SPLICE_F_MOVE);  
+        assert(ret != -1);  
+
+        //将管道的输出定向到connfd连接文件符上  
+        ret = splice(pipefd[0], NULL, connfd, NULL,  
+                        32768, SPLICE_F_MORE | SPLICE_F_MOVE);  
+        assert(ret != -1);                
+
+        close(connfd);  
+    }  
+
+    close(sock);  
+
+    return 0;  
+} 

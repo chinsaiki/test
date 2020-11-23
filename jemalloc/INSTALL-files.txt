@@ -1,0 +1,23 @@
+[root@localhost jemalloc]# make install
+/usr/bin/install -c -d /usr/bin
+/usr/bin/install -c -m 755 bin/jemalloc-config /usr/bin
+/usr/bin/install -c -m 755 bin/jemalloc.sh /usr/bin
+/usr/bin/install -c -m 755 bin/jeprof /usr/bin
+/usr/bin/install -c -d /usr/include/jemalloc
+/usr/bin/install -c -m 644 include/jemalloc/jemalloc.h /usr/include/jemalloc
+/usr/bin/install -c -d /usr/lib
+/usr/bin/install -c -m 755 lib/libjemalloc.so.2 /usr/lib
+ln -sf libjemalloc.so.2 /usr/lib/libjemalloc.so
+/usr/bin/install -c -d /usr/lib
+/usr/bin/install -c -m 755 lib/libjemalloc.a /usr/lib
+/usr/bin/install -c -m 755 lib/libjemalloc_pic.a /usr/lib
+/usr/bin/install -c -d /usr/lib/pkgconfig
+/usr/bin/install -c -m 644 jemalloc.pc /usr/lib/pkgconfig
+/usr/bin/xsltproc -o doc/jemalloc.html doc/html.xsl doc/jemalloc.xml
+/usr/bin/xsltproc -o doc/jemalloc.3 doc/manpages.xsl doc/jemalloc.xml
+Note: Writing jemalloc.3
+/usr/bin/install -c -d /usr/share/doc/jemalloc
+/usr/bin/install -c -m 644 doc/jemalloc.html /usr/share/doc/jemalloc
+/usr/bin/install -c -d /usr/share/man/man3
+/usr/bin/install -c -m 644 doc/jemalloc.3 /usr/share/man/man3
+

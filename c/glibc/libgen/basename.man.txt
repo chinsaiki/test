@@ -1,0 +1,83 @@
+DIRNAME(3)                                  Linux Programmer's Manual                                 DIRNAME(3)
+
+
+
+NAME
+       dirname, basename - 分析路径成员
+
+
+总
+       #include <libgen.h>
+
+       char *dirname(char *path);
+       char *basename(char *path);
+
+
+描
+       dirname  和  basename 把 以 null 结尾 的 路径名 分解为 目录 和 文件名. 一般情况下, dirname 返回 路径名 的
+       前面部分, 直到 (但不包括) 最后一个 '/', 而 basename 则 返回 最后一个 '/' 后面 的 内容. 如果 路径名 以 '/'
+       结尾, 该 '/' 被认为 不是 路径名 的 一部分.
+
+
+       如果  路径名  path  不包含  斜杠 '/', dirname 返回 字符串 ".", 而 basename 返回 path 的 副本. 如果 路径名
+       path 是 "/", 则 dirname 和 basename 均 返回 "/". 如果 路径名 path 是 NULL 指针 或 指向 空串,  则  dirname
+       和 basename 均 返回 ".".
+
+       把 dirname 返回的 字符串, "/", 和 basename 返回的 字符串 连接 起来, 能够 产生 一个 完整 的 路径名.
+
+       无论  dirname  还是 basename 都 有可能 更改 path 的 内容, 因此 如果 需要 保护 原有 路径名, 应该 传送 副本
+       作为 参数. 此外, dirname 和 basename 返回的 指针 可能 指向 一块 静态分配 的 内存, 会被 下次 调用 覆盖.
+
+       下面 的 例子 (摘自 SUSv2) 展示了 对于 不同的 路径名, dirname 和 basename 返回 的 字符串:
+
+       path           dirname        basename
+       "/usr/lib"     "/usr"         "lib"
+       "/usr/"        "/"            "usr"
+       "usr"          "."            "usr"
+       "/"            "/"            "/"
+       "."            "."            "."
+       ".."           "."            ".."
+
+
+示
+       char *dirc, *basec, *bname, *dname;
+       char *path = "/etc/passwd";
+
+       dirc = strdup(path);
+       basec = strdup(path);
+       dname = dirname(dirc);
+       bname = basename(basec);
+       printf("dirname=%s, basename=%s\n", dname, bname);
+       free(dirc);
+       free(basec);
+
+
+返
+       dirname 和 basename 均 返回 以 null 结尾的 字符串 的 指针.
+
+
+BUGS
+       在 glibc 的 各个 版本 中, 直到 (并包括) 2.2.1, dirname 无法 正确 处理 以 '/' 字符 结尾  的  路径名.  如果
+       参数 是 NULL 指针, 他 还会 产生 段冲突 (segmentation violation).
+
+
+遵
+       SUSv2
+
+
+另
+       dirname(1), basename(1)
+
+
+[中
+       徐
+
+[中
+       2003/05/13
+
+《
+       http://cmpp.linuxforum.net
+
+
+
+GNU                                                2000-12-14                                         DIRNAME(3)

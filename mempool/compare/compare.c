@@ -113,7 +113,7 @@ inline void malloc_common_test(void*ptr, size_t size)
 {
     char *s = (char*)ptr;
     int i;
-    for(i=0;i<size;i++)
+    for(i=0;i<size;i+=10)
         s[i] = 'A'+i%26;
 }
 

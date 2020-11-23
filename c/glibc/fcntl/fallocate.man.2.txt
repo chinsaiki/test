@@ -3,7 +3,7 @@ FALLOCATE(2)                                Linux Programmer's Manual           
 
 
 NAME
-       fallocate - manipulate(操作) file space
+       fallocate - manipulate file space
 
 SYNOPSIS
        #define _GNU_SOURCE             /* See feature_test_macros(7) */

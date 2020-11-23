@@ -1,0 +1,14 @@
+tee()
+tee函数在两个管道文件描述符之间复制数据，也是零拷贝操作。与splice函数不同，它不消耗数据，因此源文件描述符上的数据仍然可以用于后续的读操作。
+
+
+函数原型：
+
+#include<fcntl.h>
+ssize_t tee(int fd_in, int fd_out, size_t len,unsigned int flags);
+
+函数参数：
+该函数的参数含义与splice相同（但fd_in和fd_out必须都是管道文件描述符）。
+
+函数返回值：
+tee函数成功时返回在两个文件描述符之间复制的数据数量（字节数）。返回0表示没有复制任何数据。tee失败时返回-1并设置errno。

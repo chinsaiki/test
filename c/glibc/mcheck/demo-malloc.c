@@ -80,7 +80,7 @@ int test2_mcheck()
 
 int main(int argc, char * argv[])
 {
-    test1_malloc();
-//    test2_mcheck();
+//    test1_malloc();
+    test2_mcheck();
 }
 

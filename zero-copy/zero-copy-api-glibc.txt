@@ -1,0 +1,6 @@
+零拷贝Zero-Copy
+
+-----------------------------------
+*** sendfile:	test/c/glibc/sys/sendfile
+*** splice:	test/c/glibc/fcntl/splice
+*** tee:	test/c/glibc/fcntl/tee

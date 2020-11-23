@@ -63,6 +63,8 @@
 #define	SO_OOBINLINE	0x0100		/* leave received OOB data in line */
 #define	SO_REUSEPORT	0x0200		/* allow local address & port reuse */
 
+//SO_ZEROCOPY - 零拷贝内容，不过这里还想没有
+
 /*
  * Additional options, not kept in so_options.
  */

@@ -1,0 +1,41 @@
+FFLUSH(3)                                   Linux Programmer's Manual                                  FFLUSH(3)
+
+
+
+NAME
+       fflush - 刷新一个流
+
+SYNOPSIS 总
+       #include <stdio.h>
+
+       int fflush(FILE *stream);
+
+DESCRIPTION 描
+       函数                     fflush                     强制在所给的输出流或更新流                     stream
+       上，写入在用户空间缓冲的所有数据，使用流的底层写功能函数。流的打开状态不受影响。
+
+       如果参数 stream 是 NULL, fflush 刷新 所有 打开的流。
+
+       要使用非锁定的对应版本，参见 unlocked_stdio(3) 。
+
+RETURN VALUE 返
+       成功执行返回 0，否则返回 EOF 并设置全局变量 errno 来指示错误发生。
+
+ERRORS
+       EBADF  Stream 不是一个打开的流，或者不是用于输出。
+
+       函数 fflush 也可能失败并置 errno 为 write(2) 指定的值。
+
+NOTES 要
+       注意                        fflush()                        仅仅刷新用户空间的由                        C
+       库提供的缓冲。要保证数据被物理地存储到磁盘上，必须也刷新内核缓冲。例如，使用 sync(2) 或 fsync(2).
+
+CONFORMING TO 标
+       函数 fflush() 遵循 ANSI X3.159-1989 (``ANSI C'') 标准。
+
+SEE ALSO 参
+       fsync(2), sync(2), write(2), fclose(3), fopen(3), setbuf(3), unlocked_stdio(3)
+
+
+
+BSD MANPAGE                                        1993-11-29                                          FFLUSH(3)

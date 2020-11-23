@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 {
 	struct test_struct *p = NULL;
 
+    //比 mcheck 更低效，但更详细的
 	if(mcheck_pedantic(abortfun) != 0)
 	{
 		fprintf(stderr, "mcheck:%s\n", strerror(errno));

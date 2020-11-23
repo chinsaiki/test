@@ -12,8 +12,17 @@
 
 void setbuf(FILE *stream, char *buf);
 void setbuffer(FILE *stream, char *buf, size_t size);
-void setlinebuf(FILE *stream);
+
+//它们是无缓冲，块缓冲和行缓冲。
+void setlinebuf(FILE *stream);//行缓冲。
 int setvbuf(FILE *stream, char *buf, int mode , size_t size);
+
+//函数 setvbuf 可以用在任何打开的流上，改变它的缓冲。参数 mode 必须是下列三个宏之一：
+//  _IONBF 无缓冲
+//  _IOLBF 行缓冲
+//  _IOFBF 完全缓冲
+
+
 
 /**
  * DESCRIPTION 描述

@@ -29,6 +29,13 @@ inline void ncx_malloc_test(void*ptr, size_t size);
 inline void ncx_malloc_free(void*ptr);
 
 
+inline void redis_zmalloc_init(void*ptr);
+inline void* redis_zmalloc_malloc(size_t size);
+inline void redis_zmalloc_test(void*ptr, size_t size);
+inline void redis_zmalloc_free(void*ptr);
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -50,34 +57,34 @@ int main(int argc, char *argv[])
 
     struct malloc_entity sys_memory_alloc;
     struct malloc_entity obstack_memory_alloc;
-    struct malloc_entity nmx_alloc;
     struct malloc_entity ncx_alloc;
+    struct malloc_entity redis_zmalloc;
 
     /* 初始化测试实例 */
     malloc_entity_init(&sys_memory_alloc, "Glibc", 
             sys_glibc_malloc_init, sys_glibc_malloc, sys_glibc_test, sys_glibc_free);
     malloc_entity_init(&obstack_memory_alloc, "Obstack", 
             obstack_malloc_init, obstack_malloc_malloc, obstack_malloc_test, obstack_malloc_free);
-    malloc_entity_init(&nmx_alloc, "NMX", 
-            nmx_malloc_init, nmx_malloc_malloc, nmx_malloc_test, nmx_malloc_free);
     malloc_entity_init(&ncx_alloc, "NCX", 
             ncx_malloc_init, ncx_malloc_malloc, ncx_malloc_test, ncx_malloc_free);
+    malloc_entity_init(&redis_zmalloc, "Redis", 
+            redis_zmalloc_init, redis_zmalloc_malloc, redis_zmalloc_test, redis_zmalloc_free);
 
     /* 进行测试 */
     printf("TEST: sys_memory_alloc\n");
     malloc_entity_test(&sys_memory_alloc);
     printf("TEST: obstack_memory_alloc\n");
     malloc_entity_test(&obstack_memory_alloc);
-    printf("TEST: nmx_alloc\n");
-    malloc_entity_test(&nmx_alloc);
     printf("TEST: ncx_alloc\n");
     malloc_entity_test(&ncx_alloc);
+    printf("TEST: Redis_zmalloc\n");
+    malloc_entity_test(&redis_zmalloc);
 
     /* 打印测试信息 */
     malloc_entity_display(&sys_memory_alloc);
     malloc_entity_display(&obstack_memory_alloc);
-    malloc_entity_display(&nmx_alloc);
     malloc_entity_display(&ncx_alloc);
+    malloc_entity_display(&redis_zmalloc);
 }
 
 

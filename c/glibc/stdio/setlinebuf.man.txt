@@ -1,0 +1,76 @@
+SETBUF(3)                                   Linux Programmer's Manual                                  SETBUF(3)
+
+
+
+NAME
+       setbuf, setbuffer, setlinebuf, setvbuf - 流缓冲操作
+
+SYNOPSIS 总
+       #include <stdio.h>
+
+       void setbuf(FILE *stream, char *buf);
+       void setbuffer(FILE *stream, char *buf, size_t size);
+       void setlinebuf(FILE *stream);
+       int setvbuf(FILE *stream, char *buf, int mode , size_t size);
+
+DESCRIPTION 描
+       有三种类型的缓冲策略，它们是无缓冲，块缓冲和行缓冲。当输出流无缓冲时，信息在写的同时出现于目标文件或终端上；
+       当是块缓冲时，字符被暂存，然后一起写入；当是行缓冲时，字符被暂存，直到要输出一个新行符，或者从任何与终端设备连接的流中
+       (典型的是    stdin)    读取输入时才输出。函数    fflush(3)     可以用来强制提前输出。(参见     fclose(3))
+       通常所有文件都是块缓冲的。当文件            I/O            操作在文件上发生时，将调用           malloc(3)
+       ，获得一个缓冲。如果流指向一个终端   (通常    stdout    都是这样)，那么它是行缓冲的。标准错误流    stderr
+       默认总是无缓冲的。
+
+       函数 setvbuf 可以用在任何打开的流上，改变它的缓冲。参数 mode 必须是下列三个宏之一：
+
+              _IONBF 无缓冲
+
+              _IOLBF 行缓冲
+
+              _IOFBF 完全缓冲
+
+       除非是无缓冲的文件，否则参数                buf                应当指向一个长度至少为                size
+       字节的缓冲；这个缓冲将取代当前的缓冲。如果参数 buf 是 NULL ，只有这个模式会受到影响；下次 read  或  write
+       操作还将分配一个新的缓冲。函数 setvbuf 只能在打开一个流，还未对它进行任何其他操作之前使用。
+
+       其他三个函数调用是函数 setvbuf 的别名，函数 setbuf 与使用下列语句完全等价：
+
+              setvbuf(stream, buf, buf ? _IOFBF : _IONBF, BUFSIZ);
+
+       函数    setbuffer   与此相同，但是缓冲的长度由用户决定，而不是由默认值   BUFSIZ   决定。函数   setlinebuf
+       与使用下列语句完全等价：
+
+              setvbuf(stream, (char *)NULL, _IOLBF, 0);
+
+RETURN VALUE 返
+       函数 setvbuf 成功执行时返回 0。它失败时可能返回任何值，但是当 It can return any  value  on  failure,  but
+       returns    nonzero   when   mode   不正确，或者不能实现请求时，必须返回非零值。它在失败时可能设置   errno
+       。其他函数没有返回值。
+
+CONFORMING TO 标
+       函数 setbuf 和 setvbuf 遵循 ANSI X3.159-1989 (``ANSI C'') 标准。
+
+BUGS
+       函数  setbuffer  和  setlinebuf  无法移植到  4.2BSD  之前的  BSD  版本，在  Linux  中仅在   libc   4.5.21
+       之后的系统中可用。在 4.2BSD 和 4.3BSD 系统中， setbuf 总是使用非最优的缓冲大小，应当避免使用它。
+
+       在 stream 被关闭时，必须确保 buf 和它指向的空间仍然存在。这通常发生在程序终止时。
+
+       例如，下列调用是非法的：
+
+       #include <stdio.h>
+       int main()
+       {
+           char buf[BUFSIZ];
+           setbuf(stdin, buf);
+           printf("Hello, world!\n");
+           return 0;
+       }
+
+
+SEE ALSO 参
+       fclose(3), fflush(3), fopen(3), fread(3), malloc(3), printf(3), puts(3)
+
+
+
+Linux                                              2001-06-09                                          SETBUF(3)
