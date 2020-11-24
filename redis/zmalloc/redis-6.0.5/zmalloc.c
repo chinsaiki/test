@@ -27,6 +27,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+    /* Test for proc filesystem */
+#ifdef __linux__
+#define HAVE_PROC_STAT 1
+#define HAVE_PROC_MAPS 1
+#define HAVE_PROC_SMAPS 1
+#define HAVE_PROC_SOMAXCONN 1
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
