@@ -1,0 +1,3 @@
+malloc:malloc
+free:free
+realloc:realloc
