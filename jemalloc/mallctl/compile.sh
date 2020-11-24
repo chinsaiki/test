@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gcc -ljemalloc $*
+
+

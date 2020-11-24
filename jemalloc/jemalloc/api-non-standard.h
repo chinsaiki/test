@@ -31,6 +31,35 @@ non_standard_api() {
 
     const char *malloc_conf;
 
+    
+    //    当在有前缀条件下安装时，接口为：
+
+    void *je_mallocx(size_t size, int flags);
+
+    void *je_rallocx(void *ptr, size_t size, int flags);
+
+    size_t je_xallocx(void *ptr, size_t size, size_t extra, int flags);
+
+    size_t je_sallocx(void *ptr, int flags);
+
+    void je_dallocx(void *ptr, int flags);
+
+    void je_sdallocx(void *ptr, size_t size, int flags);
+
+    size_t je_nallocx(size_t size, int flags);
+
+    int je_mallctl(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
+
+    int je_mallctlnametomib(const char *name, size_t *mibp, size_t *miblenp);
+
+    int je_mallctlbymib(const size_t *mib, size_t miblen, void *oldp, size_t *oldlenp, void *newp,
+                     size_t newlen);
+
+    void je_malloc_stats_print(void (*write_cb) (void *, const char *), void *cbopaque, const char *opts);
+
+    size_t je_malloc_usable_size(const void *ptr);
+
+
 }
 
 //MALLOCX_LG_ALIGN(la)
