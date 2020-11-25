@@ -702,8 +702,6 @@ opt.zero_realloc (const char *) r-
 	as a deallocation of the pointer, and returns NULL without setting errno. “abort” aborts the process if zero is 
 	passed. The default is “strict”.
 
-TODO
-
 There is considerable divergence of behaviors across implementations in handling this case. Many have the behavior of 
 “free”. This can introduce security vulnerabilities, since a NULL return value indicates failure, and the 
 continued validity of the passed-in pointer (per POSIX and C11). “strict” is safe, but can cause leaks in 
@@ -712,77 +710,77 @@ programs that expect the common behavior. Programs intended to be portable and l
 
 
 thread.arena (unsigned) rw
-Get or set the arena associated with the calling thread. If the specified arena was not initialized beforehand (see 
-the arena.i.initialized mallctl), it will be automatically initialized as a side effect of calling this interface.
+	Get or set the arena associated with the calling thread. If the specified arena was not initialized beforehand (see 
+	the arena.i.initialized mallctl), it will be automatically initialized as a side effect of calling this interface.
 
 
 thread.allocated (uint64_t) r- [--enable-stats]
-Get the total number of bytes ever allocated by the calling thread. This counter has the potential to wrap around; it 
-is up to the application to appropriately interpret the counter in such cases.
+	Get the total number of bytes ever allocated by the calling thread. This counter has the potential to wrap around; it 
+	is up to the application to appropriately interpret the counter in such cases.
 
 
 thread.allocatedp (uint64_t *) r- [--enable-stats]
-Get a pointer to the the value that is returned by the thread.allocated mallctl. This is useful for avoiding the 
-overhead of repeated mallctl*() calls. Note that the underlying counter should not be modified by the application.
+	Get a pointer to the the value that is returned by the thread.allocated mallctl. This is useful for avoiding the 
+	overhead of repeated mallctl*() calls. Note that the underlying counter should not be modified by the application.
 
 
 thread.deallocated (uint64_t) r- [--enable-stats]
-Get the total number of bytes ever deallocated by the calling thread. This counter has the potential to wrap around; 
-it is up to the application to appropriately interpret the counter in such cases.
+	Get the total number of bytes ever deallocated by the calling thread. This counter has the potential to wrap around; 
+	it is up to the application to appropriately interpret the counter in such cases.
 
 
 thread.deallocatedp (uint64_t *) r- [--enable-stats]
-Get a pointer to the the value that is returned by the thread.deallocated mallctl. This is useful for avoiding the 
-overhead of repeated mallctl*() calls. Note that the underlying counter should not be modified by the application.
+	Get a pointer to the the value that is returned by the thread.deallocated mallctl. This is useful for avoiding the 
+	overhead of repeated mallctl*() calls. Note that the underlying counter should not be modified by the application.
 
 
 thread.peak.read (uint64_t) r- [--enable-stats]
-Get an approximation of the maximum value of the difference between the number of bytes allocated and the number of 
-bytes deallocated by the calling thread since the last call to thread.peak.reset, or since the thread's creation if 
-it has not called thread.peak.reset. No guarantees are made about the quality of the approximation, but jemalloc 
-currently endeavors to maintain accuracy to within one hundred kilobytes.
-
+	Get an approximation of the maximum value of the difference between the number of bytes allocated and the number of 
+	bytes deallocated by the calling thread since the last call to thread.peak.reset, or since the thread's creation if 
+	it has not called thread.peak.reset. No guarantees are made about the quality of the approximation, but jemalloc 
+	currently endeavors to maintain accuracy to within one hundred kilobytes.
+	申请和free的差值
 
 thread.peak.reset (void) -- [--enable-stats]
-Resets the counter for net bytes allocated in the calling thread to zero. This affects subsequent calls to thread.peak
-.read, but not the values returned by thread.allocated or thread.deallocated.
+	Resets the counter for net bytes allocated in the calling thread to zero. This affects subsequent calls to thread.peak
+	.read, but not the values returned by thread.allocated or thread.deallocated.
 
 
 thread.tcache.enabled (bool) rw
-Enable/disable calling thread's tcache. The tcache is implicitly flushed as a side effect of becoming disabled (see 
-thread.tcache.flush).
+	Enable/disable calling thread's tcache. The tcache is implicitly flushed as a side effect of becoming disabled (see 
+	thread.tcache.flush).
 
 
 thread.tcache.flush (void) --
-Flush calling thread's thread-specific cache (tcache). This interface releases all cached objects and internal data 
-structures associated with the calling thread's tcache. Ordinarily, this interface need not be called, since 
-automatic periodic incremental garbage collection occurs, and the thread cache is automatically discarded when a 
-thread exits. However, garbage collection is triggered by allocation activity, so it is possible for a thread that 
-stops allocating/deallocating to retain its cache indefinitely, in which case the developer may find manual flushing 
-useful.
+	Flush calling thread's thread-specific cache (tcache). This interface releases all cached objects and internal data 
+	structures associated with the calling thread's tcache. Ordinarily, this interface need not be called, since 
+	automatic periodic incremental garbage collection occurs, and the thread cache is automatically discarded when a 
+	thread exits. However, garbage collection is triggered by allocation activity, so it is possible for a thread that 
+	stops allocating/deallocating to retain its cache indefinitely, in which case the developer may find manual flushing 
+	useful.
 
 
 thread.prof.name (const char *) r- or -w [--enable-prof]
-Get/set the descriptive name associated with the calling thread in memory profile dumps. An internal copy of the name 
-string is created, so the input string need not be maintained after this interface completes execution. The output 
-string of this interface should be copied for non-ephemeral uses, because multiple implementation details can cause 
-asynchronous string deallocation. Furthermore, each invocation of this interface can only read or write; simultaneous 
-read/write is not supported due to string lifetime limitations. The name string must be nil-terminated and comprised 
-only of characters in the sets recognized by isgraph(3) and isblank(3).
-
+	Get/set the descriptive name associated with the calling thread in memory profile dumps. An internal copy of the name 
+	string is created, so the input string need not be maintained after this interface completes execution. The output 
+	string of this interface should be copied for non-ephemeral uses, because multiple implementation details can cause 
+	asynchronous string deallocation. Furthermore, each invocation of this interface can only read or write; simultaneous 
+	read/write is not supported due to string lifetime limitations. The name string must be nil-terminated and comprised 
+	only of characters in the sets recognized by isgraph(3) and isblank(3).
+	get/set
 
 thread.prof.active (bool) rw [--enable-prof]
-Control whether sampling is currently active for the calling thread. This is an activation mechanism in addition to 
-prof.active; both must be active for the calling thread to sample. This flag is enabled by default.
+	Control whether sampling is currently active for the calling thread. This is an activation mechanism in addition to 
+	prof.active; both must be active for the calling thread to sample. This flag is enabled by default.
 
 
 thread.idle (void) --
-Hints to jemalloc that the calling thread will be idle for some nontrivial period of time (say, on the order of 
-seconds), and that doing some cleanup operations may be beneficial. There are no guarantees as to what specific 
-operations will be performed; currently this flushes the caller's tcache and may (according to some heuristic) purge 
-its associated arena.
+	Hints to jemalloc that the calling thread will be idle for some nontrivial period of time (say, on the order of 
+	seconds), and that doing some cleanup operations may be beneficial. There are no guarantees as to what specific 
+	operations will be performed; currently this flushes the caller's tcache and may (according to some heuristic) purge 
+	its associated arena.
 
-
+-----------------------------------------------------------------------------------------------------------------
 This is not intended to be a general-purpose background activity mechanism, and threads should not wake up multiple 
 times solely to call it. Rather, a thread waiting for a task should do a timed wait first, call thread.idle if no 
 task appears in the timeout interval, and then do an untimed wait. For such a background activity mechanism, see 
@@ -790,90 +788,94 @@ background_thread.
 
 
 tcache.create (unsigned) r-
-Create an explicit thread-specific cache (tcache) and return an identifier that can be passed to the MALLOCX_TCACHE(tc
-) macro to explicitly use the specified cache rather than the automatically managed one that is used by default. Each 
-explicit cache can be used by only one thread at a time; the application must assure that this constraint holds.
+	Create an explicit thread-specific cache (tcache) and return an identifier that can be passed to the MALLOCX_TCACHE(tc
+	) macro to explicitly use the specified cache rather than the automatically managed one that is used by default. Each 
+	explicit cache can be used by only one thread at a time; the application must assure that this constraint holds.
+	创建一个明确的线程特有的cache，并且返回一个标识，这个标识被传输 MALLOCX_TCACHE 	
+	宏定义传输至特定的cache，否则自动管理一个默认的。
+	每个特定的cache在同一时刻只可以被一个线程使用；应用必须确认满足这个约束条件。
 
-
-If the amount of space supplied for storing the thread-specific cache identifier does not equal sizeof(unsigned), no 
-thread-specific cache will be created, no data will be written to the space pointed by oldp, and *oldlenp will be set 
-to 0.
-
+	If the amount of space supplied for storing the thread-specific cache identifier does not equal sizeof(unsigned), no 
+	thread-specific cache will be created, no data will be written to the space pointed by oldp, and *oldlenp will be set 
+	to 0.
+	如果大小不等于 sizeof(unsigned) ，那么没有cache被创建，
 
 tcache.flush (unsigned) -w
-Flush the specified thread-specific cache (tcache). The same considerations apply to this interface as to thread.
-tcache.flush, except that the tcache will never be automatically discarded.
-
+	Flush the specified thread-specific cache (tcache). The same considerations apply to this interface as to thread.
+	tcache.flush, except that the tcache will never be automatically discarded.
+	flush线程特有的cache，
 
 tcache.destroy (unsigned) -w
-Flush the specified thread-specific cache (tcache) and make the identifier available for use during a future tcache 
-creation.
+	Flush the specified thread-specific cache (tcache) and make the identifier available for use during a future tcache 
+	creation.
 
 
 arena.<i>.initialized (bool) r-
-Get whether the specified arena's statistics are initialized (i.e. the arena was initialized prior to the current 
-epoch). This interface can also be nominally used to query whether the merged statistics corresponding to 
-MALLCTL_ARENAS_ALL are initialized (always true).
+	Get whether the specified arena's statistics are initialized (i.e. the arena was initialized prior to the current 
+	epoch). This interface can also be nominally used to query whether the merged statistics corresponding to 
+	MALLCTL_ARENAS_ALL are initialized (always true).
+	是否已经初始化过
 
+arena.<i>.decay (decay 衰减，腐败) (void) --
+	Trigger decay-based purging(purging 净化，清理) of unused dirty/muzzy pages for arena <i>, or for all arenas if <i> equals 
+	MALLCTL_ARENAS_ALL. The proportion of unused dirty/muzzy pages to be purged depends on the current time; see opt.
+	dirty_decay_ms and opt.muzy_decay_ms for details.
+	清理脏页，muzzy页，
 
-arena.<i>.decay (void) --
-Trigger decay-based purging of unused dirty/muzzy pages for arena <i>, or for all arenas if <i> equals 
-MALLCTL_ARENAS_ALL. The proportion of unused dirty/muzzy pages to be purged depends on the current time; see opt.
-dirty_decay_ms and opt.muzy_decay_ms for details.
-
-
-arena.<i>.purge (void) --
-Purge all unused dirty pages for arena <i>, or for all arenas if <i> equals MALLCTL_ARENAS_ALL.
+arena.<i>.purge(purging 净化，清理) (void) --
+	Purge all unused dirty pages for arena <i>, or for all arenas if <i> equals MALLCTL_ARENAS_ALL.
+	
 
 arena.<i>.reset (void) --
-Discard all of the arena's extant allocations. This interface can only be used with arenas explicitly created via 
-arenas.create. None of the arena's discarded/cached allocations may accessed afterward. As part of this requirement, 
-all thread caches which were used to allocate/deallocate in conjunction with the arena must be flushed beforehand.
+	Discard all of the arena's extant allocations. This interface can only be used with arenas explicitly created via 
+	arenas.create. None of the arena's discarded/cached allocations may accessed afterward. As part of this requirement, 
+	all thread caches which were used to allocate/deallocate in conjunction with the arena must be flushed beforehand.
 
 
 arena.<i>.destroy (void) --
-Destroy the arena. Discard all of the arena's extant allocations using the same mechanism as for arena.<i>.reset (
-with all the same constraints and side effects), merge the arena stats into those accessible at arena index 
-MALLCTL_ARENAS_DESTROYED, and then completely discard all metadata associated with the arena. Future calls to arenas.
-create may recycle the arena index. Destruction will fail if any threads are currently associated with the arena as a 
-result of calls to thread.arena.
+	Destroy the arena. Discard all of the arena's extant allocations using the same mechanism as for arena.<i>.reset (
+	with all the same constraints and side effects), merge the arena stats into those accessible at arena index 
+	MALLCTL_ARENAS_DESTROYED, and then completely discard all metadata associated with the arena. Future calls to arenas.
+	create may recycle the arena index. Destruction will fail if any threads are currently associated with the arena as a 
+	result of calls to thread.arena.
 
 
 arena.<i>.dss (const char *) rw
-Set the precedence of dss allocation as related to mmap allocation for arena <i>, or for all arenas if <i> equals 
-MALLCTL_ARENAS_ALL. See opt.dss for supported settings.
+	Set the precedence of dss allocation as related to mmap allocation for arena <i>, or for all arenas if <i> equals 
+	MALLCTL_ARENAS_ALL. See opt.dss for supported settings.
 
 
 arena.<i>.dirty_decay_ms (ssize_t) rw
-Current per-arena approximate time in milliseconds from the creation of a set of unused dirty pages until an 
-equivalent set of unused dirty pages is purged and/or reused. Each time this interface is set, all currently unused 
-dirty pages are considered to have fully decayed, which causes immediate purging of all unused dirty pages unless the 
-decay time is set to -1 (i.e. purging disabled). See opt.dirty_decay_ms for additional information.
+	Current per-arena approximate time in milliseconds from the creation of a set of unused dirty pages until an 
+	equivalent set of unused dirty pages is purged and/or reused. Each time this interface is set, all currently unused 
+	dirty pages are considered to have fully decayed, which causes immediate purging of all unused dirty pages unless the 
+	decay time is set to -1 (i.e. purging disabled). See opt.dirty_decay_ms for additional information.
 
 
 arena.<i>.muzzy_decay_ms (ssize_t) rw
-Current per-arena approximate time in milliseconds from the creation of a set of unused muzzy pages until an 
-equivalent set of unused muzzy pages is purged and/or reused. Each time this interface is set, all currently unused 
-muzzy pages are considered to have fully decayed, which causes immediate purging of all unused muzzy pages unless the 
-decay time is set to -1 (i.e. purging disabled). See opt.muzzy_decay_ms for additional information.
+	Current per-arena approximate time in milliseconds from the creation of a set of unused muzzy pages until an 
+	equivalent set of unused muzzy pages is purged and/or reused. Each time this interface is set, all currently unused 
+	muzzy pages are considered to have fully decayed, which causes immediate purging of all unused muzzy pages unless the 
+	decay time is set to -1 (i.e. purging disabled). See opt.muzzy_decay_ms for additional information.
 
 
 arena.<i>.retain_grow_limit (size_t) rw
-Maximum size to grow retained region (only relevant when opt.retain is enabled). This controls the maximum increment 
-to expand virtual memory, or allocation through arena.<i>extent_hooks. In particular, if customized extent hooks 
-reserve physical memory (e.g. 1G huge pages), this is useful to control the allocation hook's input size. The default 
-is no limit.
+	Maximum size to grow retained region (only relevant when opt.retain is enabled). This controls the maximum increment 
+	to expand virtual memory, or allocation through arena.<i>extent_hooks. In particular, if customized extent hooks 
+	reserve physical memory (e.g. 1G huge pages), this is useful to control the allocation hook's input size. The default 
+	is no limit.
 
 
 arena.<i>.extent_hooks (extent_hooks_t *) rw
-Get or set the extent management hook functions for arena <i>. The functions must be capable of operating on all 
-extant extents associated with arena <i>, usually by passing unknown extents to the replaced functions. In practice, 
-it is feasible to control allocation for arenas explicitly created via arenas.create such that all extents originate 
-from an application-supplied extent allocator (by specifying the custom extent hook functions during arena creation). 
-However, the API guarantees for the automatically created arenas may be relaxed -- hooks set there may be called in a 
-"best effort" fashion; in addition there may be extents created prior to the application having an opportunity to 
-take over extent allocation.
-
+	Get or set the extent management hook functions for arena <i>. The functions must be capable of operating on all 
+	extant extents associated with arena <i>, usually by passing unknown extents to the replaced functions. In practice, 
+	it is feasible to control allocation for arenas explicitly created via arenas.create such that all extents originate 
+	from an application-supplied extent allocator (by specifying the custom extent hook functions during arena creation). 
+	However, the API guarantees for the automatically created arenas may be relaxed -- hooks set there may be called in a 
+	"best effort" fashion; in addition there may be extents created prior to the application having an opportunity to 
+	take over extent allocation.
+	为arena<i> get、set管理范围的钩子函数。这个函数必须是现存的arena中，通常通过传递未知的范围给相关的函数。
+	通过 arenas.create 控制arenas的分配是可行的，TODO
 
 	--------------------------------------------------------------------------------------------------------------------
 	typedef extent_hooks_s extent_hooks_t;
@@ -1041,13 +1043,13 @@ arenas.dirty_decay_ms (ssize_t) rw
 
 
 arenas.muzzy_decay_ms (ssize_t) rw
-Current default per-arena approximate time in milliseconds from the creation of a set of unused muzzy pages until an 
-equivalent set of unused muzzy pages is purged and/or reused, used to initialize arena.<i>.muzzy_decay_ms during 
-arena creation. See opt.muzzy_decay_ms for additional information.
+	Current default per-arena approximate time in milliseconds from the creation of a set of unused muzzy pages until an 
+	equivalent set of unused muzzy pages is purged and/or reused, used to initialize arena.<i>.muzzy_decay_ms during 
+	arena creation. See opt.muzzy_decay_ms for additional information.
 
 
 arenas.quantum (size_t) r-
-	Quantum size.
+	Quantum size. 量子大小？
 
 arenas.page (size_t) r-
 	Page size.
@@ -1088,10 +1090,11 @@ If the amount of space supplied for storing the arena index does not equal sizeo
 arenas.lookup (unsigned, void*) rw
 	Index of the arena to which an allocation belongs to.
 
+----------------------------------------------------------------------------------------------------------------------------
 prof.thread_active_init (bool) rw [--enable-prof]
 	Control the initial setting for thread.prof.active in newly created threads. See the opt.prof_thread_active_init 
 	option for additional information.
-
+	
 
 prof.active (bool) rw [--enable-prof]
 	Control whether sampling is currently active. See the opt.prof_active option for additional information, as well as 
@@ -1125,6 +1128,7 @@ prof.interval (uint64_t) r- [--enable-prof]
 	additional information.
 
 
+----------------------------------------------------------------------------------------------------------------------------
 stats.allocated (size_t) r- [--enable-stats]
 	Total number of bytes allocated by the application.
 
@@ -1175,60 +1179,63 @@ stats.background_thread.num_runs (uint64_t) r- [--enable-stats]
 	Total number of runs from all background threads.
 
 stats.background_thread.run_interval (uint64_t) r- [--enable-stats]
-Average run interval in nanoseconds of background threads.
+	Average run interval in nanoseconds of background threads.
 
+----------------------------------------------------------------------------------------------------------------------------
 stats.mutexes.ctl.{counter}; (counter specific type) r- [--enable-stats]
-Statistics on ctl mutex (global scope; mallctl related). {counter} is one of the counters below:
+	Statistics on ctl mutex (global scope; mallctl related). {counter} is one of the counters below:
 
-num_ops (uint64_t): Total number of lock acquisition operations on this mutex.
+	num_ops (uint64_t): Total number of lock acquisition operations on this mutex.
 
-num_spin_acq (uint64_t): Number of times the mutex was spin-acquired. When the mutex is currently locked and cannot 
-be acquired immediately, a short period of spin-retry within jemalloc will be performed. Acquired through spin 
-generally means the contention was lightweight and not causing context switches.
-
-
-num_wait (uint64_t): Number of times the mutex was wait-acquired, which means the mutex contention was not solved by 
-spin-retry, and blocking operation was likely involved in order to acquire the mutex. This event generally implies 
-higher cost / longer delay, and should be investigated if it happens often.
+	num_spin_acq (uint64_t): Number of times the mutex was spin-acquired. When the mutex is currently locked and cannot 
+		be acquired immediately, a short period of spin-retry within jemalloc will be performed. Acquired through spin 
+		generally means the contention was lightweight and not causing context switches.
 
 
-max_wait_time (uint64_t): Maximum length of time in nanoseconds spent on a single wait-acquired lock operation. Note 
-that to avoid profiling overhead on the common path, this does not consider spin-acquired cases.
+	num_wait (uint64_t): Number of times the mutex was wait-acquired, which means the mutex contention was not solved by 
+		spin-retry, and blocking operation was likely involved in order to acquire the mutex. This event generally implies 
+		higher cost / longer delay, and should be investigated if it happens often.
 
 
-total_wait_time (uint64_t): Cumulative time in nanoseconds spent on wait-acquired lock operations. Similarly, spin-
-acquired cases are not considered.
+	max_wait_time (uint64_t): Maximum length of time in nanoseconds spent on a single wait-acquired lock operation. Note 
+		that to avoid profiling overhead on the common path, this does not consider spin-acquired cases.
 
 
-max_num_thds (uint32_t): Maximum number of threads waiting on this mutex simultaneously. Similarly, spin-acquired 
-cases are not considered.
+	total_wait_time (uint64_t): Cumulative time in nanoseconds spent on wait-acquired lock operations. Similarly, spin-
+		acquired cases are not considered.
 
 
-num_owner_switch (uint64_t): Number of times the current mutex owner is different from the previous one. This event 
-does not generally imply an issue; rather it is an indicator of how often the protected data are accessed by 
-different threads.
+	max_num_thds (uint32_t): Maximum number of threads waiting on this mutex simultaneously. Similarly, spin-acquired 
+		cases are not considered.
 
+
+	num_owner_switch (uint64_t): Number of times the current mutex owner is different from the previous one. This event 
+		does not generally imply an issue; rather it is an indicator of how often the protected data are accessed by 
+		different threads.
+
+----------------------------------------------------------------------------------------------------------------------------
 
 stats.mutexes.background_thread.{counter} (counter specific type) r- [--enable-stats]
-Statistics on background_thread mutex (global scope; background_thread related). {counter} is one of the counters in 
-mutex profiling counters.
+	Statistics on background_thread mutex (global scope; background_thread related). {counter} is one of the counters in 
+	mutex profiling counters.
 
 
 stats.mutexes.prof.{counter} (counter specific type) r- [--enable-stats]
-Statistics on prof mutex (global scope; profiling related). {counter} is one of the counters in mutex profiling 
-counters.
+	Statistics on prof mutex (global scope; profiling related). {counter} is one of the counters in mutex profiling 
+	counters.
 
 
 stats.mutexes.prof_thds_data.{counter} (counter specific type) r- [--enable-stats]
-Statistics on prof threads data mutex (global scope; profiling related). {counter} is one of the counters in mutex 
-profiling counters.
+	Statistics on prof threads data mutex (global scope; profiling related). {counter} is one of the counters in mutex 
+	profiling counters.
 
 
 stats.mutexes.prof_dump.{counter} (counter specific type) r- [--enable-stats]
-Statistics on prof dumping mutex (global scope; profiling related). {counter} is one of the counters in mutex 
-profiling counters.
+	Statistics on prof dumping mutex (global scope; profiling related). {counter} is one of the counters in mutex 
+	profiling counters.
 
 
+----------------------------------------------------------------------------------------------------------------------------TODO
 stats.mutexes.reset (void) -- [--enable-stats]
 Reset all mutex profile statistics, including global mutexes, arena mutexes and bin mutexes.
 

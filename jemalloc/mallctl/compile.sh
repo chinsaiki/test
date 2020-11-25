@@ -1,5 +1,5 @@
 #!/bin/bash
 
-gcc -ljemalloc $*
+gcc -ljemalloc -pthread $*
 
 
