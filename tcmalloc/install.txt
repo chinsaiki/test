@@ -1,0 +1,4 @@
+首先安装 libunwind 库
+再安装 gperftools 库
+大功告成
+

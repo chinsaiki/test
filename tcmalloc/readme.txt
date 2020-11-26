@@ -2,6 +2,10 @@
 TCM分配
 该存储库包含TCMalloc C ++代码。
 
+--------------------------------
+* See also gperftools (tcmalloc)
+--------------------------------
+
 TCMalloc是Google对Cmalloc()和C ++ 的定制实现，operator new用于在我们的C和C ++
 代码中进行内存分配。TCMalloc是一种快速的多线程malloc实现。
 

@@ -1,0 +1,73 @@
+Jemalloc and Jeprof
+Jemalloc tool tracks down native memory allocations and identifies native memory leak suspects.
+
+Procedure
+Download jemalloc from GitHub.com.
+Install the tool by following the steps specified at GitHub.com.
+Set the following properties and start the BW AppNode from the same console:
+cd [BW_HOME]/bw/6.5/domains/<DomainName>/appnodes/<AppSpaceName>/<AppNodeName>/bin
+export LD_PRELOAD=/root/jemalloc/jemalloc-stable-4/lib/libjemalloc.so
+export MALLOC_CONF=prof:true,lg_prof_interval:30,lg_prof_sample:17,prof_final:true,prof_leak:true
+./startBWAppNode.sh
+Once jemalloc is build include jemalloc in BWCE buildpack.
+Edit the bwce-buildpack/resources/prestart.sh file and add the following commands before the exec ./tibco.home/bw*/*/
+bin/startBWAppNode.sh command:
+
+export LD_PRELOAD=/root/jemalloc/jemalloc-stable-4/lib/libjemalloc.so
+export MALLOC_CONF=prof:true,lg_prof_interval:30,lg_prof_sample:17,prof_final:true,prof_leak:true
+When the server is started and the memory allocation is done, jeprof*.heap files are generated in same {BW_HOME}/bw/6.
+5/domains/<DomainName>/appnodes/<AppSpaceName>/<AppNodeName>/bin folder.
+
+As the memory utilization grows, more files would be generated.
+Analyze the heap files with the jeprof command.
+jeprof --show_bytes <PATH to java> jeprof.*.heap
+The jeprof utility is included in the jemalloc\bin folder. After exection of jeprof command, jeprof console opens.
+
+Type top when you reach the jeprof console. For example:
+jeprof --show_bytes /usr/lib/jvm/java-8-oracle/jre/bin/java jeprof*.heap
+Using local file /usr/bin/w.
+Using local file jeprof.19678.0.f.heap.
+Welcome to jeprof! For help, type 'help'.
+(jeprof) top
+It shows the following output:
+
+ Total: 267184 B
+258032 96.6% 96.6% 258032 96.6% _3_2_5
+3616 1.4% 97.9% 3616 1.4% _nl_intern_locale_data
+2048 0.8% 98.7% 2208 0.8% __tzfile_read
+1024 0.4% 99.1% 1024 0.4% getpwnam
+1024 0.4% 99.5% 1072 0.4% getpwuid 
+448 0.2% 99.6% 448 0.2% __gconv_lookup_cache
+224 0.1% 99.9% 224 0.1% strdup 
+160 0.1% 99.9% 160 0.1% __tzstring 
+128 0.0% 100.0% 3760 1.4% _nl_load_locale_from_archive 
+48 0.0% 100.0% 48 0.0% get_mapping
+To run the jeprof command on a single file, use the following command:
+jeprof --show_bytes <PATH to java> <Heap file name>
+After exection of jeprof command, jeprof console opens.
+
+Type top when you reach the jeprof console. For example:
+jeprof --show_bytes /usr/lib/jvm/java-8-oracle/jre/bin/java jeprof.19678.0.f.heap
+ Using local file /usr/bin/w.
+ Using local file jeprof.19678.0.f.heap.
+Welcome to jeprof! For help, type 'help'.
+ (jeprof) top
+			 
+It shows the following output:
+
+Total: 267184 B
+258032 96.6% 96.6% 258032 96.6% _3_2_5
+3616 1.4% 97.9% 3616 1.4% _nl_intern_locale_data
+2048 0.8% 98.7% 2208 0.8% __tzfile_read
+1024 0.4% 99.1% 1024 0.4% getpwnam
+1024 0.4% 99.5% 1072 0.4% getpwuid 
+448 0.2% 99.6% 448 0.2% __gconv_lookup_cache
+224 0.1% 99.9% 224 0.1% strdup 
+160 0.1% 99.9% 160 0.1% __tzstring 
+128 0.0% 100.0% 3760 1.4% _nl_load_locale_from_archive 
+48 0.0% 100.0% 48 0.0% get_mapping
+To stop profiling once the analysis is done and leak suspects are identified run command:
+unset MALLOC_CONF
+If profiling is not stopped, the jeprof heap files are continuously generated.
+
+
