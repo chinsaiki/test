@@ -1237,7 +1237,7 @@ stats.mutexes.prof_dump.{counter} (counter specific type) r- [--enable-stats]
 
 ----------------------------------------------------------------------------------------------------------------------------TODO
 stats.mutexes.reset (void) -- [--enable-stats]
-Reset all mutex profile statistics, including global mutexes, arena mutexes and bin mutexes.
+	Reset all mutex profile statistics, including global mutexes, arena mutexes and bin mutexes.
 
 stats.arenas.<i>.dss (const char *) r-
 dss (sbrk(2)) allocation precedence as related to mmap(2) allocation. See opt.dss for details.
