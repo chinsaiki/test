@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
- 
+
+//需要使用 -lmcheck 编译
+//
+//    gcc mallopt.c -lmcheck
+
+
 int main(int argc, char * argv[])
 {
     int ret = mallopt(M_CHECK_ACTION, 3);

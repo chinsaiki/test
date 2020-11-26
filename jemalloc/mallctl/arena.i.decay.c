@@ -6,6 +6,10 @@
 //	MALLCTL_ARENAS_ALL. The proportion of unused dirty/muzzy pages to be purged depends on the current time; see opt.
 //	dirty_decay_ms and opt.muzy_decay_ms for details.
 //	清理脏页，muzzy页，
+//
+//#!/bin/sh
+//
+//export MALLOC_CONF="dirty_decay_ms:1000,muzzy_decay_ms:1000,tcache_max:1024"
 
 
 void jemalloc_arena_i_decay()

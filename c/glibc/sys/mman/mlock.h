@@ -18,6 +18,11 @@ int munlock(const void *addr, size_t len);
 int mlockall(int flags);
 int munlockall(void);
 
+//MCL_CURRENT Lock all pages which are currently mapped into the address space of the process.
+//
+//MCL_FUTURE  Lock all pages which will become mapped into the address space of the process in the  future.
+//            These  could  be  for  instance new pages required by a growing heap and stack as well as new
+//            memory mapped files or shared memory regions.
 
 
 SYSCALL_DEFINE2(mlock, unsigned long, start, size_t, len)
