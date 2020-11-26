@@ -1235,86 +1235,88 @@ stats.mutexes.prof_dump.{counter} (counter specific type) r- [--enable-stats]
 	profiling counters.
 
 
-----------------------------------------------------------------------------------------------------------------------------TODO
+----------------------------------------------------------------------------------------------------------------------------
 stats.mutexes.reset (void) -- [--enable-stats]
 	Reset all mutex profile statistics, including global mutexes, arena mutexes and bin mutexes.
 
 stats.arenas.<i>.dss (const char *) r-
-dss (sbrk(2)) allocation precedence as related to mmap(2) allocation. See opt.dss for details.
+	dss (sbrk(2)) allocation precedence as related to mmap(2) allocation. See opt.dss for details.
 
 stats.arenas.<i>.dirty_decay_ms (ssize_t) r-
-Approximate time in milliseconds from the creation of a set of unused dirty pages until an equivalent set of unused 
-dirty pages is purged and/or reused. See opt.dirty_decay_ms for details.
+	Approximate time in milliseconds from the creation of a set of unused dirty pages until an equivalent set of unused 
+	dirty pages is purged and/or reused. See opt.dirty_decay_ms for details.
 
 
 stats.arenas.<i>.muzzy_decay_ms (ssize_t) r-
-Approximate time in milliseconds from the creation of a set of unused muzzy pages until an equivalent set of unused 
-muzzy pages is purged and/or reused. See opt.muzzy_decay_ms for details.
+	Approximate time in milliseconds from the creation of a set of unused muzzy pages until an equivalent set of unused 
+	muzzy pages is purged and/or reused. See opt.muzzy_decay_ms for details.
 
 
 stats.arenas.<i>.nthreads (unsigned) r-
-Number of threads currently assigned to arena.
+	Number of threads currently assigned to arena.
 
 stats.arenas.<i>.uptime (uint64_t) r-
-Time elapsed (in nanoseconds) since the arena was created. If <i> equals 0 or MALLCTL_ARENAS_ALL, this is the uptime 
-since malloc initialization.
+	Time elapsed (in nanoseconds) since the arena was created. If <i> equals 0 or MALLCTL_ARENAS_ALL, this is the uptime 
+	since malloc initialization.
 
 
+----------------------------------------------------------------------------------------------------------------------------
 stats.arenas.<i>.pactive (size_t) r-
-Number of pages in active extents.
+	Number of pages in active extents.
 
 stats.arenas.<i>.pdirty (size_t) r-
-Number of pages within unused extents that are potentially dirty, and for which madvise() or similar has not been 
-called. See opt.dirty_decay_ms for a description of dirty pages.
+	Number of pages within unused extents that are potentially dirty, and for which madvise() or similar has not been 
+	called. See opt.dirty_decay_ms for a description of dirty pages.
 
 
 stats.arenas.<i>.pmuzzy (size_t) r-
-Number of pages within unused extents that are muzzy. See opt.muzzy_decay_ms for a description of muzzy pages.
+	Number of pages within unused extents that are muzzy. See opt.muzzy_decay_ms for a description of muzzy pages.
 
 stats.arenas.<i>.mapped (size_t) r- [--enable-stats]
-Number of mapped bytes.
+	Number of mapped bytes.
 
 stats.arenas.<i>.retained (size_t) r- [--enable-stats]
-Number of retained bytes. See stats.retained for details.
+	Number of retained bytes. See stats.retained for details.
 
 stats.arenas.<i>.extent_avail (size_t) r- [--enable-stats]
-Number of allocated (but unused) extent structs in this arena.
+	Number of allocated (but unused) extent structs in this arena.
 
 stats.arenas.<i>.base (size_t) r- [--enable-stats]
-Number of bytes dedicated to bootstrap-sensitive allocator metadata structures.
+	Number of bytes dedicated to bootstrap-sensitive allocator metadata structures.
 
 stats.arenas.<i>.internal (size_t) r- [--enable-stats]
-Number of bytes dedicated to internal allocations. Internal allocations differ from application-originated 
-allocations in that they are for internal use, and that they are omitted from heap profiles.
+	Number of bytes dedicated to internal allocations. Internal allocations differ from application-originated 
+	allocations in that they are for internal use, and that they are omitted from heap profiles.
 
 
 stats.arenas.<i>.metadata_thp (size_t) r- [--enable-stats]
-Number of transparent huge pages (THP) used for metadata. See opt.metadata_thp for details.
+	Number of transparent huge pages (THP) used for metadata. See opt.metadata_thp for details.
 
 stats.arenas.<i>.resident (size_t) r- [--enable-stats]
-Maximum number of bytes in physically resident data pages mapped by the arena, comprising all pages dedicated to 
-allocator metadata, pages backing active allocations, and unused dirty pages. This is a maximum rather than precise 
-because pages may not actually be physically resident if they correspond to demand-zeroed virtual memory that has not 
-yet been touched. This is a multiple of the page size.
+	Maximum number of bytes in physically resident data pages mapped by the arena, comprising all pages dedicated to 
+	allocator metadata, pages backing active allocations, and unused dirty pages. This is a maximum rather than precise 
+	because pages may not actually be physically resident if they correspond to demand-zeroed virtual memory that has not 
+	yet been touched. This is a multiple of the page size.
 
 
 stats.arenas.<i>.dirty_npurge (uint64_t) r- [--enable-stats]
-Number of dirty page purge sweeps performed.
+	Number of dirty page purge sweeps performed.
 
 stats.arenas.<i>.dirty_nmadvise (uint64_t) r- [--enable-stats]
-Number of madvise() or similar calls made to purge dirty pages.
+	Number of madvise() or similar calls made to purge dirty pages.
 
 stats.arenas.<i>.dirty_purged (uint64_t) r- [--enable-stats]
-Number of dirty pages purged.
+	Number of dirty pages purged.
 
 stats.arenas.<i>.muzzy_npurge (uint64_t) r- [--enable-stats]
-Number of muzzy page purge sweeps performed.
+	Number of muzzy page purge sweeps performed.
 
 stats.arenas.<i>.muzzy_nmadvise (uint64_t) r- [--enable-stats]
-Number of madvise() or similar calls made to purge muzzy pages.
+	Number of madvise() or similar calls made to purge muzzy pages.
 
 stats.arenas.<i>.muzzy_purged (uint64_t) r- [--enable-stats]
-Number of muzzy pages purged.
+	Number of muzzy pages purged.
+----------------------------------------------------------------------------------------------------------------------------
 
 stats.arenas.<i>.small.allocated (size_t) r- [--enable-stats]
 Number of bytes currently allocated by small objects.
@@ -1338,6 +1340,7 @@ Cumulative number of tcache fills by all small size classes.
 stats.arenas.<i>.small.nflushes (uint64_t) r- [--enable-stats]
 Cumulative number of tcache flushes by all small size classes.
 
+----------------------------------------------------------------------------------------------------------------------------
 stats.arenas.<i>.large.allocated (size_t) r- [--enable-stats]
 Number of bytes currently allocated by large objects.
 
@@ -1362,123 +1365,131 @@ Cumulative number of tcache fills by all large size classes.
 stats.arenas.<i>.large.nflushes (uint64_t) r- [--enable-stats]
 Cumulative number of tcache flushes by all large size classes.
 
+----------------------------------------------------------------------------------------------------------------------------
+
 stats.arenas.<i>.bins.<j>.nmalloc (uint64_t) r- [--enable-stats]
-Cumulative number of times a bin region of the corresponding size class was allocated from the arena, whether to fill 
-the relevant tcache if opt.tcache is enabled, or to directly satisfy an allocation request otherwise.
+	Cumulative number of times a bin region of the corresponding size class was allocated from the arena, whether to fill 
+	the relevant tcache if opt.tcache is enabled, or to directly satisfy an allocation request otherwise.
 
 
 stats.arenas.<i>.bins.<j>.ndalloc (uint64_t) r- [--enable-stats]
-Cumulative number of times a bin region of the corresponding size class was returned to the arena, whether to flush 
-the relevant tcache if opt.tcache is enabled, or to directly deallocate an allocation otherwise.
+	Cumulative number of times a bin region of the corresponding size class was returned to the arena, whether to flush 
+	the relevant tcache if opt.tcache is enabled, or to directly deallocate an allocation otherwise.
 
 
 stats.arenas.<i>.bins.<j>.nrequests (uint64_t) r- [--enable-stats]
-Cumulative number of allocation requests satisfied by bin regions of the corresponding size class.
+	Cumulative number of allocation requests satisfied by bin regions of the corresponding size class.
 
 stats.arenas.<i>.bins.<j>.curregs (size_t) r- [--enable-stats]
-Current number of regions for this size class.
+	Current number of regions for this size class.
 
 stats.arenas.<i>.bins.<j>.nfills (uint64_t) r-
-Cumulative number of tcache fills.
+	Cumulative number of tcache fills.
 
 stats.arenas.<i>.bins.<j>.nflushes (uint64_t) r-
-Cumulative number of tcache flushes.
+	Cumulative number of tcache flushes.
 
 stats.arenas.<i>.bins.<j>.nslabs (uint64_t) r- [--enable-stats]
-Cumulative number of slabs created.
+	Cumulative number of slabs created.
 
 stats.arenas.<i>.bins.<j>.nreslabs (uint64_t) r- [--enable-stats]
-Cumulative number of times the current slab from which to allocate changed.
+	Cumulative number of times the current slab from which to allocate changed.
 
 stats.arenas.<i>.bins.<j>.curslabs (size_t) r- [--enable-stats]
-Current number of slabs.
+	Current number of slabs.
 
 stats.arenas.<i>.bins.<j>.nonfull_slabs (size_t) r- [--enable-stats]
-Current number of nonfull slabs.
+	Current number of nonfull slabs.
 
 stats.arenas.<i>.bins.<j>.mutex.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.bins.<j> mutex (arena bin scope; bin operation related). {counter} is one of the counters in 
-mutex profiling counters.
+	Statistics on arena.<i>.bins.<j> mutex (arena bin scope; bin operation related). {counter} is one of the counters in 
+	mutex profiling counters.
 
+----------------------------------------------------------------------------------------------------------------------------
 
 stats.arenas.<i>.extents.<j>.n{extent_type} (size_t) r- [--enable-stats]
-Number of extents of the given type in this arena in the bucket corresponding to page size index <j>. The extent type 
-is one of dirty, muzzy, or retained.
+	Number of extents of the given type in this arena in the bucket corresponding to page size index <j>. The extent type 
+	is one of dirty, muzzy, or retained.
 
 
 stats.arenas.<i>.extents.<j>.{extent_type}_bytes (size_t) r- [--enable-stats]
-Sum of the bytes managed by extents of the given type in this arena in the bucket corresponding to page size index <j
->. The extent type is one of dirty, muzzy, or retained.
+	Sum of the bytes managed by extents of the given type in this arena in the bucket corresponding to page size index <j
+	>. The extent type is one of dirty, muzzy, or retained.
 
+----------------------------------------------------------------------------------------------------------------------------
 
 stats.arenas.<i>.lextents.<j>.nmalloc (uint64_t) r- [--enable-stats]
-Cumulative number of times a large extent of the corresponding size class was allocated from the arena, whether to 
-fill the relevant tcache if opt.tcache is enabled and the size class is within the range being cached, or to directly 
-satisfy an allocation request otherwise.
+	Cumulative number of times a large extent of the corresponding size class was allocated from the arena, whether to 
+	fill the relevant tcache if opt.tcache is enabled and the size class is within the range being cached, or to directly 
+	satisfy an allocation request otherwise.
 
 
 stats.arenas.<i>.lextents.<j>.ndalloc (uint64_t) r- [--enable-stats]
-Cumulative number of times a large extent of the corresponding size class was returned to the arena, whether to flush 
-the relevant tcache if opt.tcache is enabled and the size class is within the range being cached, or to directly 
-deallocate an allocation otherwise.
+	Cumulative number of times a large extent of the corresponding size class was returned to the arena, whether to flush 
+	the relevant tcache if opt.tcache is enabled and the size class is within the range being cached, or to directly 
+	deallocate an allocation otherwise.
 
 
 stats.arenas.<i>.lextents.<j>.nrequests (uint64_t) r- [--enable-stats]
-Cumulative number of allocation requests satisfied by large extents of the corresponding size class.
+	Cumulative number of allocation requests satisfied by large extents of the corresponding size class.
 
 stats.arenas.<i>.lextents.<j>.curlextents (size_t) r- [--enable-stats]
-Current number of large allocations for this size class.
+	Current number of large allocations for this size class.
 
+----------------------------------------------------------------------------------------------------------------------------
 stats.arenas.<i>.mutexes.large.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.large mutex (arena scope; large allocation related). {counter} is one of the counters in 
-mutex profiling counters.
+	Statistics on arena.<i>.large mutex (arena scope; large allocation related). {counter} is one of the counters in 
+	mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.extent_avail.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.extent_avail mutex (arena scope; extent avail related). {counter} is one of the counters in 
-mutex profiling counters.
+	Statistics on arena.<i>.extent_avail mutex (arena scope; extent avail related). {counter} is one of the counters in 
+	mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.extents_dirty.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.extents_dirty mutex (arena scope; dirty extents related). {counter} is one of the counters in 
-mutex profiling counters.
+	Statistics on arena.<i>.extents_dirty mutex (arena scope; dirty extents related). {counter} is one of the counters in 
+	mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.extents_muzzy.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.extents_muzzy mutex (arena scope; muzzy extents related). {counter} is one of the counters in 
-mutex profiling counters.
+	Statistics on arena.<i>.extents_muzzy mutex (arena scope; muzzy extents related). {counter} is one of the counters in 
+	mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.extents_retained.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.extents_retained mutex (arena scope; retained extents related). {counter} is one of the 
-counters in mutex profiling counters.
+	Statistics on arena.<i>.extents_retained mutex (arena scope; retained extents related). {counter} is one of the 
+	counters in mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.decay_dirty.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.decay_dirty mutex (arena scope; decay for dirty pages related). {counter} is one of the 
-counters in mutex profiling counters.
+	Statistics on arena.<i>.decay_dirty mutex (arena scope; decay for dirty pages related). {counter} is one of the 
+	counters in mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.decay_muzzy.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.decay_muzzy mutex (arena scope; decay for muzzy pages related). {counter} is one of the 
-counters in mutex profiling counters.
+	Statistics on arena.<i>.decay_muzzy mutex (arena scope; decay for muzzy pages related). {counter} is one of the 
+	counters in mutex profiling counters.
 
 
 stats.arenas.<i>.mutexes.base.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.base mutex (arena scope; base allocator related). {counter} is one of the counters in mutex 
-profiling counters.
+	Statistics on arena.<i>.base mutex (arena scope; base allocator related). {counter} is one of the counters in mutex 
+	profiling counters.
 
 
 stats.arenas.<i>.mutexes.tcache_list.{counter} (counter specific type) r- [--enable-stats]
-Statistics on arena.<i>.tcache_list mutex (arena scope; tcache to arena association related). This mutex is expected 
-to be accessed less often. {counter} is one of the counters in mutex profiling counters.
+	Statistics on arena.<i>.tcache_list mutex (arena scope; tcache to arena association related). This mutex is expected 
+	to be accessed less often. {counter} is one of the counters in mutex profiling counters.
 
+
+----------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------
 
 HEAP PROFILE FORMAT
-Although the heap profiling functionality was originally designed to be compatible with the pprof command that is 
-developed as part of the gperftools package, the addition of per thread heap profiling functionality required a 
-different heap profile format. The jeprof command is derived from pprof, with enhancements to support the heap 
-profile format described here.
+	Although the heap profiling functionality was originally designed to be compatible with the pprof command that is 
+	developed as part of the gperftools package, the addition of per thread heap profiling functionality required a 
+	different heap profile format. The jeprof command is derived from pprof, with enhancements to support the heap 
+	profile format described here.
 
 
 In the following hypothetical heap profile, [...] indicates elision for the sake of compactness.
