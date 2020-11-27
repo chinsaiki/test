@@ -10,7 +10,7 @@ static u_char  *space;
 static ncx_slab_pool_t *sp;
 
 
-inline void ncx_malloc_init(void*ptr)
+inline void ncx_malloc_init(void *user_ptr)
 {
     space = (u_char *)malloc(pool_size);
 
@@ -22,15 +22,15 @@ inline void ncx_malloc_init(void*ptr)
     ncx_slab_init(sp);
 }
 
-inline void* ncx_malloc_malloc(size_t size)
+inline void* ncx_malloc_malloc(void *user_ptr, size_t size)
 {
     return ncx_slab_alloc(sp, size); 
 }
-inline void ncx_malloc_test(void*ptr, size_t size)
+inline void ncx_malloc_test(void *user_ptr, void*ptr, size_t size)
 {
     malloc_common_test(ptr, size);
 }
-inline void ncx_malloc_free(void*ptr)
+inline void ncx_malloc_free(void *user_ptr, void*ptr)
 {
     ncx_slab_free(sp, ptr); 
 }

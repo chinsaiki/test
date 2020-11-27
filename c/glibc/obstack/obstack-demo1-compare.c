@@ -4,7 +4,13 @@
 #include <obstack.h>
 #include <sys/time.h>
 
+#ifdef JEMALLOC
+#include <jemalloc/jemalloc.h>
+#endif
 
+#ifdef TCMALLOC
+#include <gperftools/tcmalloc.h>
+#endif
 
 #if 1
 #define debug()
@@ -76,7 +82,46 @@ void test_obstack()
 
 }
 
+void test_jemalloc()
+{
+#ifdef JEMALLOC
+    char *str = NULL;
+    struct timeval start, end;
+        
+    gettimeofday(&start, NULL);
+    unsigned long int i;
+    for(i=0;i<test_alloc_free_cnt;i++) {
+        str = (char*) je_malloc (test_alloc_size);
+        test_mem(str, test_alloc_size);
+        je_free(str);
+    }
+    
+    gettimeofday(&end, NULL);
 
+    diff_timeval("Jemallo>>",  &end, &start);
+#endif
+}
+
+
+void test_tcmalloc()
+{
+#ifdef TCMALLOC
+    char *str = NULL;
+    struct timeval start, end;
+        
+    gettimeofday(&start, NULL);
+    unsigned long int i;
+    for(i=0;i<test_alloc_free_cnt;i++) {
+        str = (char*) tc_malloc (test_alloc_size);
+        test_mem(str, test_alloc_size);
+        tc_free(str);
+    }
+    
+    gettimeofday(&end, NULL);
+
+    diff_timeval("TCmallo>>",  &end, &start);
+#endif
+}
 
 
 int main(int argc, char *argv[])
@@ -100,6 +145,8 @@ int main(int argc, char *argv[])
 
     test_malloc();
     test_obstack();
+    test_jemalloc();
+    test_tcmalloc();
 
 }
 

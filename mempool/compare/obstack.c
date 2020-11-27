@@ -1,3 +1,5 @@
+#ifdef OBSTACK
+
 #include <malloc.h>
 #include <obstack.h>
 
@@ -24,17 +26,17 @@ inline void obstack_malloc_init(void*ptr)
 
 }
 
-inline void* obstack_malloc_malloc(size_t size)
+inline void* obstack_malloc_malloc(void *user_ptr, size_t size)
 {
     return obstack_alloc(&crypto_obstack, size);
 }
-inline void obstack_malloc_test(void*ptr, size_t size)
+inline void obstack_malloc_test(void *user_ptr, void*ptr, size_t size)
 {
     malloc_common_test(ptr, size);
 }
-inline void obstack_malloc_free(void*ptr)
+inline void obstack_malloc_free(void *user_ptr, void*ptr)
 {
     obstack_free(&crypto_obstack, ptr);
 }
 
-
+#endif
