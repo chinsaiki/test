@@ -1,14 +1,13 @@
 #include <gperftools/tcmalloc.h>
 #include <stdio.h>
 
-void* tc_malloc(size_t size);
-void tc_free(void* ptr);
-
+void* tc_malloc_skip_new_handler(size_t size);
 
 int main()
 {
-    char *str = tc_malloc(1024);
+    char *str = tc_malloc_skip_new_handler(1024);
     printf("%s\n", str);
 
     tc_free(str);
 }
+

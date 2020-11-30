@@ -12,3 +12,4 @@ int main()
 
     tc_free(str);
 }
+

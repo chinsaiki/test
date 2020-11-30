@@ -1,0 +1,43 @@
+LDAP_MEMORY(3)                              Library Functions Manual                              LDAP_MEMORY(3)
+
+
+
+NAME
+       ldap_memfree,  ldap_memvfree,  ldap_memalloc,  ldap_memcalloc, ldap_memrealloc, ldap_strdup - LDAP memory
+       allocation routines
+
+LIBRARY
+       OpenLDAP LDAP (libldap, -lldap)
+
+SYNOPSIS
+       #include <ldap.h>
+
+       void ldap_memfree(void *p);
+
+       void ldap_memvfree(void **v);
+
+       void *ldap_memalloc(ber_len_t s);
+
+       void *ldap_memcalloc(ber_len_t n, ber_len_t s);
+
+       void *ldap_memrealloc(void *p, ber_len_t s);
+
+       char *ldap_strdup(LDAP_CONST char *p);
+
+DESCRIPTION
+       These routines are used to allocate/deallocate memory used/returned by  the  LDAP  library.   ldap_memal‐
+       loc(),  ldap_memcalloc(),  ldap_memrealloc(),  and ldap_memfree() are used exactly like the standard mal‐
+       loc(3), calloc(3), realloc(3), and free(3) routines, respectively.  The ldap_memvfree() routine  is  used
+       to  free  a  dynamically  allocated  array  of  pointers to arbitrary dynamically allocated objects.  The
+       ldap_strdup() routine is used exactly like the standard strdup(3) routine.
+
+SEE ALSO
+       ldap(3)
+
+ACKNOWLEDGEMENTS
+       OpenLDAP Software is developed and maintained by The OpenLDAP Project <http://www.openldap.org/>.  OpenL‐
+       DAP Software is derived from University of Michigan LDAP 3.3 Release.
+
+
+
+OpenLDAP 2.4.44                                    2016/02/05                                     LDAP_MEMORY(3)
