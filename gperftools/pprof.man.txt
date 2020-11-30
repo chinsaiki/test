@@ -1,0 +1,125 @@
+PPROF(1)                                             Google                                             PPROF(1)
+
+
+
+NAME
+       pprof - manual page for pprof (part of gperftools)
+
+SYNOPSIS
+       pprof [options] <program> <profile>
+
+DESCRIPTION
+              Prints specified cpu- or heap-profile
+
+OPTIONS
+       --cum  Sort by cumulative data
+
+       --base=<base>
+              Subtract <base> from <profile> before display
+
+   Reporting Granularity:
+       --addresses
+              Report at address level
+
+       --lines
+              Report at source line level
+
+       --functions
+              Report at function level [default]
+
+       --files
+              Report at source file level
+
+   Output type:
+       --text Generate text report [default]
+
+       --gv   Generate Postscript and display
+
+       --list=<regexp>
+              Generate source listing of matching routines
+
+       --disasm=<regexp>
+              Generate disassembly of matching routines
+
+       --dot  Generate DOT file to stdout
+
+       --ps   Generate Postscript to stdout
+
+       --pdf  Generate PDF to stdout
+
+       --gif  Generate GIF to stdout
+
+   Heap-Profile Options:
+       --inuse_space
+              Display in-use (mega)bytes [default]
+
+       --inuse_objects
+              Display in-use objects
+
+       --alloc_space
+              Display allocated (mega)bytes
+
+       --alloc_objects
+              Display allocated objects
+
+       --show_bytes
+              Display space in bytes
+
+       --drop_negative
+              Ignore negaive differences
+
+   Call-graph Options:
+       --nodecount=<n>
+              Show at most so many nodes [default=80]
+
+       --nodefraction=<f>
+              Hide nodes below <f>*total [default=.005]
+
+       --edgefraction=<f>
+              Hide edges below <f>*total [default=.001]
+
+       --focus=<regexp>
+              Focus on nodes matching <regexp>
+
+       --ignore=<regexp>
+              Ignore nodes matching <regexp>
+
+       --scale=<n>
+              Set GV scaling [default=0]
+
+EXAMPLES
+       pprof /bin/ls ls.prof
+
+              Outputs one line per procedure
+
+       pprof --gv /bin/ls ls.prof
+
+              Displays annotated call-graph via 'gv'
+
+       pprof --gv --focus=Mutex /bin/ls ls.prof
+
+              Restricts to code paths including a .*Mutex.* entry
+
+       pprof --gv --focus=Mutex --ignore=string /bin/ls ls.prof
+
+              Code paths including Mutex but not string
+
+       pprof --list=getdir /bin/ls ls.prof
+
+              Dissassembly (with per-line annotations) for getdir()
+
+       pprof --disasm=getdir /bin/ls ls.prof
+
+              Dissassembly (with per-PC annotations) for getdir()
+
+COPYRIGHT
+       Copyright © 2005 Google Inc.
+
+SEE ALSO
+       Further  documentation  for  pprof  is  maintained  as  a web page called cpu_profiler.html and is likely
+       installed at one of the following locations:
+
+              /usr/share/gperftools/cpu_profiler.html
+              /usr/local/share/gperftools/cpu_profiler.html
+
+pprof (part of gperftools)                        February 2005                                         PPROF(1)

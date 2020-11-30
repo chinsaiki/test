@@ -1,3 +1,5 @@
 #!/bin/bash
 
-gcc -ltcmalloc -lpthread $*
+LIBS_BASIC=-ltcmalloc
+
+gcc  $LIBS_BASIC -lpthread $*
