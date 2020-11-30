@@ -9,14 +9,14 @@
 #########################################################################
 
 #线程数
-TEST_NTHREAD=20
+TEST_NTHREAD=21
 
 
 #参加对比的库函数
 TEST_GLIBC=n
 TEST_OBSTACK=n
 TEST_JEMALLOC=y
-TEST_TCMALLOC=y
+TEST_TCMALLOC=n
 TEST_REDIS=n
 TEST_NGINX=n
 

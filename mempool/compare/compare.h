@@ -28,10 +28,12 @@ typedef void (*method_free)(void *user_arg, void*ptr);
 
 struct malloc_entity;
 
-struct malloc_stats_time{
+struct malloc_stats{
     struct malloc_entity *blongs_to;
     unsigned long int diffusec[4]; //0-total, 1-alloc, 2-test, 3-free
+    long int currRealMem, peakRealMem, currVirtMem, peakVirtMem;//内存资源使用情况
 };
+
 
 struct malloc_entity{
     char method_name[NAME_LEN];
@@ -46,8 +48,10 @@ struct malloc_entity{
     void (*method_call_tick)(void *arg); //用于矫正函数调用花费的时间
     
     pthread_t threadid[NR_THREAD];
-    struct malloc_stats_time memory_stats_time[NR_THREAD];
+    struct malloc_stats memory_stats[NR_THREAD];
     unsigned long int total_diffusec[4]; //0-total, 1-alloc, 2-test, 3-free
+
+    int currRealMem, peakRealMem, currVirtMem, peakVirtMem;//内存资源使用情况
 };
 
 

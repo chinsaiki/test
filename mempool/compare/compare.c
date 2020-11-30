@@ -35,6 +35,40 @@ static unsigned long int diff_timeval_usec(struct timeval *big, struct timeval *
     return diffusec;
 }
 
+
+/*
+ * Measures the current (and peak) resident and virtual memories
+ * usage of your linux C process, in kB
+ */
+void get_proc_emory(long int* currRealMem, long int* peakRealMem, long int* currVirtMem, long int* peakVirtMem) 
+{
+
+    // stores each word in status file
+    char buffer[1024] = "";
+
+    // linux file contains this-process info
+    FILE* file = fopen("/proc/self/status", "r");
+
+    // read the entire file
+    while (fscanf(file, " %1023s", buffer) == 1) {
+
+        if (strcmp(buffer, "VmRSS:") == 0) {
+            fscanf(file, " %ld", currRealMem);
+        }
+        if (strcmp(buffer, "VmHWM:") == 0) {
+            fscanf(file, " %ld", peakRealMem);
+        }
+        if (strcmp(buffer, "VmSize:") == 0) {
+            fscanf(file, " %ld", currVirtMem);
+        }
+        if (strcmp(buffer, "VmPeak:") == 0) {
+            fscanf(file, " %ld", peakVirtMem);
+        }
+    }
+    fclose(file);
+}
+
+
 static inline void crypto_method_call_tick(void *arg){}
 
 int malloc_entity_init(struct malloc_entity *entity, const char *name, 
@@ -63,13 +97,23 @@ int malloc_entity_init(struct malloc_entity *entity, const char *name,
     entity->total_diffusec[2] = 0L;
     entity->total_diffusec[3] = 0L;
     
+    entity->currRealMem = 0;
+    entity->peakRealMem = 0;
+    entity->currVirtMem = 0;
+    entity->peakVirtMem = 0;
+        
     for(i=0;i<REAL_NTHREADS;i++) {
-        entity->memory_stats_time[i].diffusec[0] = 0L;
-        entity->memory_stats_time[i].diffusec[1] = 0L;
-        entity->memory_stats_time[i].diffusec[2] = 0L;
-        entity->memory_stats_time[i].diffusec[3] = 0L;
+        entity->memory_stats[i].diffusec[0] = 0L;
+        entity->memory_stats[i].diffusec[1] = 0L;
+        entity->memory_stats[i].diffusec[2] = 0L;
+        entity->memory_stats[i].diffusec[3] = 0L;
 
-        entity->memory_stats_time[i].blongs_to = entity;
+        entity->memory_stats[i].blongs_to = entity;
+
+        entity->memory_stats[i].currRealMem = 0;
+        entity->memory_stats[i].peakRealMem = 0;
+        entity->memory_stats[i].currVirtMem = 0;
+        entity->memory_stats[i].peakVirtMem = 0;
     }
     
 
@@ -79,9 +123,11 @@ int malloc_entity_init(struct malloc_entity *entity, const char *name,
 
 void *test_routine(void *arg)
 {
-    struct malloc_stats_time *stats_time = (struct malloc_stats_time*)arg;
-    struct malloc_entity *entity = (struct malloc_entity *)(stats_time->blongs_to);
+    struct malloc_stats *stats = (struct malloc_stats*)arg;
+    struct malloc_entity *entity = (struct malloc_entity *)(stats->blongs_to);
 
+    /* 内存使用统计 */
+    long int currRealMem, peakRealMem, currVirtMem, peakVirtMem;
     
     struct timeval start, end;
     char *str = NULL;
@@ -93,12 +139,12 @@ void *test_routine(void *arg)
         gettimeofday(&start, NULL);
         str = entity->memory_alloc(entity->user_arg, test_alloc_size);
         gettimeofday(&end, NULL);
-        stats_time->diffusec[1] += diff_timeval_usec(&end, &start);
+        stats->diffusec[1] += diff_timeval_usec(&end, &start);
         
         gettimeofday(&start, NULL);
         entity->memory_test(entity->user_arg, str, test_alloc_size);
         gettimeofday(&end, NULL);
-        stats_time->diffusec[2] += diff_timeval_usec(&end, &start);
+        stats->diffusec[2] += diff_timeval_usec(&end, &start);
         
         gettimeofday(&start, NULL);
         entity->method_call_tick(NULL);
@@ -109,21 +155,29 @@ void *test_routine(void *arg)
         gettimeofday(&start, NULL);
         entity->memory_free(entity->user_arg, str);
         gettimeofday(&end, NULL);
-        stats_time->diffusec[3] += diff_timeval_usec(&end, &start);
+        stats->diffusec[3] += diff_timeval_usec(&end, &start);
     }
 
     //函数调用的时间
-    stats_time->diffusec[1] -= method_call_tick;
-    stats_time->diffusec[2] -= method_call_tick;
-    stats_time->diffusec[3] -= method_call_tick;
+    stats->diffusec[1] -= method_call_tick;
+    stats->diffusec[2] -= method_call_tick;
+    stats->diffusec[3] -= method_call_tick;
 
     
     //计算总和
-    stats_time->diffusec[0] +=stats_time->diffusec[1] 
-                                + stats_time->diffusec[2] 
-                                + stats_time->diffusec[3];
+    stats->diffusec[0] +=stats->diffusec[1] 
+                                + stats->diffusec[2] 
+                                + stats->diffusec[3];
 
+    /* 内存使用统计 */
+    get_proc_emory(&currRealMem, &peakRealMem, &currVirtMem, &peakVirtMem);
+
+//    printf("%d, %d, %d, %d\n", currRealMem, peakRealMem, currVirtMem, peakVirtMem);
     
+    if(stats->currRealMem < currRealMem){stats->currRealMem = currRealMem; }
+    if(stats->peakRealMem < peakRealMem){stats->peakRealMem = peakRealMem; }
+    if(stats->currVirtMem < currVirtMem){stats->currVirtMem = currVirtMem; }
+    if(stats->peakVirtMem < peakVirtMem){stats->peakVirtMem = peakVirtMem; }
     
 }
 
@@ -134,7 +188,7 @@ void malloc_entity_test(struct malloc_entity *entity)
 
     int ithread;
     for(ithread=0;ithread<REAL_NTHREADS;ithread++) {
-        pthread_create(&entity->threadid[ithread], NULL, test_routine, (void*)&entity->memory_stats_time[ithread]);
+        pthread_create(&entity->threadid[ithread], NULL, test_routine, (void*)&entity->memory_stats[ithread]);
     }
     for(ithread=0;ithread<REAL_NTHREADS;ithread++) {
         pthread_join(entity->threadid[ithread], NULL);
@@ -150,16 +204,26 @@ void malloc_entity_display(struct malloc_entity *entity)
     
     int ithread;
     for(ithread=0;ithread<REAL_NTHREADS;ithread++) {
-        entity->total_diffusec[0] += entity->memory_stats_time[ithread].diffusec[0];
-        entity->total_diffusec[1] += entity->memory_stats_time[ithread].diffusec[1];
-        entity->total_diffusec[2] += entity->memory_stats_time[ithread].diffusec[2];
-        entity->total_diffusec[3] += entity->memory_stats_time[ithread].diffusec[3];
+        entity->total_diffusec[0] += entity->memory_stats[ithread].diffusec[0];
+        entity->total_diffusec[1] += entity->memory_stats[ithread].diffusec[1];
+        entity->total_diffusec[2] += entity->memory_stats[ithread].diffusec[2];
+        entity->total_diffusec[3] += entity->memory_stats[ithread].diffusec[3];
+        
+        entity->currRealMem = entity->memory_stats[ithread].currRealMem;
+        entity->peakRealMem = entity->memory_stats[ithread].peakRealMem;
+        entity->currVirtMem = entity->memory_stats[ithread].currVirtMem;
+        entity->peakVirtMem = entity->memory_stats[ithread].peakVirtMem;
     }
-    fprintf(stdout, "%16s %10ld %10ld %10ld %10ld\n", entity->method_name, 
+    entity->currRealMem /= REAL_NTHREADS;
+    entity->peakRealMem /= REAL_NTHREADS;
+    entity->currVirtMem /= REAL_NTHREADS;
+    entity->peakVirtMem /= REAL_NTHREADS;
+    fprintf(stdout, "%16s %10ld %10ld %10ld %10ld %ld kB\n", entity->method_name, 
                         entity->total_diffusec[0], 
                         entity->total_diffusec[1], 
                         entity->total_diffusec[2], 
-                        entity->total_diffusec[3]);
+                        entity->total_diffusec[3], 
+                        entity->currVirtMem);
 }
 
 
@@ -170,4 +234,6 @@ inline void malloc_common_test(void*ptr, size_t size)
     for(i=0;i<size;i+=10)
         s[i] = 'A'+i%26;
 }
+
+
 
