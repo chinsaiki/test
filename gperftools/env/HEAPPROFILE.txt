@@ -1,0 +1,7 @@
+heap profile
+
+------------------------------
+
+env HEAPPROFILE=/tmp/mybin.hprof /usr/local/bin/my_bin_compiled_with_tcmalloc
+
+

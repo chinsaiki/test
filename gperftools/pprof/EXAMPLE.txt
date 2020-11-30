@@ -1,0 +1,12 @@
+1.编译生成可执行文件
+
+	gcc main.c -lprofiler
+
+2.给定变量，运行程序
+
+	CPUPROFILE=./profile.out ./test_1.out 
+
+3.分析（我的不行啊？！不知道为啥 TODO）
+
+	pprof --text ./my_program ./profile.out
+	
