@@ -51,6 +51,11 @@ int main()
     ucontext_t u;
     
     getcontext(&u);
+
+    stack_t *stack = &u.uc_stack;
+
+    printf("stack->ss_flags = %d\n", stack->ss_flags);
+    printf("stack->ss_size = %d\n", stack->ss_size);
     
     return 0;
 }
