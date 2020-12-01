@@ -3,4 +3,4 @@
 ------------------------------------------
 *** test/vmem
 *** test/pmdk/vmem
-
+*** test/c/glibc/libvmem

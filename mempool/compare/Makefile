@@ -16,9 +16,10 @@ TEST_NTHREAD=21
 TEST_GLIBC=n
 TEST_OBSTACK=n
 TEST_JEMALLOC=y
-TEST_TCMALLOC=n
+TEST_TCMALLOC=y
 TEST_REDIS=n
 TEST_NGINX=n
+TEST_VMEM=y
 
 DEFINE:= -DNR_THREAD=${TEST_NTHREAD}
 LIBS:= -lpthread -lrt
@@ -73,6 +74,14 @@ ifeq ($(TEST_REDIS),y)
 				redis-6.0.5-zmalloc.c
 	DEFINE+=-DREDIS
 endif
+
+
+ifeq ($(TEST_VMEM),y)
+	SOURCES+=vmem.c
+	DEFINE+=-DLIBVMEM
+	LIBS+=-lvmem
+endif
+
 
 INCLUDE=-I./ 
 INCLUDE+=-I../mempool

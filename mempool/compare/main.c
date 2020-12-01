@@ -44,6 +44,12 @@ inline void tcmalloc_test(void*user_ptr, void*ptr, size_t size);
 inline void tcmalloc_free(void*user_ptr, void*ptr);
 #endif
 
+#ifdef LIBVMEM
+inline void vmem_malloc_init(void*user_ptr);
+inline void* vmem_malloc_malloc(void*user_ptr, size_t size);
+inline void vmem_malloc_test(void*user_ptr, void*ptr, size_t size);
+inline void vmem_malloc_free(void*user_ptr, void*ptr);
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -85,6 +91,9 @@ int main(int argc, char *argv[])
 #ifdef TCMALLOC
     struct malloc_entity tcmalloc_alloc;
 #endif
+#ifdef LIBVMEM
+    struct malloc_entity vmem_alloc;
+#endif
 
     /* 初始化测试实例 */
 #ifdef PTMALLOC
@@ -111,6 +120,12 @@ int main(int argc, char *argv[])
     malloc_entity_init(&tcmalloc_alloc, "tcmalloc", 
             tcmalloc_malloc_init, tcmalloc_malloc, tcmalloc_test, tcmalloc_free, NULL);
 #endif
+#ifdef LIBVMEM
+    malloc_entity_init(&vmem_alloc, "vmem", 
+            vmem_malloc_init, vmem_malloc_malloc, vmem_malloc_test, vmem_malloc_free, NULL);
+#endif
+
+
     /* 进行测试 */
 #ifdef PTMALLOC
     debug_print("TEST: sys_memory_alloc\n");
@@ -136,6 +151,10 @@ int main(int argc, char *argv[])
     debug_print("TEST: tcmalloc_alloc\n");
     malloc_entity_test(&tcmalloc_alloc);
 #endif
+#ifdef LIBVMEM
+    debug_print("TEST: vmem_alloc\n");
+    malloc_entity_test(&vmem_alloc);
+#endif
 
     /* 打印测试信息 */
 #ifdef PTMALLOC
@@ -155,6 +174,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef TCMALLOC
     malloc_entity_display(&tcmalloc_alloc);
+#endif
+#ifdef LIBVMEM
+    malloc_entity_display(&vmem_alloc);
 #endif
     
     exit(1);
