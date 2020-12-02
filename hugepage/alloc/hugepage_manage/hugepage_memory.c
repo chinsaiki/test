@@ -117,6 +117,7 @@ void * try_virt_area(size_t *size, size_t hugepage_sz)
 	return addr;
 }
 
+
 //map virtaddr to physaddr
 uint64_t virt_to_phys(void * addr)
 {
@@ -257,7 +258,7 @@ uint32_t map_hugepages(hugepage_file *hpf, uint32_t number, uint64_t hugepage_sz
 		hpf[i].file_id = i;
 		hpf[i].pagesize = hugepage_sz;
 		memset(hpf[i].file_path, 0, sizeof(hpf[i].file_path));
-		sprintf(hpf[i].file_path, "/mnt/hugepages/xk_map%u", hpf[i].file_id);
+		sprintf(hpf[i].file_path, HUGEPAGE_DIR"/xk_map%u", hpf[i].file_id);
 		hpf[i].file_path[sizeof(hpf[i].file_path)-1] = '\0';
 		fd = open(hpf[i].file_path, O_CREAT | O_RDWR, 0600);
 		if(fd<0){

@@ -9,8 +9,7 @@
 #include "hugepage_malloc.h"
 #include "runtime_info.h"
 
-//#define MAX_LENGTH 10*1024*1024 //10MB
-//#define TEST_HUGEPAGE_PATH "/mnt/hugepages/mem0"
+
 #define TEST_LEN 26
 
 int main(int argc, char** argv){
@@ -22,16 +21,19 @@ int main(int argc, char** argv){
 	uint32_t num_pages=0;
 	hugepage_file *tmp_hp;
 	uint8_t *test_data;
+    
+#if 0
 ////test read cpuid coreid socketid	
-//	int cpu_id;
-//	uint32_t core_id;
-//	int socket_id;
-//	cpu_id = get_cpu_id();
-//	core_id = get_core_id(cpu_id);
-//	socket_id = get_socket_id(cpu_id);
-//	printf("CPU_%d---CORE_%u---SOCKET_%d\n",cpu_id, core_id, socket_id);
-//	return 0; 
+	int cpu_id;
+	uint32_t core_id;
+	int socket_id;
+	cpu_id = get_cpu_id();
+	core_id = get_core_id(cpu_id);
+	socket_id = get_socket_id(cpu_id);
+	printf("CPU_%d---CORE_%u---SOCKET_%d\n",cpu_id, core_id, socket_id);
+	return 0; 
 ////end test	
+#endif
 
 	//clean unused exsiting hugepage files
     printf("Clean hugepage ...\n");
@@ -66,10 +68,9 @@ int main(int argc, char** argv){
 	//map all avaliable hugepages
 	ret = map_hugepages(tmp_hp, num_pages, hugepgsz);
 	if(ret != num_pages){
-		printf("hugepage files init error...\n");
+		printf("hugepage files init error... %d != %d\n", ret, num_pages);
 		return 0;
-	}
-	else{
+	} else {
 		printf("hugepage files init done...\n");
 	}
 	ret = pages_to_memsegs(tmp_hp, num_pages);
@@ -115,71 +116,74 @@ int main(int argc, char** argv){
 	//***malloc and free test end***
 
 
+    /* 释放大页内存 - 删除映射文件 */
+	for(i=0; i<num_pages; i++)
+	{
+		printf("file path:%s\n",tmp_hp[i].file_path);
+		printf("virtual addr:%#016x\n",(uint64_t)tmp_hp[i].addr);
+		printf("physical addr:%#016x\n\n",(uint64_t)tmp_hp[i].physaddr);
+		unlink(tmp_hp[i].file_path);
+	}			
 
-//	for(i=0; i<num_pages; i++)
-//	{
-//		printf("file path:%s\n",tmp_hp[i].file_path);
-//		printf("virtual addr:%lu\n",(uint64_t)tmp_hp[i].addr);
-//		printf("physical addr:%lu\n\n",tmp_hp[i].physaddr);
-//		unlink(tmp_hp[i].file_path);
-//	}			
+#if 0
 
-//
-//	//try to map a contiguous virtaddri space with given length
-//	fd_zero = open("/dev/zero",O_RDONLY);
-//	if(fd_zero<0){
-//		perror("Zero open error:");
-//		return -1;
-//	}
-//	try_addr = mmap(try_addr, MAX_LENGTH, PROT_READ, MAP_PRIVATE, fd_zero, 0);
-//	if(try_addr == MAP_FAILED){
-//		perror("Map zero error:");
-//		close(fd_zero);
-//		return -1;
-//	}
-//	munmap(try_addr, MAX_LENGTH);
-//	close(fd_zero);	
-//
-//	fd = open(TEST_HUGEPAGE_PATH, O_CREAT|O_RDWR, S_IRUSR|S_IWUSR);
-//	if(fd < 0){
-//		perror("Open Error:");
-//		return -1;
-//	}
-//	
-//
-////	//set file size
-////	if( ftruncate(fd, MAX_LENGTH) != 0){
-////		close(fd);
-////		perror("Set File Size error:");
-////		return -1;
-////	}
-//	
-//	fstat(fd, &st);
-//	printf("Before mmap, file size is %ld\n", st.st_size);
-//	
-//	//mmap hugepage file
-//	addr = mmap(try_addr, MAX_LENGTH, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_POPULATE, fd, 0);
-//	if(addr == MAP_FAILED){
-//		perror("Map Error:");
-//		close(fd);
-//		unlink(TEST_HUGEPAGE_PATH);//remove file
-//		return -1;
-//	}
-//	
-//	
-//	fstat(fd, &st);
-//	printf("After mmap, file size is %ld\n", st.st_size);
-//	printf("Start virtual and physical address for first hugepage is %lu and %lu\n", (uint64_t)addr, physaddr);
-//	if(st.st_size == 0)
-//		goto EXIT;	
-//
-//	memcpy(addr, "abcd", 4);
-//	printf("File content:%s\n",(char *)addr);
-//EXIT:		
-//	munmap(addr, MAX_LENGTH);
-//	close(fd);
-//	unlink(TEST_HUGEPAGE_PATH);
+#define MAX_LENGTH 10*1024*1024 //10MB
+#define TEST_HUGEPAGE_PATH "/mnt/huge/mem0"
+	//try to map a contiguous virtaddri space with given length
+	fd_zero = open("/dev/zero",O_RDONLY);
+	if(fd_zero<0){
+		perror("Zero open error:");
+		return -1;
+	}
+	try_addr = mmap(try_addr, MAX_LENGTH, PROT_READ, MAP_PRIVATE, fd_zero, 0);
+	if(try_addr == MAP_FAILED){
+		perror("Map zero error:");
+		close(fd_zero);
+		return -1;
+	}
+	munmap(try_addr, MAX_LENGTH);
+	close(fd_zero);	
 
+	fd = open(TEST_HUGEPAGE_PATH, O_CREAT|O_RDWR, S_IRUSR|S_IWUSR);
+	if(fd < 0){
+		perror("Open Error:");
+		return -1;
+	}
+	
+
+	//set file size
+	if( ftruncate(fd, MAX_LENGTH) != 0){
+		close(fd);
+		perror("Set File Size error:");
+		return -1;
+	}
+	
+	fstat(fd, &st);
+	printf("Before mmap, file size is %ld\n", st.st_size);
+	
+	//mmap hugepage file
+	addr = mmap(try_addr, MAX_LENGTH, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_POPULATE, fd, 0);
+	if(addr == MAP_FAILED){
+		perror("Map Error:");
+		close(fd);
+		unlink(TEST_HUGEPAGE_PATH);//remove file
+		return -1;
+	}
+	
+	
+	fstat(fd, &st);
+	printf("After mmap, file size is %ld\n", st.st_size);
+	printf("Start virtual and physical address for first hugepage is %lu and %lu\n", (uint64_t)addr, physaddr);
+	if(st.st_size == 0)
+		goto EXIT;	
+
+	memcpy(addr, "abcd", 4);
+	printf("File content:%s\n",(char *)addr);
+EXIT:		
+	munmap(addr, MAX_LENGTH);
+	close(fd);
+	unlink(TEST_HUGEPAGE_PATH);
+#endif
 
     printf("Clean hugepage ...\n");
 	clean_hugepages(HUGEPAGE_DIR);

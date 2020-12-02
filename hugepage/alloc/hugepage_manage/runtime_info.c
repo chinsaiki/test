@@ -9,6 +9,11 @@ int socket_id = -1;
 int core_id = -1;
 int cpu_id = -1;
 
+/**
+ *  get_cpu_id: 获取当前进程的核心
+ *  
+ *  返回: cpu id
+ */
 int get_cpu_id()
 {
 	int i,cpu_nb;
@@ -31,6 +36,11 @@ int get_cpu_id()
 	return -1;
 }
 
+/**
+ *  get_core_id: 获取当前cpu所在核心
+ *  
+ *  返回: core id
+ */
 int get_core_id(int cpu_id)
 {	
 	char path[PATH_MAX];
@@ -51,6 +61,11 @@ int get_core_id(int cpu_id)
 	return (int)val;
 }
 
+/**
+ *  get_socket_id: 获取当前cpu所在socket
+ *  
+ *  返回: socket id
+ */
 int get_socket_id(int cpu_id)
 {
 	char path[PATH_MAX];

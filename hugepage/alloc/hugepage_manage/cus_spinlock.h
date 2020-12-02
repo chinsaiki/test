@@ -14,8 +14,8 @@ cus_spinlock_unlock(cus_spinlock_t *lock)
 static inline void
 cus_spinlock_lock(cus_spinlock_t *lock)
 {
-	while( __sync_lock_test_and_set(&lock->locked, 1) == 1){
-		while(lock->locked == 1){
+	while( __sync_lock_test_and_set(&lock->locked, 1) == 1) {
+		while(lock->locked == 1) {
 			cus_pause();	
 		}	
 	}

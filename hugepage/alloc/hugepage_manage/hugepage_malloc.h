@@ -3,14 +3,15 @@
 #include "hugepage_memory.h"
 #include "cus_spinlock.h"
 
-#define ELEM_HEADER_SIZE ( sizeof(hugepage_malloc_elem) )
-#define MIN_ELEM_SIZE ( MIN_DATA_SIZE + ELEM_HEADER_SIZE )
+
+#define ELEM_HEADER_SIZE ( sizeof(hugepage_malloc_elem) )/* 内存内元素的头部大小 */
+#define MIN_ELEM_SIZE ( MIN_DATA_SIZE + ELEM_HEADER_SIZE )/* 最小元素大小 */
 
 struct hugepage_malloc_heap;//dummy definition of hugepage_heap struct to use it in hugepage_malloc_elem
 
-enum elem_state{
-	ELEM_FREE = 0,
-	ELEM_BUSY,
+enum elem_state{    /* 元素类型 */
+	ELEM_FREE = 0,  /* 未分配 */
+	ELEM_BUSY,      
 	ELEM_PAD
 };
 

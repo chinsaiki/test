@@ -1,0 +1,37 @@
+HUGETLBFS_TEST_PATH(3)                                     Library Functions Manual                                    HUGETLBFS_TEST_PATH(3)
+
+
+
+NAME
+       hugetlbfs_test_path - Determine whether a mount point is hugetlbfs
+
+SYNOPSIS
+       #include <hugetlbfs.h>
+
+       int hugetlbfs_test_path(const char *mount);
+
+
+DESCRIPTION
+       The hugetlbfs_test_path() function determines whether a given pathname is in a hugetlbfs filesystem.
+
+
+RETURN VALUE
+       On  success,  1  is returned for a hugetlbfs filesystem, or 0 for a non-hugetlbfs filesystem.  On failure, -1 is returned and errno is
+       set appropriately.
+
+
+ERRORS
+       Please see statfs(3) for possible values for errno.
+
+
+
+SEE ALSO
+       statfs(3), libhugetlbfs(7)
+
+
+AUTHORS
+       libhugetlbfs was written by various people on the libhugetlbfs-devel mailing list.
+
+
+
+                                                                March 7, 2012                                          HUGETLBFS_TEST_PATH(3)

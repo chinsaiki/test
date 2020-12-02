@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <hugetlbfs.h>
 
-//int gethugepagesizes(long pagesizes[], int n_elem);
+long gethugepagesize(void);
 
 int main()
 {
@@ -13,6 +13,6 @@ int main()
 	printf("gethugepagesizes ret=%d.\n");
 
 	for(i=0;i<ret;i++){
-		printf("%ld.\n", pagesizes[i]);
+		printf("%ld. %ld kB, %ld MB\n", pagesizes[i], pagesizes[i]/1024, pagesizes[i]/1024/1024);
 	}
 }

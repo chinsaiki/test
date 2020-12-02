@@ -5,15 +5,15 @@
 
 struct trace_arg
 {
-  void **array;
-  _Unwind_Word cfa;
-  int cnt;
-  int size;
+    void **array;
+    _Unwind_Word cfa;
+    int cnt;
+    int size;
 };
 
 static inline void *unwind_arch_adjustment(void *prev, void *addr)
 {
-  return addr;
+    return addr;
 }
 
 static _Unwind_Reason_Code backtrace_helper (struct _Unwind_Context *ctx, void *a)

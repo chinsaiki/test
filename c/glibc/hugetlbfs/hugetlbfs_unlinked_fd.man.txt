@@ -1,0 +1,36 @@
+HUGETLBFS_UNLINKED_FD(3)                                   Library Functions Manual                                  HUGETLBFS_UNLINKED_FD(3)
+
+
+
+NAME
+       hugetlbfs_unlinked_fd, hugetlbfs_unlinked_fd_for_size - Obtain a file descriptor for a new unlinked file in hugetlbfs
+
+SYNOPSIS
+       #include <hugetlbfs.h>
+
+       int hugetlbfs_unlinked_fd(void);
+       int hugetlbfs_unlinked_fd_for_size(long page_size);
+
+
+DESCRIPTION
+       These  functions  return  an  open  file  descriptor  for  a  unique,  newly-created file in a hugetlbfs filesystem.  To avoid leaking
+       hugepages, the file is unlinked automatically before the function returns.
+
+       For hugetlbfs_unlinked_fd, the default huge page size is used (see gethugepagesize(3)).  For hugetlbfs_unlinked_fd_for_size,  a  valid
+       huge page size must be specified (see gethugepagesizes(3)).
+
+
+RETURN VALUE
+       On success, a valid open file descriptor is returned.  On failure, -1 is returned and errno may be set appropriately.
+
+
+SEE ALSO
+       gethugepagesize(3), gethugepagesizes(3), mkstemp(3), libhugetlbfs(7)
+
+
+AUTHORS
+       libhugetlbfs was written by various people on the libhugetlbfs-devel mailing list.
+
+
+
+                                                                March 7, 2012                                        HUGETLBFS_UNLINKED_FD(3)

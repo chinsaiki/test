@@ -1,0 +1,34 @@
+HUGETLBFS_FIND_PATH(3)                                     Library Functions Manual                                    HUGETLBFS_FIND_PATH(3)
+
+
+
+NAME
+       hugetlbfs_find_path, hugetlbfs_find_path_for_size - Locate an appropriate hugetlbfs mount point
+
+SYNOPSIS
+       #include <hugetlbfs.h>
+
+       const char *hugetlbfs_find_path(void);
+       const char *hugetlbfs_find_path_for_size(long page_size);
+
+
+DESCRIPTION
+       These functions return a pathname for a mounted hugetlbfs filesystem for the appropriate huge page size.  For hugetlbfs_find_path, the
+       default huge page size is used (see gethugepagesize(3)).  For hugetlbfs_find_path_for_size, a valid huge page size must  be  specified
+       (see gethugepagesizes(3)).
+
+
+RETURN VALUE
+       On success, a non-NULL value is returned.  On failure, NULL is returned.
+
+
+SEE ALSO
+       libhugetlbfs(7), gethugepagesize(3), gethugepagesizes(3)
+
+
+AUTHORS
+       libhugetlbfs was written by various people on the libhugetlbfs-devel mailing list.
+
+
+
+                                                                March 7, 2012                                          HUGETLBFS_FIND_PATH(3)

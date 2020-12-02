@@ -7,7 +7,7 @@
 #include <fnmatch.h>//fnmatch()
 #include <sys/file.h>//flock()
 
-#define HUGEPAGE_DIR "/mnt/hugepages"
+#define HUGEPAGE_DIR "/mnt/huge"
 #define MAX_MEMSEG 256
 #define MAX_SOCKET_NB 8
 #define MAX_FREE_LIST_NB 13
