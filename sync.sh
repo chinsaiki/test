@@ -7,7 +7,11 @@ backup_path=/work/workspace/test/
 #备份还没有commit的git仓库文件到SCP
 function backup_non_commit() {
 	files=$(git status --porcelain --short | awk '{print $2}')
-	scp -r $files $backup_addr:$backup_path
+	if [ -z "$files" ]; then
+		echo "Nothing to do."
+	else
+		scp -r $files $backup_addr:$backup_path
+	fi
 }
 
 #备份已经commit的git仓库文件到SCP
