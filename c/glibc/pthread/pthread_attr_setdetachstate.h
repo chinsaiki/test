@@ -1,5 +1,17 @@
 #include <pthread.h>
 
+/* Detach state.  */
+enum
+{
+  PTHREAD_CREATE_JOINABLE,
+#define PTHREAD_CREATE_JOINABLE	PTHREAD_CREATE_JOINABLE
+  PTHREAD_CREATE_DETACHED
+#define PTHREAD_CREATE_DETACHED	PTHREAD_CREATE_DETACHED
+};
+
+/**
+ *	创建分离（detach）的线程，这个线程不需要pthread_join
+ */
 //pthread_attr_setdetachstate,  pthread_attr_getdetachstate  -  set/get  detach  state  attribute in thread
 //attributes object
 int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);

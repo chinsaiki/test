@@ -1,5 +1,15 @@
 #include <pthread.h>
 
+/* Cancellation */
+enum
+{
+  PTHREAD_CANCEL_ENABLE,
+#define PTHREAD_CANCEL_ENABLE   PTHREAD_CANCEL_ENABLE
+  PTHREAD_CANCEL_DISABLE
+#define PTHREAD_CANCEL_DISABLE  PTHREAD_CANCEL_DISABLE
+};
+
+
 //pthread_setcancelstate, pthread_setcanceltype - set cancelability state and type
 int pthread_setcancelstate(int state, int *oldstate);
 //int pthread_setcanceltype(int type, int *oldtype);

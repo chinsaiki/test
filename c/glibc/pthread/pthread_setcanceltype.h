@@ -1,5 +1,14 @@
 #include <pthread.h>
 
+enum
+{
+  PTHREAD_CANCEL_DEFERRED,
+#define PTHREAD_CANCEL_DEFERRED	PTHREAD_CANCEL_DEFERRED
+  PTHREAD_CANCEL_ASYNCHRONOUS
+#define PTHREAD_CANCEL_ASYNCHRONOUS	PTHREAD_CANCEL_ASYNCHRONOUS
+};
+
+
 //pthread_setcancelstate, pthread_setcanceltype - set cancelability state and type
 //int pthread_setcancelstate(int state, int *oldstate);
 int pthread_setcanceltype(int type, int *oldtype);
