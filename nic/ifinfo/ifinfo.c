@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <malloc.h>
+#include <pthread.h>
 #include <netinet/in.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
@@ -15,6 +17,85 @@
 #include <linux/ethtool.h>
 
 #include "ifinfo.h"
+
+#define TIMER_TICK_SEC  1
+#define MAX_IF_NR   64
+
+struct if_rx_tx_bytes {
+    unsigned int if_idx;    //接口索引号
+    char if_name[32];       //接口名 如：eth0
+
+    unsigned long rx_bytes_prev;
+    unsigned long rx_bytes_next;
+    unsigned long rx_Bps;
+    
+    unsigned long tx_bytes_prev;
+    unsigned long tx_bytes_next;
+    unsigned long tx_Bps;
+    
+    unsigned int timer_interval_sec;
+} *if_realtime_speed_entry[MAX_IF_NR] = {NULL};
+
+
+static pthread_t tid_get_realtime_speed;
+static pthread_rwlock_t realtime_speed_lock = PTHREAD_RWLOCK_INITIALIZER;
+
+static struct if_rx_tx_bytes* new_if_rx_tx_entry(unsigned int if_idx, char if_name[32])
+{
+    struct if_rx_tx_bytes *entry = (struct if_rx_tx_bytes *)malloc(sizeof(struct if_rx_tx_bytes));
+
+    memset(entry, 0, sizeof(struct if_rx_tx_bytes));
+
+    entry->if_idx = if_idx;
+    strncpy(entry->if_name, if_name, 32);
+
+    entry->timer_interval_sec = TIMER_TICK_SEC;
+    
+    return entry;
+}
+
+static int insert_if_rx_tx_entry(struct if_rx_tx_bytes *entry)
+{
+    int iif = 0;
+    for(iif=0;iif<MAX_IF_NR;iif++) {
+        if(if_realtime_speed_entry[iif] == NULL ){
+            if_realtime_speed_entry[iif] = entry;
+//            printf("%d:%d:%s\n", iif, entry->if_idx, entry->if_name, iif);
+            break;
+        }
+    }
+}
+
+static void get_if_realtime_bytes(char *if_name, unsigned long *rx, unsigned long *tx)
+{
+#define RX_TX_CMD "cat /proc/net/dev | grep %s | sed 's/:/ /g' | awk '{print $2\" \" $10}'"   
+
+    char line[512] = {0};
+    char cmd[512] = {0};
+
+    snprintf(cmd, 512, RX_TX_CMD, if_name);
+    
+    FILE *fp = popen(cmd, "r");
+    
+    fgets(line, 512, fp);
+    sscanf(line, "%ld %ld", rx, tx);
+//    printf("%s >> %s >> %ld %ld\n", cmd, line, *rx, *tx);
+    pclose(fp);
+}
+
+
+
+static int cal_if_realtime_Bps(struct if_rx_tx_bytes *entry)
+{
+    unsigned long rx_bytes = entry->rx_bytes_next - entry->rx_bytes_prev;
+    unsigned long tx_bytes = entry->tx_bytes_next - entry->tx_bytes_prev;
+
+    entry->rx_Bps = rx_bytes / TIMER_TICK_SEC;
+    entry->tx_Bps = tx_bytes / TIMER_TICK_SEC;
+    
+//    printf(">>>> %ld(%ld)  %ld(%ld)\n", entry->rx_Bps, rx_bytes, entry->tx_Bps, tx_bytes);
+}
+
 
 /* 创建Socket */
 static int if_socket()
@@ -121,6 +202,79 @@ static int get_ifethspeed(int sockfd, const char *if_name, unsigned int *speed)
     return 0;
 }
 
+static void * get_realtime_speed(void*arg)
+{
+    int iif = 0;
+    while(1) {
+        for(iif=0;iif<MAX_IF_NR;iif++) {
+            if(if_realtime_speed_entry[iif] != NULL ){
+                struct if_rx_tx_bytes *entry = if_realtime_speed_entry[iif];
+                get_if_realtime_bytes(entry->if_name, &entry->rx_bytes_prev, &entry->tx_bytes_prev);
+                sleep(TIMER_TICK_SEC);
+                get_if_realtime_bytes(entry->if_name, &entry->rx_bytes_next, &entry->tx_bytes_next);
+                
+                pthread_rwlock_wrlock(&realtime_speed_lock);
+                cal_if_realtime_Bps(entry);
+                pthread_rwlock_unlock(&realtime_speed_lock);
+            }
+        }
+//        sleep(TIMER_TICK_SEC);
+    }
+}
+
+static void get_if_realtime_speed(struct ifinfo *info)
+{
+    int iif = 0;
+    for(iif=0;iif<MAX_IF_NR;iif++) {
+        if(if_realtime_speed_entry[iif] != NULL ){
+            struct if_rx_tx_bytes *entry = if_realtime_speed_entry[iif];
+            if(strcmp(info->if_name, entry->if_name) == 0) {
+                pthread_rwlock_rdlock(&realtime_speed_lock);
+                info->if_realtime_speed.rx_Bps = entry->rx_Bps;
+                info->if_realtime_speed.tx_Bps = entry->tx_Bps;
+                pthread_rwlock_unlock(&realtime_speed_lock);
+            }
+        }
+    }
+}
+
+static  __attribute__((constructor(101))) void __try_to_get_realtime_speed_start() 
+{
+    struct ifconf ifc;
+    
+    char buf[2048];
+    int ret = 0;    
+    int count = 0;
+    int sock = if_socket();/* 创建socket */
+    
+    ret = get_ifconf_r(sock, &ifc, buf, sizeof(buf));
+    if(ret != 0) {
+        close(sock);
+        return ;
+    }
+    /* 巧妙的网口结构保存 */
+    struct ifreq* it = ifc.ifc_req;
+    const struct ifreq* const end = it + (ifc.ifc_len / sizeof(struct ifreq));
+
+    /* 轮询所有网口 */
+    for (; it != end; ++it, count++) {
+        struct if_rx_tx_bytes *entry = new_if_rx_tx_entry(if_nametoindex(it->ifr_name), it->ifr_name);
+        insert_if_rx_tx_entry(entry);
+    }
+    close(sock);
+#if 0 //创建定时器查询网口试试速率
+#else //创建线程
+    pthread_create(&tid_get_realtime_speed, NULL, get_realtime_speed, NULL);
+#endif
+}
+
+
+/* 查询网口实时速率 */
+static int get_ifrealspeed(const char *if_name, unsigned long *Bps)
+{
+    
+}
+
 /**
  *  get_ifinfo - 获取网口信息
  *
@@ -172,6 +326,8 @@ int get_ifinfo(ifinfo_display display_fn, void *arg)
         get_ifhwaddr(sock, info.if_name, info.if_eth.if_ethmac, sizeof(info.if_eth.if_ethmac));
         get_ifethspeed(sock, info.if_name, &info.if_eth.if_ethspeed);
 
+        get_if_realtime_speed(&info);
+        
         /* 在这里，回调函数将被调用 */
         if(display_fn) display_fn(&info, arg);
     }

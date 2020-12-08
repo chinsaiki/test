@@ -8,5 +8,5 @@
 *** Redis:	test/redis/cmdline
 *** Redis linenoise: test/redis/linenoise
 *** Redis linenoise: test/redis/linenoise/linenoise [*一个完整的实例*]
-
+*** VOS cli: test/vos/cli [赵志刚VOS命令行]
 

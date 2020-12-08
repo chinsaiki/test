@@ -17,6 +17,8 @@
  *  if_ipv4 网口IP地址，例如：10.170.6.66
  *  if_eth.if_ethmac    网口MAC地址，格式：28:6E:D4:88:C7:9A
  *  if_eth.if_ethspeed  网口带宽，单位：Mbps
+ *  if_realtime_speed.rx_Bps  接收实时速率 Bps
+ *  if_realtime_speed.tx_Bps  发送实时速率 Bps
  */
 struct ifinfo {
     unsigned int if_idx;    //接口索引号
@@ -34,6 +36,11 @@ struct ifinfo {
         char if_ethmac[64];         //MAC地址
         unsigned int if_ethspeed;   //速率 Mbps
     }if_eth;
+
+    struct {
+        unsigned long rx_Bps; //接收实时速率
+        unsigned long tx_Bps; //发送实时速率
+    }if_realtime_speed;
 };
 
 /**
