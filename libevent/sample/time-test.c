@@ -13,14 +13,9 @@
 #include <event2/event-config.h>
 
 #include <sys/stat.h>
-#ifndef _WIN32
-#include <sys/queue.h>
-#include <unistd.h>
-#endif
+
 #include <time.h>
-#ifdef EVENT__HAVE_SYS_TIME_H
 #include <sys/time.h>
-#endif
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,16 +26,12 @@
 #include <event2/event_struct.h>
 #include <event2/util.h>
 
-#ifdef _WIN32
-#include <winsock2.h>
-#endif
 
 struct timeval lasttime;
 
 int event_is_persistent;
 
-static void
-timeout_cb(evutil_socket_t fd, short event, void *arg)
+static void timeout_cb(evutil_socket_t fd, short event, void *arg)
 {
 	struct timeval newtime, difference;
 	struct event *timeout = arg;
@@ -63,22 +54,26 @@ timeout_cb(evutil_socket_t fd, short event, void *arg)
 	}
 }
 
-int
-main(int argc, char **argv)
+static void timeout_cb2(evutil_socket_t fd, short event, void *arg)
 {
-	struct event timeout;
+	struct event *timeout = arg;
+    
+    static int callcnt = 0;
+    printf("callcnt = %d\n", ++callcnt);
+
+    
+	struct timeval tv;
+	evutil_timerclear(&tv);
+	tv.tv_sec = 2;
+	event_add(timeout, &tv);
+}
+
+int main(int argc, char **argv)
+{
+	struct event timeout, timeout2;
 	struct timeval tv;
 	struct event_base *base;
 	int flags;
-
-#ifdef _WIN32
-	WORD wVersionRequested;
-	WSADATA wsaData;
-
-	wVersionRequested = MAKEWORD(2, 2);
-
-	(void)WSAStartup(wVersionRequested, &wsaData);
-#endif
 
 	if (argc == 2 && !strcmp(argv[1], "-p")) {
 		event_is_persistent = 1;
@@ -93,10 +88,12 @@ main(int argc, char **argv)
 
 	/* Initialize one event */
 	event_assign(&timeout, base, -1, flags, timeout_cb, (void*) &timeout);
+	event_assign(&timeout2, base, -1, flags, timeout_cb2, (void*) &timeout2);
 
 	evutil_timerclear(&tv);
 	tv.tv_sec = 2;
 	event_add(&timeout, &tv);
+	event_add(&timeout2, &tv);
 
 	evutil_gettimeofday(&lasttime, NULL);
 
