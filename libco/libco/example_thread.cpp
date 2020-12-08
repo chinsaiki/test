@@ -27,14 +27,15 @@
 #include <pthread.h>
 #include <unistd.h>
 
-int loop(void *arg)
+int loop_fn(void *arg)
 {
+    printf("loop. %ld\n", *(pthread_t *)arg);
 	return 0;
 }
 static void *routine_func( void *arg )
 {
 	stCoEpoll_t * ev = co_get_epoll_ct(); //ct = current thread
-	co_eventloop( ev,loop,0 );
+	co_eventloop( ev,loop_fn, arg);
 	return 0;
 }
 int main(int argc,char *argv[])
@@ -44,7 +45,7 @@ int main(int argc,char *argv[])
 	pthread_t tid[ cnt ];
 	for(int i=0;i<cnt;i++)
 	{
-		pthread_create( tid + i,NULL,routine_func,0);
+		pthread_create( tid + i,NULL,routine_func,tid + i);
 	}
 	for(;;)
 	{
