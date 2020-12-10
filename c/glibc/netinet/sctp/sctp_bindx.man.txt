@@ -1,0 +1,55 @@
+SCTP_BINDX(3)                               Linux Programmer's Manual                              SCTP_BINDX(3)
+
+
+
+NAME
+       sctp_bindx - Add or remove bind addresses on a socket.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/socket.h>
+       #include <netinet/sctp.h>
+
+       int sctp_bindx(int sd, struct sockaddr * addrs, int addrcnt,
+                      int flags);
+
+DESCRIPTION
+       sctp_bindx  adds  or  removes  a  set  of bind addresses passed in the array addrs to/from the socket sd.
+       addrcnt is the number of addresses in the array and the flags paramater indicates if the  addresses  need
+       to be added or removed.
+
+       If  sd  is  an  IPv4  socket,  the  addresses passed must be IPv4 addresses. If sd is an IPv6 socket, the
+       addresses passed can be either IPv4 or IPv6 addresses.
+
+       addrs is a pointer to an array of one or more socket addresses. Each address is contained in  its  appro‐
+       priate  structure(i.e. struct sockaddr_in or struct sockaddr_in6). The family of the address type must be
+       used to distinguish the address length. The caller specifies the number of addresses in  the  array  with
+       addrcnt.
+
+       The  flags  parameter  can  be either SCTP_BINDX_ADD_ADDR or SCTP_BINDX_REM_ADDR.  An application can use
+       SCTP_BINDX_ADD_ADDR  to  associate  additional  addresses  with  an  endpoint  after   calling   bind(2).
+       SCTP_BINDX_REM_ADDR  directs  SCTP  to remove the given addresses from the association.  A caller may not
+       remove all addresses from an association. It will fail with EINVAL.
+
+RETURN VALUE
+       On success, 0 is returned. On failure, -1 is returned, and errno is set appropriately.
+
+ERRORS
+       EBADF  sd is not a valid descriptor.
+
+       ENOTSOCK
+              sd is a descriptor for a file, not a socket.
+
+       EFAULT Error while copying in or out from the user address space.
+
+       EINVAL Invalid port or address or trying to remove all addresses from an association.
+
+       EACCES The address is protected, and the user is not the super-user.
+
+SEE ALSO
+       sctp(7) sctp_sendmsg(3), sctp_send(3), sctp_recvmsg(3), sctp_peeloff(3), sctp_getpaddrs(3),  sctp_getlad‐
+       drs(3), sctp_opt_info(3), sctp_connectx(3)
+
+
+
+Linux 2.6                                          2005-10-25                                      SCTP_BINDX(3)

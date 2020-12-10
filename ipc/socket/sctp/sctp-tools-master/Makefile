@@ -33,4 +33,4 @@ srv	: $(SERVER_OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean	:
-	rm -f $(CLIENT_NAME) $(SERVER_NAME) *.o core.*
+	rm -f $(CLIENT_NAME) $(SERVER_NAME) *.o core.* *.d

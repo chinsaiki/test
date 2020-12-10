@@ -1,0 +1,46 @@
+SCTP_GETLADDRS(3)                           Linux Programmer's Manual                          SCTP_GETLADDRS(3)
+
+
+
+NAME
+       sctp_getladdrs - Returns all locally bound addresses on a socket.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/socket.h>
+       #include <netinet/sctp.h>
+
+       int sctp_getladdrs(int sd, sctp_assoc_t assoc_id,
+                          struct sockaddr **addrs);
+
+       void sctp_freeladdrs(struct sockaddr *addrs);
+
+DESCRIPTION
+       sctp_getladdrs  returns all locally bound addresses on a socket. On return, addrs will point to a dynami‐
+       cally allocated packed array of sockaddr structures of the appropriate type for each local  address.  The
+       caller  should  use  sctp_freeladdrs to free the memory. Note that the in/out parameter addrs must not be
+       NULL.
+
+       If sd is an IPv4 socket, the addresses returned will be all IPv4 addresses. If sd is an IPv6 socket,  the
+       addresses returned can be a mix of IPv4 or IPv6 addresses.
+
+       For one-to-many style sockets, id specifies the association to query. For one-to-one style sockets, id is
+       ignored.
+
+       If the id field is set to 0, then the locally bound addresses are returned without regard to any particu‐
+       lar association.
+
+       sctp_freeladdrs frees all the resources allocated by sctp_getladdrs
+
+RETURN VALUE
+       On  success,  sctp_getladdrs  returns the number of local addresses bound to the socket. If the socket is
+       unbound, 0 is returned and the value of *addrs is undefined. On error, sctp_getladdrs returns -1 and  the
+       value of *addrs is undefined.
+
+SEE ALSO
+       sctp(7) sctp_bindx(3), sctp_connectx(3), sctp_sendmsg(3), sctp_send(3), sctp_recvmsg(3), sctp_peeloff(3),
+       sctp_getpaddrs(3), sctp_opt_info(3),
+
+
+
+Linux 2.6                                          2005-10-25                                  SCTP_GETLADDRS(3)

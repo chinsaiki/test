@@ -1,1 +1,0 @@
-/usr/bin/cc  -std=c99 -Wall    CMakeFiles/simpleSCTPClient_sctp_sendv.dir/client_sendv/simpleSCTPClient_sctp_sendv.c.o  -o bin/simpleSCTPClient_sctp_sendv -rdynamic 

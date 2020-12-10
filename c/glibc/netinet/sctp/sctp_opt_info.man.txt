@@ -1,0 +1,34 @@
+SCTP_OPT_INFO(3)                            Linux Programmer's Manual                           SCTP_OPT_INFO(3)
+
+
+
+NAME
+       sctp_optinfo - Get options on a SCTP socket.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/socket.h>
+       #include <netinet/sctp.h>
+
+       int sctp_opt_info(int sd, sctp_assoc_t id, int opt,
+                         void * arg, socklen_t * size);
+
+DESCRIPTION
+       sctp_opt_info  is  a wrapper library function that can be used to get SCTP level options on a socket.  sd
+       is the socket descriptor for which the option is requested. For one-to-many style sockets,  id  specifies
+       the  association  to  query.  For  one-to-one style sockets, id is ignored.  opt specifes the SCTP socket
+       option to get.  arg is an option-specific structure buffer provided by the  caller.   size  is  a  value-
+       result  parameter, initially containing the size of the buffer pointed to by arg and modifed on return to
+       indicate the actual size of the value returned.
+
+RETURN VALUE
+       On success, sctp_opt_info returns 0 and on failure -1 is returned with errno set to the appropriate error
+       code.
+
+SEE ALSO
+       sctp(7) sctp_bindx(3), sctp_connectx(3), sctp_sendmsg(3), sctp_send(3), sctp_recvmsg(3), sctp_peeloff(3),
+       sctp_getpaddrs(3), sctp_getladdrs(3),
+
+
+
+Linux 2.6                                          2004-01-30                                   SCTP_OPT_INFO(3)

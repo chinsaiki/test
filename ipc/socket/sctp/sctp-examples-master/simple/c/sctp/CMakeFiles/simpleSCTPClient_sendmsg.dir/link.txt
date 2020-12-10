@@ -1,1 +1,0 @@
-/usr/bin/cc  -std=c99 -Wall    CMakeFiles/simpleSCTPClient_sendmsg.dir/client_sendmsg/simpleSCTPClient_sendmsg.c.o  -o bin/simpleSCTPClient_sendmsg -rdynamic -lmyutillib 

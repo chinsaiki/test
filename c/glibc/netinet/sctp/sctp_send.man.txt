@@ -1,0 +1,32 @@
+SCTP_SEND(3)                                Linux Programmer's Manual                               SCTP_SEND(3)
+
+
+
+NAME
+       sctp_send - Send a message from a SCTP socket.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/socket.h>
+       #include <netinet/sctp.h>
+
+       int sctp_send(int sd, const void * msg, size_t len,
+                        const struct sctp_sndrcvinfo *sinfo,
+                        uint32_t flags);
+
+DESCRIPTION
+       sctp_send  is a wrapper library function that can be used to send a message from a socket without the use
+       of the CMSG header structures.  sd is the socket descriptor from which the message pointed to by  msg  of
+       length len is sent.  sinfo is a pointer to a sctp_sndrcvinfo structure.  flags parameter is composed of a
+       bitwise OR of the flags that can be be passed as the 3rd argument of a standard sendmsg() call.
+
+RETURN VALUE
+       On success, sctp_sendmsg returns the number of bytes sent or -1 if an error occurred.
+
+SEE ALSO
+       sctp(7)   sctp_bindx(3),   sctp_recvmsg(3),   sctp_peeloff(3),   sctp_getpaddrs(3),    sctp_getladdrs(3),
+       sctp_opt_info(3), sctp_sendmsg(3)
+
+
+
+Linux 2.6                                          2005-10-25                                       SCTP_SEND(3)

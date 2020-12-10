@@ -1,0 +1,41 @@
+SCTP_PEELOFF(3)                             Linux Programmer's Manual                            SCTP_PEELOFF(3)
+
+
+
+NAME
+       sctp_peeloff - Branch off an association into a separate socket.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/socket.h>
+       #include <netinet/sctp.h>
+
+       int sctp_peeloff(int sd, sctp_assoc_t assoc_id);
+
+DESCRIPTION
+       sctp_peeloff  branches off an existing association assoc_id on a one-to-many style socket sd into a sepa‐
+       rate socket. The new socket is a one-to-one style socket.
+
+       This is particularly desirable when, for instance, the application wishes to have a  number  of  sporadic
+       message  senders/receivers remain under the original one-to-many style socket, but branch off those asso‐
+       cations carrying high volume data traffic into their own separate socket descriptors.
+
+RETURN VALUE
+       On success, the new socket descriptor representing the branched-off asociation is returned.  On error, -1
+       is returned, and errno is set appropriately.
+
+ERRORS
+       EBADF  sd is not a valid descriptor.
+
+       EINVAL The assoc id passed is invalid or if the socket is a one-to-one style socket.
+
+       ENOTSOCK
+              Argument is a descriptor for a file, not a socket.
+
+SEE ALSO
+       sctp(7)  sctp_bindx(3),  sctp_connectx(3),  sctp_sendmsg(3),  sctp_send(3), sctp_recvmsg(3), sctp_getpad‐
+       drs(3), sctp_getladdrs(3), sctp_opt_info(3),
+
+
+
+Linux 2.6                                          2005-10-25                                    SCTP_PEELOFF(3)

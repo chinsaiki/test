@@ -8,11 +8,10 @@
 int main()
 {
     int sctp_socket1 = socket(PF_INET, SOCK_STREAM, IPPROTO_SCTP);
+    int sctp_socket2 = socket(PF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
 
-    
-//    int sctp_bindx(sctp_socket1, struct sockaddr * addrs, int addrcnt, int flags);
-//    TODO
+    printf("%d,%d\n", sctp_socket1, sctp_socket2);
 
     close(sctp_socket1);
+    close(sctp_socket2);
 }
-

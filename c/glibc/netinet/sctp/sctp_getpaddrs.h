@@ -21,32 +21,22 @@
 
 /* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 07日 星期四 20:27:50 CST. */
 /* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 07日 星期四 20:26:56 CST. */
+//The getpeername function was not designed with the concept of a multihoming-aware transport protocol; when using SCTP, it only returns the primary address. When all the addresses are required, the sctp_getpaddrs function provides a mechanism for an application to retrieve all the addresses of a peer.
 
-/* This library function assists the user with the advanced features
- * of SCTP.  This is a new SCTP API described in the section 8.8 of the
- * Sockets API Extensions for SCTP. This is implemented using the
- * recvmsg() interface.
- */
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/sctp.h>
 
-//Receive a message from a SCTP socket.
-int sctp_recvmsg(int sd, void * msg, size_t len,
-                struct sockaddr * from, socklen_t * fromlen,
-                struct sctp_sndrcvinfo * sinfo, int * msg_flags);
+
+/**
+ *	getpeername函数用于sctp中时，仅仅返回主目的地址。
+ *	如果需要知道对端的所有地址，就用这个函数就行了。
+ *
+ *	返回值：
+ *		成功：存放在addrs中的对端地址数；
+ *		错误：-1
+ */
+int sctp_getpaddrs(int sockfd, sctp_assoc_t id, struct sockaddr **addrs);
+//Returns: the number of peer addresses stored in addrs, –1 on error
 
 
 
-int Sctp_recvmsg(int s, void *msg, size_t len,
-			     struct sockaddr *from, socklen_t *fromlen,
-			     struct sctp_sndrcvinfo *sinfo,
-			     int *msg_flags)
-{
-	int ret;
-	ret = sctp_recvmsg(s,msg,len,from,fromlen,sinfo,msg_flags);
-	if(ret < 0){
-		err_sys("sctp_recvmsg error");
-	}
-	return(ret);
-}
+

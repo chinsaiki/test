@@ -1,1 +1,0 @@
-/usr/bin/cc  -std=c99 -Wall    CMakeFiles/simpleSCTPServer_recvmsg.dir/server_recvmsg/simpleSCTPServer_recvmsg.c.o  -o bin/simpleSCTPServer_recvmsg -rdynamic -lmyutillib 

@@ -21,32 +21,16 @@
 
 /* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 07日 星期四 20:27:50 CST. */
 /* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 07日 星期四 20:26:56 CST. */
-
-/* This library function assists the user with the advanced features
- * of SCTP.  This is a new SCTP API described in the section 8.8 of the
- * Sockets API Extensions for SCTP. This is implemented using the
- * recvmsg() interface.
- */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/sctp.h>
 
-//Receive a message from a SCTP socket.
-int sctp_recvmsg(int sd, void * msg, size_t len,
-                struct sockaddr * from, socklen_t * fromlen,
-                struct sctp_sndrcvinfo * sinfo, int * msg_flags);
+typedef __s32 sctp_assoc_t;
+
+
+int sctp_connectx(int sd, struct sockaddr * addrs, int addrcnt, sctp_assoc_t  * id);
+
+//Returns: 0 for success, –1 on error
 
 
 
-int Sctp_recvmsg(int s, void *msg, size_t len,
-			     struct sockaddr *from, socklen_t *fromlen,
-			     struct sctp_sndrcvinfo *sinfo,
-			     int *msg_flags)
-{
-	int ret;
-	ret = sctp_recvmsg(s,msg,len,from,fromlen,sinfo,msg_flags);
-	if(ret < 0){
-		err_sys("sctp_recvmsg error");
-	}
-	return(ret);
-}
