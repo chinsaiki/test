@@ -3,7 +3,11 @@
 #include <malloc.h>
 #include <obstack.h>
 
+#if 1
+#define debug()
+#else
 #define debug() printf("%s:%d\n",__func__, __LINE__)
+#endif
 
 
 void *mymalloc(ssize_t size){

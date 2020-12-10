@@ -21,6 +21,6 @@ int main()
 	for (i=0; i<=strlen(STR);i++)
 		printf("%3d/%d  [%.*s]\n", i, strlen(STR), i, STR);
 
-
+	printf("KB/s \n");
 	return 0;
 }

@@ -9,17 +9,17 @@
 #########################################################################
 
 #线程数
-TEST_NTHREAD=21
+TEST_NTHREAD=1
 
 
 #参加对比的库函数
-TEST_GLIBC=n
-TEST_OBSTACK=n
-TEST_JEMALLOC=y
-TEST_TCMALLOC=y
+TEST_GLIBC=y
+TEST_OBSTACK=y
+TEST_JEMALLOC=n
+TEST_TCMALLOC=n
 TEST_REDIS=n
-TEST_NGINX=n
-TEST_VMEM=y
+TEST_NGINX=y
+TEST_VMEM=n
 
 DEFINE:= -DNR_THREAD=${TEST_NTHREAD}
 LIBS:= -lpthread -lrt
