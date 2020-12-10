@@ -5,3 +5,5 @@
 *** splice:	test/c/glibc/fcntl/splice 
 		*** test/zero-copy/github/eproxy 一个splice应用端口port转发器示例
 *** tee:	test/c/glibc/fcntl/tee
+*** 高性能: test/github/linux-server-high-performance
+*** 高性能: test/high-performance
