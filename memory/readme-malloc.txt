@@ -12,6 +12,7 @@
 *** test/jemalloc/	FaceBook开源
 *** test/tcmalloc/	Google开源
 *** test/ptmalloc/	效率比较低(glibc标配)
+*** test/mimalloc/	MicroSoft开源
 *** test/glibc/malloc	GNU library(ptmalloc)
 
 ## 不同策略提供的内存管理接口
