@@ -14,7 +14,7 @@
 
 static int connfd;
 
-/*SIGURG信号的处理函数*/
+/*SIGURG信号的处理函数 kill -23 182416 */
 void sig_urg(int sig)
 {
     fprintf(stdout, "sig_urg function\n");
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
     }
     else
     {
+//        kill -23 182416
         addsig(SIGURG, sig_urg);
         /* 使用SIGURG信號之前，我们必须设置socket的宿主进程或进程组*/
         fcntl(connfd, F_SETOWN, getpid());

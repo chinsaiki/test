@@ -36,6 +36,7 @@ void addfd(int epollfd, int fd)
 /*信号处理函数*/
 void sig_handler(int sig)
 {
+    printf("get signal -> %d\n", sig);
     /* 保留原来的errno, 在函数最后恢复，以保证函数的可重入性 
      * */
     int save_errno = errno;
