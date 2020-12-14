@@ -10,7 +10,10 @@ function backup_non_commit() {
 	if [ -z "$files" ]; then
 		echo "Nothing to do."
 	else
-		scp -r $files $backup_addr:$backup_path
+		for file in $files
+		do
+			scp -r $file $backup_addr:$backup_path/$file
+		done
 	fi
 }
 
@@ -22,7 +25,10 @@ function __backup_already_commit() {
 	if [ -z "$files" ]; then
 		echo "Nothing to do."
 	else
-		scp -r $files $backup_addr:$backup_path
+		for file in $files
+		do
+			scp -r $file $backup_addr:$backup_path/$file
+		done
 	fi
 }
 

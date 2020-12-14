@@ -9,20 +9,22 @@
 #########################################################################
 
 #线程数
-TEST_NTHREAD=1
+TEST_NTHREAD=4
 
 
 #参加对比的库函数
 TEST_GLIBC=y
 TEST_OBSTACK=y
-TEST_JEMALLOC=n
+TEST_JEMALLOC=y
 TEST_TCMALLOC=n
 TEST_REDIS=n
-TEST_NGINX=y
+TEST_NGINX=n
 TEST_VMEM=n
+TEST_MIMALLOC=y
 
 DEFINE:= -DNR_THREAD=${TEST_NTHREAD}
 LIBS:= -lpthread -lrt
+INCLUDE:=
 
 SOURCES=compare.c
 SOURCES+=main.c
@@ -82,8 +84,14 @@ ifeq ($(TEST_VMEM),y)
 	LIBS+=-lvmem
 endif
 
+ifeq ($(TEST_MIMALLOC),y)
+	SOURCES+=mimalloc.c
+	DEFINE+=-DMIMALLOC
+	LIBS+=-lmimalloc
+	INCLUDE+=-I/usr/local/lib/mimalloc-1.6/include/
+endif
 
-INCLUDE=-I./ 
+INCLUDE+=-I./ 
 INCLUDE+=-I../mempool
 INCLUDE+=-I../ncx_mempool
 INCLUDE+=-I../../redis/zmalloc/redis-6.0.5/

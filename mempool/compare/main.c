@@ -51,6 +51,14 @@ inline void vmem_malloc_test(void*user_ptr, void*ptr, size_t size);
 inline void vmem_malloc_free(void*user_ptr, void*ptr);
 #endif
 
+#ifdef MIMALLOC
+inline void mimalloc_malloc_init(void*user_ptr);
+inline void* mimalloc_malloc(void*user_ptr, size_t size);
+inline void mimalloc_test(void*user_ptr, void*ptr, size_t size);
+inline void mimalloc_free(void*user_ptr, void*ptr);
+#endif
+
+
 int main(int argc, char *argv[])
 {
     unsigned long int cnt = 0;
@@ -94,6 +102,9 @@ int main(int argc, char *argv[])
 #ifdef LIBVMEM
     struct malloc_entity vmem_alloc;
 #endif
+#ifdef MIMALLOC
+    struct malloc_entity mimalloc_alloc;
+#endif
 
     /* 初始化测试实例 */
 #ifdef PTMALLOC
@@ -123,6 +134,10 @@ int main(int argc, char *argv[])
 #ifdef LIBVMEM
     malloc_entity_init(&vmem_alloc, "vmem", 
             vmem_malloc_init, vmem_malloc_malloc, vmem_malloc_test, vmem_malloc_free, NULL);
+#endif
+#ifdef MIMALLOC
+    malloc_entity_init(&mimalloc_alloc, "mimalloc", 
+            mimalloc_malloc_init, mimalloc_malloc, mimalloc_test, mimalloc_free, NULL);
 #endif
 
 
@@ -155,6 +170,10 @@ int main(int argc, char *argv[])
     debug_print("TEST: vmem_alloc\n");
     malloc_entity_test(&vmem_alloc);
 #endif
+#ifdef MIMALLOC
+    debug_print("TEST: mimalloc_alloc\n");
+    malloc_entity_test(&mimalloc_alloc);
+#endif   
 
     /* 打印测试信息 */
 #ifdef PTMALLOC
@@ -177,6 +196,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef LIBVMEM
     malloc_entity_display(&vmem_alloc);
+#endif
+#ifdef MIMALLOC
+    malloc_entity_display(&mimalloc_alloc);
 #endif
     
     exit(1);
