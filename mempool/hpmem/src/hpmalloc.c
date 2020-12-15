@@ -209,6 +209,47 @@ void hplibc_free(void *ptr)
 /*--------------------------------------------------------------------------------------------------------------------*\
  *  DEBUG调试代码 开始
 \*--------------------------------------------------------------------------------------------------------------------*/
+static int hpmem_chunk_is_ok_abort(struct hpmem_chunk *chunk)
+{
+    if(unlikely(HPMEM_CHUNK_MAGIC_HEAD(chunk) != HPMEM_MAGIC)) {
+        fprintf(stderr, "\033[1;5;31m[ID:%ld, %d Bytes] %s, addr %p\033[m\n", 
+                                                          HPMEM_CHUNK_MODULE_ID(chunk), 
+                                                          HPMEM_CHUNK_SIZE(chunk), 
+                                                          hpmem_strerror[HPMEM_EHEAD].e_string,
+                                                          chunk->addr);
+        goto mem_dump_error;
+    }
+    if(unlikely(HPMEM_CHUNK_MAGIC_TAIL(chunk) != HPMEM_MAGIC)) {
+        fprintf(stderr, "\033[1;5;31m[ID:%ld, %d Bytes] %s, addr %p\033[m\n", 
+                                                          HPMEM_CHUNK_MODULE_ID(chunk), 
+                                                          HPMEM_CHUNK_SIZE(chunk), 
+                                                          hpmem_strerror[HPMEM_ETAIL].e_string,
+                                                          chunk->addr);
+        goto mem_dump_error;
+    }
+    if(unlikely(HPMEM_CHUNK_MODULE_ID(chunk) <= 0)) {
+        fprintf(stderr, "\033[1;5;31m[%d Bytes] %s, addr %p\033[m\n", 
+                                                          HPMEM_CHUNK_SIZE(chunk), 
+                                                          hpmem_strerror[HPMEM_EPARAM].e_string,
+                                                          chunk->addr);
+        goto mem_dump_error;
+    }
+    if(unlikely(HPMEM_CHUNK_SIZE(chunk) <= 0)) {
+        fprintf(stderr, "\033[1;5;31m[ID:%ld] %s, addr %p\033[m\n", 
+                                                          HPMEM_CHUNK_MODULE_ID(chunk),
+                                                          hpmem_strerror[HPMEM_EPARAM].e_string,
+                                                          chunk->addr);
+        goto mem_dump_error;
+    }
+    return 1;
+    
+    
+mem_dump_error:
+    
+    fprintf(stderr, "hpmalloc: memory used ERROR.\n");
+    fflush(stderr);
+    abort();
+}
 
 #ifdef HPMEM_DEBUG
 
@@ -220,37 +261,11 @@ static void *debug_check_chunk_list_task_routine(void*arg){
     while(1) {
         pthread_rwlock_rdlock(&chunk_list_lock); 
         list_for_each_entry_safe(chunk, iter_next, &chunk_list_head, list) {
-            if(unlikely(HPMEM_CHUNK_MAGIC_HEAD(chunk) != HPMEM_MAGIC)) {
-                fprintf(stderr, "\033[1;5;31m[ID:%ld, %d Bytes] %s, addr %p\033[m\n", 
-                                                                  HPMEM_CHUNK_MODULE_ID(chunk), 
-                                                                  HPMEM_CHUNK_SIZE(chunk), 
-                                                                  hpmem_strerror[HPMEM_EHEAD].e_string,
-                                                                  chunk->addr);
-            }
-            if(unlikely(HPMEM_CHUNK_MAGIC_TAIL(chunk) != HPMEM_MAGIC)) {
-                fprintf(stderr, "\033[1;5;31m[ID:%ld, %d Bytes] %s, addr %p\033[m\n", 
-                                                                  HPMEM_CHUNK_MODULE_ID(chunk), 
-                                                                  HPMEM_CHUNK_SIZE(chunk), 
-                                                                  hpmem_strerror[HPMEM_ETAIL].e_string,
-                                                                  chunk->addr);
-            }
-            if(unlikely(HPMEM_CHUNK_MODULE_ID(chunk) <= 0)) {
-                fprintf(stderr, "\033[1;5;31m[%d Bytes] %s, addr %p\033[m\n", 
-                                                                  HPMEM_CHUNK_SIZE(chunk), 
-                                                                  hpmem_strerror[HPMEM_EPARAM].e_string,
-                                                                  chunk->addr);
-            }
-            if(unlikely(HPMEM_CHUNK_SIZE(chunk) <= 0)) {
-                fprintf(stderr, "\033[1;5;31m[ID:%ld] %s, addr %p\033[m\n", 
-                                                                  HPMEM_CHUNK_MODULE_ID(chunk),
-                                                                  hpmem_strerror[HPMEM_EPARAM].e_string,
-                                                                  chunk->addr);
-            }
+            hpmem_chunk_is_ok_abort(chunk);
         }
         pthread_rwlock_unlock(&chunk_list_lock); 
         usleep(10000);
     }
-    
 }
 
 static  __attribute__((constructor(101))) void debug_check_chunk_list_init() {
@@ -462,13 +477,15 @@ void hpfree(void *addr)
 {
     if (addr == NULL) return;
     
-    struct hpmem_chunk *ptr = container_of(addr, struct hpmem_chunk, addr);
+    struct hpmem_chunk *chunk = container_of(addr, struct hpmem_chunk, addr);
     
-    update_hpmalloc_stat_free(ptr->module_id, hpmalloc_size(ptr));
+    update_hpmalloc_stat_free(chunk->module_id, hpmalloc_size(chunk));
 
-    DELETE_CHUNK_FROM_LIST(ptr);
+    DELETE_CHUNK_FROM_LIST(chunk);
+
+    hpmem_chunk_is_ok_abort(chunk);
     
-    __free(ptr);
+    __free(chunk);
 }
 
 /**
