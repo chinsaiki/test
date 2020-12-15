@@ -1,0 +1,224 @@
+################################################################################
+$EchoCaseNo   : ACS测试工具自检 002
+$EchoTestCase : 检查ACS测试工具自身功能是否正确 
+$EchoTestTitle: 命令成功率率为100%,且与脚本文件逻辑一致时,为测试通过.
+################################################################################
+
+$Echo:  检查HTTP报文发送功能
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 527
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethods>
+            </cwmp:GetRPCMethods>
+  </soap:Body>
+</soap:Envelope>
+
+
+#Step2: 期待Http返回Packet
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 789
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethodsResponse>
+                <MethodList soap:arrayType="soap:string[]">
+                    <string>GetRPCMethods</string>
+                    <string>TransferComplete</string>
+                    <string>Inform</string>
+                </MethodList>
+            </cwmp:GetRPCMethodsResponse>
+  </soap:Body>
+</soap:Envelope>
+
+################################################################################
+
+$Echo:  检查SOAP报文 过滤 功能
+#
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 527
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0002</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethods>
+            </cwmp:GetRPCMethods>
+  </soap:Body>
+</soap:Envelope>
+
+
+$ExpectSoapPacket:
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0002</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethodsResponse>
+                <MethodList soap:arrayType="soap:string[]">
+                    <string>GetRPCMethods</string>
+                    <string>TransferComplete</string>
+                    <string>Inform</string>
+                </MethodList>
+            </cwmp:GetRPCMethodsResponse>
+  </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+$Echo:  检查RPC报文 过滤 功能
+#
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 527
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0003</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethods>
+            </cwmp:GetRPCMethods>
+  </soap:Body>
+</soap:Envelope>
+
+$ExpectRpcPacket:
+            <cwmp:GetRPCMethodsResponse>
+                <MethodList soap:arrayType="soap:string[]">
+                    <string>GetRPCMethods</string>
+                    <string>TransferComplete</string>
+                    <string>Inform</string>
+                </MethodList>
+            </cwmp:GetRPCMethodsResponse>
+
+            
+################################################################################
+#
+$Echo:  检查SOAP报文发送功能
+#
+$SendSoapPacket:
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0004</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethods>
+            </cwmp:GetRPCMethods>
+  </soap:Body>
+</soap:Envelope>
+
+$ExpectSoapPacket:
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">0004</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+            <cwmp:GetRPCMethodsResponse>
+                <MethodList soap:arrayType="soap:string[]">
+                    <string>GetRPCMethods</string>
+                    <string>TransferComplete</string>
+                    <string>Inform</string>
+                </MethodList>
+            </cwmp:GetRPCMethodsResponse>
+  </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+$Echo: 检查RPC GetRPCMethods 方法的默认值
+#
+$SendRpcPacket:
+            <cwmp:GetRPCMethods>
+            </cwmp:GetRPCMethods>
+
+#ACS 默认支持3种RPC 方法
+$ExpectRpcPacket:
+            <cwmp:GetRPCMethodsResponse>
+                <MethodList soap:arrayType="soap:string[]">
+                    <string>GetRPCMethods</string>
+                    <string>TransferComplete</string>
+                    <string>Inform</string>
+                </MethodList>
+            </cwmp:GetRPCMethodsResponse>
+
+
+################################################################################
+#
+$Echo: 检查RPC Inform 方法的默认值
+#
+$SendRpcPacket:
+   <cwmp:Inform/>
+
+$ExpectRpcPacket:
+        <cwmp:InformResponse>
+            <MaxEnvelopes>5</MaxEnvelopes>
+        </cwmp:InformResponse>
+        
+        
+#
+$Echo: 检查RPC Inform 方法的默认值
+#
+$SendRpcPacket:
+     <cwmp:TransferComplete/>
+
+$ExpectRpcPacket:
+     <cwmp:TransferCompleteResponse/>

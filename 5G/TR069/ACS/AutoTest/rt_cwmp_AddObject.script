@@ -1,0 +1,123 @@
+################################################################################
+#   测试 AddObject 方法
+# 
+ *      ACS可以使用此方法来创建多实例对象的新实例。 方法调用将要为其创建新实例的对象集合的路径名作为参数。 
+ *
+ *  例如：
+ *
+ *  Top.Group.Object。
+ *
+ *  此路径名不包括要创建的对象的实例号。 该实例编号由CPE分配并在响应中返回。 
+ *  一旦分配了对象的实例号，该对象号将无法更改并保持不变，直到使用DeleteObject方法删除该对象为止。 
+ *  创建后，对象中的参数或子对象由路径名称引用，并带有实例标识符。 
+ *  例如，如果AddObject方法返回的实例号为2，则该实例内的Parameter可以由路径引用：
+ *
+ *  Top.Group.Object.2.Parameter
+ *
+ *  如果CPE支持基于别名的寻址机制（如3.6.1节中定义），则以下是附加要求：
+ *      •路径名后可以跟方括号（位于A.2.2.2中定义）的实例别名。
+ *      •如果路径名以实例别名（括在方括号内）结尾，则CPE务必将实例别名分配给新创建的对象实例。
+ *      •如果路径名不以实例别名结尾，则CPE必须使用“ cpe-”前缀为新创建的对象实例分配唯一的实例别名。
+ *      •一旦分配，实例别名只能由ACS更改，并且必须一直存在，直到删除对象。
+ *  
+ *  例如，要添加一个其实例别名设置为“ a”的对象实例：
+ *
+ *  Top.Group.Object.[a].
+ *
+ *  将创建一个具有实例别名“ a”的新对象实例。创建具有实例别名的对象实例后，
+ *  然后可以通过路径名称引用创建的对象实例中的任何参数，例如：
+ *
+ *  Top.Group.Object.[a].parameter
+ *
+ *  使用此方法创建对象时，必须将对象中包含的参数设置为默认值，并将相关属性设置为以下各项：
+ *
+ *      •除非在适当的数据模型定义中另行指定，否则将通知设置为零（关闭通知）。
+ *      •AccessList包括所有定义的实体。
+ *
+ *  此方法的调用参数在表29中定义。响应中的参数在表30中定义。
+ *
+ *  对象的添加必须原子完成。即，将所有参数和子对象添加在一起，或者不添加任何对象。
+ *  在后一种情况下，CPE必须返回故障响应，指示添加对象失败的原因。作为此方法调用的结果，
+ *  CPE不得添加任何包含的参数或子对象，而不添加所有这些参数或子对象（该CPE支持的所有参数和子对象）。
+ *
+ *  * 即使CPE在执行添加过程中发生崩溃，该要求也必须成立。
+ *
+ *  如果请求有效，则强烈建议CPE在发送AddObject响应之前应用对象创建。如果这样做，
+ *  则CPE必须在响应中将Status的值设置为0（零），指示已应用对象创建。
+ *
+ *  如果CPE要求在应用对象创建之前终止会话，则CPE必须在应用对象创建之前回复，
+ *  因此必须在响应中将Status的值设置为1。在这种情况下，回复只能在完成对请求的所有验证并适当保存对象创建请求后，
+ *  肯定会在会话终止后尽快在物理上将其应用。一旦CPE发出AddObject响应，无论是否应用更改，
+ *  与相应请求（包括新的ParameterKey）关联的所有更改都必须可用于后续命令进行操作。
+ *  特别是，即使尚未应用对象创建，
+ *  CPE也必须允许使用SetParameterValues，GetParameterValues，SetParameterAttributes和GetParameterAttributes
+ *  对新创建的Object中的Parameters进行操作，
+ *  以及使用AddObject创建子对象新创建的对象中的-object和DeleteObject来删除子对象或新创建的对象本身。
+ *
+ *  如果AddObject响应中的Status值为1，则必须在会话终止后尽快在物理上应用所请求的对象创建，
+ *  且不得迟于下一个会话的开始。请注意，如果CPE需要重新启动才能应用创建对象，
+ *  则CPE必须在会话终止后自行启动重新启动。因为在这种情况下某些CPE不需要重新启动，
+ *  所以ACS不应由于修改CPE的配置而调用Reboot方法，因为这将导致不必要的重新启动。
+ *  还请注意，如果CPE应用配置更改会导致服务中断（例如，如果CPE需要重新启动以应用请求的更改），
+ *  则CPE无需避免或延迟此类中断。为了将这种中断的影响降到最低，
+ *  ACS可以将这种配置更改的请求延迟到适当的时间，但这完全由ACS自行决定。
+ *  状态值的使用在同一会话中的连续SetParameterValues，AddObject或DeleteObject请求之间是独立的。
+ *  响应一个请求使用Status值1并不一定意味着同一会话中的后续请求也将以相同的方式响应。
+ *  使用AddObject方法对CPE配置所做的所有修改必须在CPE重新启动后保留。这必须包括对象实例标识符的值。
+#
+#
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试 AddObject 方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 680
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试 AddObject 方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>

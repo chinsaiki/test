@@ -1,0 +1,63 @@
+################################################################################
+#   测试GetParameterNames方法
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试GetParameterNames方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 655
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:GetParameterNames>  
+            <ParameterPath>Device.</ParameterPath>
+            <NextLevel xsi:type='SOAP-ENC:boolean'>0</NextLevel>
+        </cwmp:GetParameterNames> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试GetParameterNames方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 869
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:GetParameterNamesResponse>  
+            <ParameterList xsi:type='SOAP-ENC:Array'>
+                <ParameterValueStruct>  
+                    <Name>Device.DeviceInfo.SerialNumber</Name>  
+                    <Value xsi:type='xsd:string'>22S297N9006D6</Value>  
+                </ParameterValueStruct>  
+            </ParameterList>  
+        </cwmp:GetParameterNamesResponse>  
+    </soap:Body>
+</soap:Envelope>

@@ -1,0 +1,88 @@
+################################################################################
+#   测试GetParameterValues方法
+#
+#   报文流程：
+#    ACS                          CPE
+#     |    GetParameterValues      |
+#     |--------------------------->|
+#     |                            |
+#     |GetParameterValuesResponse  |
+#     |<---------------------------|
+#     |                            |
+#
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+
+################################################################################
+#$Echo:  检查HTTP报文发送功能：测试GetParameterValues方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 685
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:GetParameterValues>  
+            <ParameterNames SOAP-ENC:arrayType="xsd:string[22]">  
+                <string>Device.</string>
+            </ParameterNames>  
+        </cwmp:GetParameterValues> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试GetParameterValues方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 1599
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:GetParameterValuesResponse>  
+            <ParameterList xsi:type='SOAP-ENC:Array' SOAP-ENC:arrayType='cwmp:ParameterValueStruct[4]'>    
+                <ParameterValueStruct>  
+                    <Name>Device.DeviceInfo.ProductClass</Name>  
+                    <Value xsi:type='xsd:string'>Netgear CWGE111</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.DeviceInfo.SoftwareVersion</Name>  
+                    <Value xsi:type='xsd:string'>020007b01</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.DeviceInfo.SerialNumber</Name>  
+                    <Value xsi:type='xsd:string'>22S297N9006D6</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.DeviceInfo.ManufacturerOUI</Name>  
+                    <Value xsi:type='xsd:string'>001F64</Value>  
+                </ParameterValueStruct>  
+            </ParameterList>  
+        </cwmp:GetParameterValuesResponse>  
+    </soap:Body>
+</soap:Envelope>

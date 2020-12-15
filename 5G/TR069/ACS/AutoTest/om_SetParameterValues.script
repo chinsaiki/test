@@ -1,0 +1,141 @@
+################################################################################
+#   测试SetParameterValues方法
+#
+#   报文流程：
+#    ACS                          CPE
+#     |    SetParameterValues      |
+#     |--------------------------->|
+#     |                            |
+#     |SetParameterValuesResponse  |
+#     |<---------------------------|
+#     |                            |
+#
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试SetParameterValues方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 1505
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:SetParameterValues>  
+            <ParameterList SOAP-ENC:arrayType="cwmp:ParameterValueStruct[2]">  
+                <ParameterValueStruct>
+                    <Name xsi:type="xsd:string">Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.1.PLMNID</Name>
+                    <Value xsi:type="xsd:string">PLMNRT</Value>
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.Common.gNBId</Name>  
+                    <Value xsi:type="xsd:unsignedInt">GNBID_NEW_RONGTAO</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.Common.gNBName</Name>  
+                    <Value xsi:type="xsd:unsignedInt">GNBNAME_NEW_RONGTAO</Value>  
+                </ParameterValueStruct>  
+            </ParameterList>  
+            <ParameterKey>124567</ParameterKey>  
+        </cwmp:SetParameterValues>  
+    </soap:Body>
+</soap:Envelope>
+    
+    
+    
+
+            
+################################################################################
+#Step2: 期待Http返回Packet：测试SetParameterValues方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 626
+
+<SOAP-ENV:Envelope 
+    xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'  
+    xmlns:SOAP-ENC='http://schemas.xmlsoap.org/soap/encoding' 
+    xmlns:xsd='http://www.w3.org/2001/XMLSchema'  
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
+    xmlns:cwmp='urn:dslforum-org:cwmp-1-0'>  
+    <SOAP-ENV:Header>  
+        <cwmp:ID SOAP-ENV:mustUnderstand='1'>1273735061346</cwmp:ID>  
+    </SOAP-ENV:Header>  
+    <SOAP-ENV:Body>  
+        <cwmp:SetParameterValuesResponse>  
+            <Status>0</Status>  
+        </cwmp:SetParameterValuesResponse>  
+    </SOAP-ENV:Body>  
+</SOAP-ENV:Envelope> 
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>      
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:SetParameterValuesResponse>
+            <MethodList soap:arrayType="soap:string[]">
+                <string>SetParameterValues</string>
+                <string>TransferComplete</string>
+            </MethodList>
+        </cwmp:SetParameterValuesResponse>
+    </soap:Body>
+</soap:Envelope>
+
+
+POST /ACS HTTP/1.1
+Host: 10.170.6.24:7547
+User-Agent: easycwmp
+Content-Type: text/xml; charset="utf-8"
+SOAPAction:
+Content-Length: 996
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ <soap_env:Envelope
+xmlns:soap_env="http://schemas.xmlsoap.org/soap/envelope/"
+xmlns:soap_enc="http://schemas.xmlsoap.org/soap/encoding/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:cwmp="urn:dslforum-org:cwmp-1-2">
+  <soap_env:Header>
+   <cwmp:ID soap_env:mustUnderstand="1">0001</cwmp:ID>
+  </soap_env:Header>
+  <soap_env:Body>
+   <soap_env:Fault>
+    <faultcode>Client</faultcode>
+    <faultstring>CWMP fault</faultstring>
+    <detail>
+     <cwmp:Fault>
+      <FaultCode>9003</FaultCode>
+      <FaultString>Invalid arguments</FaultString>
+      <SetParameterValuesFault>
+       <ParameterName>Device.DeviceInfo.SerialNumber</ParameterName>
+       <FaultCode>9008</FaultCode>
+       <FaultString>Attempt to set a non-writable parameter</FaultString>
+      </SetParameterValuesFault>
+     </cwmp:Fault>
+    </detail>
+   </soap_env:Fault>
+  </soap_env:Body>
+ </soap_env:Envelope>
+ 
+ 
+

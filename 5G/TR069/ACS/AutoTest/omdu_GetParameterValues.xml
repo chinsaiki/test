@@ -1,0 +1,65 @@
+################################################################################
+#   测试GetParameterValues方法
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+#$Echo:  检查HTTP报文发送功能：测试GetParameterValues方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 685
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:GetParameterValues>  
+            <ParameterNames SOAP-ENC:arrayType="xsd:string[22]">  
+                <string>Device.</string>
+            </ParameterNames>  
+        </cwmp:GetParameterValues> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试GetParameterValues方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 924
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:GetParameterValuesResponse>  
+            <ParameterList xsi:type='SOAP-ENC:Array' SOAP-ENC:arrayType='cwmp:ParameterValueStruct[4]'>    
+                <ParameterValueStruct>  
+                    <Name>Device.DeviceInfo.ProductClass</Name>  
+                    <Value xsi:type='xsd:string'>Netgear CWGE111</Value>  
+                </ParameterValueStruct>
+            </ParameterList>  
+        </cwmp:GetParameterValuesResponse>  
+    </soap:Body>
+</soap:Envelope>

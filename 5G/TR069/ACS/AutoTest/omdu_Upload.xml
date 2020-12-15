@@ -1,0 +1,63 @@
+################################################################################
+#   测试 Upload 方法
+#
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试Upload方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 772
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:Upload>
+            <CommandKey>1271227474281</CommandKey>  
+            <FileType>1 Vendor Configuration File”</FileType>  
+            <URL>http://10.170.6.66:80/study/</URL>  
+            <Username />  
+            <Password />  
+            <DelaySeconds>5</DelaySeconds>  
+        </cwmp:Upload> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试Upload方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 759
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:UploadResponse>  
+            <Status>1</Status>  
+            <StartTime>0000-00-00T00:00:00-00:00</StartTime>  
+            <CompleteTime>0000-00-00T00:00:00-00:00</CompleteTime>  
+        </cwmp:UploadResponse> 
+    </soap:Body>
+</soap:Envelope>

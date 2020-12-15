@@ -1,0 +1,14 @@
+rt_cwmp_Inform.script
+rt_cwmp_GetRPCMethods.script
+rt_cwmp_GetParameterValues.script
+rt_cwmp_SetParameterValues.script
+rt_cwmp_GetParameterNames.script
+rt_cwmp_GetParameterAttributes.script
+rt_cwmp_SetParameterAttributes.script
+rt_cwmp_AddObject.script
+rt_cwmp_DeleteObject.script
+rt_cwmp_Download.script
+rt_cwmp_Upload.script
+rt_cwmp_Reboot.script
+rt_cwmp_FactoryReset.script
+rt_cwmp_ScheduleInform.script

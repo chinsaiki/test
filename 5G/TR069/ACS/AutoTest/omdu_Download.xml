@@ -1,0 +1,97 @@
+################################################################################
+#   测试Download方法
+#
+ *  ACS可以使用此方法使CPE从指定位置下载指定文件。
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试Download方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 953
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:Download>
+            <CommandKey>1271227474281</CommandKey>  
+            <FileType>Web Content</FileType>  
+            <URL>http://10.170.6.66:80/study/rongtao.txt</URL>  
+            <Username />  
+            <Password />  
+            <FileSize>154</FileSize>  
+            <TargetFileName>download-rongtao.txt</TargetFileName>  
+            <DelaySeconds>1</DelaySeconds>  
+            <SuccessURL />  
+            <FailureURL />  
+        </cwmp:Download> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试Download方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 696
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:DownloadResponse>  
+            <Status>1</Status>  
+            <StartTime>0000-00-00T00:00:00-00:00</StartTime>  
+            <CompleteTime>0000-00-00T00:00:00-00:00</CompleteTime>  
+        </cwmp:DownloadResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+#从CPE实际接受到的报文
+POST /ACS HTTP/1.1
+Host: 10.170.6.24:7547
+User-Agent: easycwmp
+Content-Type: text/xml; charset="utf-8"
+SOAPAction:
+Content-Length: 667
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<soap_env:Envelope
+    xmlns:soap_env="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:soap_enc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-2">
+    <soap_env:Header>
+        <cwmp:ID soap_env:mustUnderstand="1">0001</cwmp:ID>
+    </soap_env:Header>
+    <soap_env:Body>
+        <cwmp:DownloadResponse>
+            <Status>1</Status>
+            <StartTime>0001-01-01T00:00:00Z</StartTime>
+            <CompleteTime>0001-01-01T00:00:00Z</CompleteTime>
+        </cwmp:DownloadResponse>
+    </soap_env:Body>
+</soap_env:Envelope>

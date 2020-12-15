@@ -1,0 +1,57 @@
+################################################################################
+#   测试 DeleteObject 方法
+#
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试 DeleteObject 方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 716
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:DeleteObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.1.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:DeleteObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试 DeleteObject 方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 585
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:DeleteObjectResponse>
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:DeleteObjectResponse> 
+    </soap:Body>
+</soap:Envelope>

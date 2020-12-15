@@ -1,0 +1,48 @@
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 710
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>

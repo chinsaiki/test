@@ -1,0 +1,480 @@
+################################################################################
+#   测试SetParameterValues方法
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+
+#$Echo:  检查HTTP报文发送功能：测试SetParameterValues方法
+#Step1: 发送一个HttpPacket
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 31116
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:SetParameterValues>  
+            <ParameterList SOAP-ENC:arrayType="cwmp:ParameterValueStruct[2]">  
+                <ParameterValueStruct>
+                    <Name xsi:type="xsd:string">Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.1.PLMNID</Name>
+                    <Value xsi:type="xsd:string">123456</Value>
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.Common.gNBId</Name>  
+                    <Value xsi:type="xsd:unsignedInt">22</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.Common.gNBName</Name>  
+                    <Value xsi:type="xsd:unsignedInt">gNBNEW</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.NGC.cellReservedForOtherUse</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.CellRestriction.CellBarred</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.NGC.TA.1.CellReservedForOperatorUse</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.NGC.TA.1.TAC</Name>  
+                    <Value xsi:type="xsd:unsignedInt">010001000000000001010011</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.NGC.TA.1.ranac</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.BWPDL.Bandwidth</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1100</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.BWPDL.CyclicPrefix</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.BWPDL.SubcarrierSpacing</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.BWPUL.Bandwidth</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1100</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.BWPUL.CyclicPrefix</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.BWPUL.SubcarrierSpacing</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.DmrsTypeAPosition</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.N310</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.N311</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T300</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T301</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T302</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T304</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T310</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T311</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T319</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T320</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.RRCTimers.T380</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.ReferenceSubcarrierSpacing</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern1.DlULTransmissionPeriodicity</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern1.NrofDownlinkSlots</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern1.NrofDownlinkSymbols</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern1.NrofUplinkSlots</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern1.NrofUplinkSymbols</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern2.DlULTransmissionPeriodicity</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern2.NrofDownlinkSlots</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern2.NrofDownlinkSymbols</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern2.NrofUplinkSlots</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.TddULDLConfigurationCommon.pattern2.NrofUplinkSymbols</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUCCHConfigCommon.HoppingId</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUCCHConfigCommon.P0nominal</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUCCHConfigCommon.PucchGroupHopping</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUCCHConfigCommon.PucchResourceCommon</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.GroupHoppingEnabledTransformPrecoding</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.Msg3DeltaPreamble</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.P0NominalWithGrant</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.CBPreamblesPerSSB</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.MessagePowerOffsetGroupB</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.Msg1SubcarrierSpacing</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.Msg3TransformPrecoder</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.NumberOfRAPreamblesGroupA</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.Msg1FDM</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.Msg1FrequencyStart</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.PowerRampingStep</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.PrachConfigurationIndex</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.PreambleReceivedTargetPower</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.RaResponseWindow</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RACHConfigGeneric.ZeroCorrelationZoneConfig</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RaContentionResolutionTimer</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RaMsg3SizeGroupA</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RestrictedSetConfig</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RootSequenceIndex</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RootType</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.RsrpThresholdSSB</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.SSBPerRACHOccasionChoice</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.RACHConfigCommon.TotalNumberOfRAPreambles</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.SubCarrierSpacingCommon</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.SSB.SsPBCHBlockPower</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.SSB.SsbPeriodicityServingCell</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.SSB.SsbSubcarrierOffset</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.SSB.ssbPositionsInBurst.InOneGroup</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.CceRegMappingType.InterleaverSize</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.CceRegMappingType.RegBundleSize</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.CceRegMappingType.ShiftIndex</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.ControlResourceSetId</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.Duration</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.FrequencyDomainResources</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.PdcchDMRSScramblingID</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonControlResourceSet.PrecoderGranularity</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.commonControlResourceSet.CceRegMappingType</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.ControlResourceSetZero</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.PagingSearchSpace</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.RaSearchSpace</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.SearchSpaceOtherSystemInformation</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.SearchSpaceSIB1</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.SearchSpaceZero</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoULSIB.AbsoluteFrequencyPointA</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.OffsetToPointA</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDSCH.PDSCHTimeDomainResourceAllocationList.1.K0</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDSCH.PDSCHTimeDomainResourceAllocationList.1.MappingType</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDSCH.PDSCHTimeDomainResourceAllocationList.1.StartSymbolAndLength</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.puschTimeDomainAllocationList.1.K2</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.puschTimeDomainAllocationList.1.MappingType</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.puschTimeDomainAllocationList.1.StartSymbolAndLength</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.MultiFrequencyBandListNRSIB.1.FreqBandIndicatorNR</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>   
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList.1.SCSSpecificCarrier.CarrierBandwidth</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList.1.SCSSpecificCarrier.OffsetToCarrier</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList.1.SCSSpecificCarrier.subcarrierSpacing</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.ControlResourceSetId</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.Duration</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>    
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.MonitoringSlotOffset</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.MonitoringSlotPeriodicity</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>  
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.MonitoringSymbolsWithinSlot</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.SearchSpaceId</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.SearchSpaceType</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.UeSpecificDciFormats</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.nrofCandidates.AggregationLevel1</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.nrofCandidates.AggregationLevel2</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.nrofCandidates.AggregationLevel4</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.nrofCandidates.AggregationLevel8</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct>
+                <ParameterValueStruct>  
+                    <Name>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.1.nrofCandidates.AggregationLevel16</Name>  
+                    <Value xsi:type="xsd:unsignedInt">1</Value>  
+                </ParameterValueStruct> 
+            </ParameterList>  
+            <ParameterKey>124567</ParameterKey>  
+        </cwmp:SetParameterValues>  
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+################################################################################
+#Step2: 期待Http返回Packet：测试SetParameterValues方法
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 626

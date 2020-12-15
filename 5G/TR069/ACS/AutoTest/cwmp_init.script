@@ -1,0 +1,206 @@
+################################################################################
+$EchoCaseNo   : INIT
+$EchoTestCase : 使CWMP能够成功初始化并为建立连接做好准备 
+$EchoTestTitle: CWMP 初始化
+################################################################################
+
+$Echo: CWMP 初始化调试开关
+#
+$ExpectTimeOut: 500
+$SendCommand:sysname H3C
+[H3C]
+$SendCommand:q
+<H3C>
+$SendCommand:undo debugging all
+All possible debugging has been turned off
+<H3C>
+$SendCommand:t d
+% Current terminal debugging is on
+
+<H3C>
+$SendCommand:t m
+% Current terminal monitor is on
+
+<H3C>
+$SendCommand:sys
+System View: return to User View with Ctrl+Z.
+[H3C]
+$SendCommand:cwmp
+[H3C-cwmp]
+
+
+$Echo: 恢复CWMP 初始化配置
+#
+$SendCommand:undo cwmp enable
+[H3C-cwmp]
+$SendCommand:undo cwmp acs url
+[H3C-cwmp]
+$SendCommand:undo cwmp acs username
+[H3C-cwmp]
+$SendCommand:undo cwmp cpe connect retry 
+[H3C-cwmp]
+$SendCommand:undo cwmp cpe inform interval 
+[H3C-cwmp]
+$SendCommand:undo cwmp cpe inform interval enable
+[H3C-cwmp]
+$SendCommand:undo cwmp cpe inform time
+[H3C-cwmp]
+
+$Echo: 配置自动化脚本命令执行超时为5秒
+#
+$ExpectTimeOut:5000
+
+$Echo: 配置CPE的cwmp连接设置
+#
+$SendCommand:cwmp acs url $$URL
+[H3C-cwmp]
+$SendCommand:cwmp acs username $$USERNAME password $$PASSWORD
+[H3C-cwmp]
+$SendCommand:cwmp cpe wait timeout 1800
+[H3C-cwmp]
+$SendCommand:cwmp enable
+[H3C-cwmp]
+$Sleep:6000
+
+#Enable后CPE将会发送一个带BOOT的Inform报文
+$SendHttpPacket:
+POST /ACS HTTP/1.1\0x23\0x24
+Host: 169.254.76.31:7547
+Content-Length: 1325
+Content-Type: text/xml; charset="utf-8"
+SoapAction: Inform
+
+<soap:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+       xmlns:soap="http://schemas.xmlSOAP.org/soap/envelope/"
+       xmlns:encodingStyle="http://schemas.xmlSOAP.org/soap/encoding/">
+        <soap:Header>
+            <cwmp:ID soap:mustUnderstand="1">1</cwmp:ID>
+        </soap:Header>
+        <soap:Body>
+                  <cwmp:Inform>
+            <DeviceId>
+                <Manufacturer>Chass PhysicalMfgName </Manufacturer>
+                <OUI>000FE2</OUI>
+                <ProductClass></ProductClass>
+                <SerialNumber>Chass PhysicalSerialNum </SerialNumber>
+            </DeviceId>
+            <Event encodingStyle:arrayType="cwmp:EventStruct[1]">
+                <EventStruct>
+                  <EventCode>0 BOOTSTRAP</EventCode>
+                  <CommandKey></CommandKey>
+                </EventStruct>
+            </Event>
+            <MaxEnvelopes>1</MaxEnvelopes>
+            <CurrentTime>2007-07-20T12:58:58</CurrentTime>
+            <RetryCount>0</RetryCount>
+          </cwmp:Inform>
+
+        </soap:Body>
+    </soap:Envelope>
+
+# ACS通知CPE 必须认证
+HTTP/1.1 401 Unauthorized
+Date: Fri, 20-Jul-07 13:48:17 GMT
+Server: NCSA/1.3
+MIME-version: 1.0
+Content-type: text/html
+WWW-Authenticate:  Digest realm="ACSSimTool",nonce="VHVlIE5vdiAyOCAxNDo0Nzo1MCAyMDA2MS4xLjEuMTI1",opaque="5ccc069c403ebaf9f0171e9517f40e41",qop="auth" 
+
+
+#CPE重新回复ACSInform报文
+POST /ACS HTTP/1.1
+Authorization: Digest username="1234",
+	realm="ACSSimTool",
+	nonce="VHVlIE5vdiAyOCAxNDo0Nzo1MCAyMDA2MS4xLjEuMTI1",
+	uri="/ACS",
+	qop="auth",
+	nc=00000001,
+	cnonce="2007-07-20T13:48:17",
+	response="181a161d73d66d13dac7d2dec29d55d6",
+	opaque="5ccc069c403ebaf9f0171e9517f40e41"
+Host: 169.254.76.31:7547
+Content-Length: 1325
+Content-Type: text/xml; charset="utf-8"
+SoapAction: Inform
+
+
+<soap:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                      xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+                                      xmlns:soap="http://schemas.xmlSOAP.org/soap/envelope/"
+                                      xmlns:encodingStyle="http://schemas.xmlSOAP.org/soap/encoding/">
+        <soap:Header>
+            <cwmp:ID soap:mustUnderstand="1">1</cwmp:ID>
+        </soap:Header>
+        <soap:Body>
+                  <cwmp:Inform>
+            <DeviceId>
+                <Manufacturer>Chass PhysicalMfgName </Manufacturer>
+                <OUI>000FE2</OUI>
+                <ProductClass></ProductClass>
+                <SerialNumber>Chass PhysicalSerialNum </SerialNumber>
+            </DeviceId>
+            <Event encodingStyle:arrayType="cwmp:EventStruct[1]">
+                <EventStruct>
+                  <EventCode>0 BOOTSTRAP</EventCode>
+                  <CommandKey></CommandKey>
+                </EventStruct>
+            </Event>
+            <MaxEnvelopes>1</MaxEnvelopes>
+            <CurrentTime>2007-07-20T14:17:06</CurrentTime>
+            <RetryCount>0</RetryCount>
+          </cwmp:Inform>
+
+        </soap:Body>
+    </soap:Envelope>
+#ACS回复正确的Inform Response报文
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 564
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <soap:Header>
+       <cwmp:ID soap:mustUnderstand="1">1</cwmp:ID>       
+  </soap:Header>  
+  <soap:Body>
+        <cwmp:InformResponse>
+            <MaxEnvelopes>5</MaxEnvelopes>
+        </cwmp:InformResponse>
+
+  </soap:Body>
+</soap:Envelope>
+
+#然后CPE会回应一个空报文,这样ACS和CPE开始交互
+
+POST /ACS HTTP/1.1
+Authorization: Digest username="1234",
+	realm="ACSSimTool",
+	nonce="VHVlIE5vdiAyOCAxNDo0Nzo1MCAyMDA2MS4xLjEuMTI1",
+	uri="/ACS",
+	qop="auth",
+	nc=00000003,
+	cnonce="2007-07-20T13:48:18",
+	response="1e272926cb4c028a83ba21c0aa619854",
+	opaque="5ccc069c403ebaf9f0171e9517f40e41"
+Host: 169.254.76.31:7547
+Content-Length: 0
+Content-Type: text/xml; charset="utf-8"
+
+
+################################################################################
+$EchoCaseNo   : EXIT
+$EchoTestCase : 使CWMP能够成功初始化并为建立连接做好准备 
+$EchoTestTitle: CWMP 初始化
+################################################################################
+#
+#退回到系统视图
+$SendCommand:q
+#

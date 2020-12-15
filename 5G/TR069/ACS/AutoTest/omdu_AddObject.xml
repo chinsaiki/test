@@ -1,0 +1,662 @@
+################################################################################
+#    OM-DU AddObject
+#   DU协议栈添加实例
+#
+################################################################################
+#
+#   创建小区命令
+#
+#   参数： Device.Services.FAPService.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 680
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建小区响应
+#
+#   参数： Device.Services.FAPService.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+################################################################################
+#
+#   创建5GC.PLMNList 实例  
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 710
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+################################################################################
+#
+#   创建5GC.PLMNList 实例  响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.5GC.PLMNList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+################################################################################
+#
+#   创建NGC.TA 实例
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.NGC.TA.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 703
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.NGC.TA.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+################################################################################
+#
+#   创建NGC.TA 实例响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.NGC.TA.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建NGC.TA.{i}.PLMNList.{i} 实例
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.NGC.TA.{i}.PLMNList.{i}
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月26日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 703
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.NGC.TA.1.PLMNList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+################################################################################
+#
+#   创建NGC.TA.{i}.PLMNList.{i} 实例响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.NGC.TA.{i}.PLMNList.{i}
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月26日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+################################################################################
+#
+#   创建PHY.FrequencyInfoDLSIB.MultiFrequencyBandListNRSIB 实例
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.MultiFrequencyBandListNRSIB.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 752
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.MultiFrequencyBandListNRSIB.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建PHY.FrequencyInfoDLSIB.MultiFrequencyBandListNRSIB 实例 响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.MultiFrequencyBandListNRSIB.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+
+
+
+
+
+################################################################################
+#
+#   创建PHY.PDCCH.CommonSearchSpaceList. 实例 
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 733
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建PHY.PDCCH.CommonSearchSpaceList. 实例  响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDCCH.CommonSearchSpaceList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+
+################################################################################
+#
+#   创建PHY.PDSCH.PDSCHTimeDomainResourceAllocationList 实例  
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDSCH.PDSCHTimeDomainResourceAllocationList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 749
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDSCH.PDSCHTimeDomainResourceAllocationList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建PHY.PDSCH.PDSCHTimeDomainResourceAllocationList 实例  响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PDSCH.PDSCHTimeDomainResourceAllocationList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+#
+#   创建PHY.PUSCHConfigCommon.puschTimeDomainAllocationList. 实例
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.puschTimeDomainAllocationList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 753
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.puschTimeDomainAllocationList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建PHY.PUSCHConfigCommon.puschTimeDomainAllocationList. 实例  响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.PUSCHConfigCommon.puschTimeDomainAllocationList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+#
+#   创建PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList. 实例 
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$SendHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 747
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>       
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObject>
+            <ObjectName xsi:type='xsd:string'>Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList.</ObjectName>  
+            <ParameterKey xsi:type='xsd:string'>1234321</ParameterKey>  
+        </cwmp:AddObject> 
+    </soap:Body>
+</soap:Envelope>
+
+
+################################################################################
+#
+#   创建PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList. 实例  响应
+#
+#   参数： Device.Services.FAPService.1.CellConfig.NR.RAN.PHY.FrequencyInfoDLSIB.ScsSpecificCarrierList.{i}.
+#
+#   作者： 荣涛 <rongtao@sylincom.com>
+#   时间： 2020年5月13日
+#
+################################################################################
+$ExpectHttpPacket:
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset="utf-8"
+Content-Length: 657
+
+<soap:Envelope
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:cwmp="urn:dslforum-org:cwmp-1-0"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <soap:Header>
+        <cwmp:ID soap:mustUnderstand="1">0001</cwmp:ID>
+    </soap:Header>  
+    <soap:Body>
+        <cwmp:AddObjectResponse>  
+            <InstanceNumber xsi:type='xsd:unsignedint'>1</InstanceNumber> 
+            <Status xsi:type='xsd:int'>1</Status>
+        </cwmp:AddObjectResponse> 
+    </soap:Body>
+</soap:Envelope>
+
+
+
+
+
+
+
+
+
+
+

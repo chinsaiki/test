@@ -1,0 +1,32 @@
+################################################################################
+#   测试 Inform 方法
+#
+#   报文流程：
+#    ACS                          CPE
+#     |                            |
+#     |           Inform           |
+#     |<---------------------------|
+#     |        InformResponse      |
+#     |--------------------------->|
+#     |                            |
+#
+#
+#   Reference:<TR-069_Amendment-6.pdf>
+#   Author：rongtao@sylincom.com
+#
+################################################################################
+#
+#$Echo: 检查RPC Inform 方法的默认值
+#
+$SendRpcPacket:
+   <cwmp:Inform/>
+
+#Step2: 期待Http返回Packet：测试 Inform 方法
+$ExpectRpcPacket:
+        <cwmp:InformResponse>
+            <MaxEnvelopes xsi:type='xsd:unsignedint'>5</MaxEnvelopes>
+            <Manufacturer xsi:type='xsd:string'>5</Manufacturer>
+            <OUI xsi:type='xsd:string'>5</OUI>
+            <ProductClass xsi:type='xsd:string'>5</ProductClass>
+            <SerialNumber xsi:type='xsd:string'>5</SerialNumber>
+        </cwmp:InformResponse>

@@ -1,0 +1,18 @@
+################################################################################
+$EchoCaseNo   : ACS测试工具自检 001
+$EchoTestCase : 检查ACS测试工具自身功能是否正确 
+$EchoTestTitle: 命令成功率率为100%,且与脚本文件逻辑一致时,为测试通过.
+################################################################################
+
+$Echo:  检查命令发送功能
+#
+$SendCommand:sysname TR069_SelfTest
+$SendCommand:int vl 1
+$SendCommand:q
+$SendCommand:q
+<TR069_SelfTest>
+$SendCommand:system-view
+System View: return to User View with Ctrl+Z.
+
+
+#End of file
