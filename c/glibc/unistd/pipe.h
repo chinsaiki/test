@@ -2,6 +2,11 @@
 #include <unistd.h>
 
 int pipe(int fildes[2]);
+/**
+ *	该函数返回两个文件描述符，fd[0], fd[1]
+ *	fd[0]：打开来读
+ *	fd[1]：打开来写
+ */
 
 
 SYSCALL_DEFINE2(pipe2, int __user *, fildes, int, flags)

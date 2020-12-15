@@ -13,10 +13,10 @@
 
 /*主状态机的两种可能状态，分别表示：当前正在分析请求行，当前正在分析头部字段
  * */
-enum CHECK_STATE { CHECK_STATE_REQUESTLINE = 0, CHECK_STATE_HEADER };
+typedef enum CHECK_STATE { CHECK_STATE_REQUESTLINE = 0, CHECK_STATE_HEADER }CHECK_STATE;
 /*从状态机的三种可能状态，即行的读取状态， 分别表示:读取到一个完整的行，
  * 行出错和行数据尚且不完整*/
-enum LINE_STATUS { LINE_OK = 0, LINE_BAD, LINE_OPEN };
+typedef enum LINE_STATUS { LINE_OK = 0, LINE_BAD, LINE_OPEN }LINE_STATUS;
 
 /* 服务器处理HTTP请求的结果，
  * NO_REQUEST表示请求不完整，需要继续读取客户数据;GET_REQUEST表示获得了一个完整的客户请求;
@@ -25,8 +25,8 @@ enum LINE_STATUS { LINE_OK = 0, LINE_BAD, LINE_OPEN };
  * INTERNAL_ERROR表示服务器内部错误;
  * CLOSED_CONNECTION表示客户端已经关闭连接了.*
  */
-enum HTTP_CODE { NO_REQUEST, GET_REQUEST, BAD_REQUEST, 
-                 FORRBIDEN_REQUEST, INTERNAL_ERROR, CLOSED_CONNECTION };
+typedef enum HTTP_CODE { NO_REQUEST, GET_REQUEST, BAD_REQUEST, 
+                 FORRBIDEN_REQUEST, INTERNAL_ERROR, CLOSED_CONNECTION }HTTP_CODE;
 
 /*为简化问题，
  * 我们没有给客户端发送一个完整的HTTP应答报文，而只是根据服务器的处理结果发送如下发成功或失败信息

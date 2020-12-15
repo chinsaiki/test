@@ -50,8 +50,8 @@ int main(int argc, char **argv)
         printf("errno is: %s\n", strerror(errno));  
     } else {  
         int pipefd[2];  
-
-        ret = pipe(pipefd);  //创建管道  
+          /*创建管道, pipefd[0]: read end of the pipe, pipefd[1]:write end of the pipe */
+        ret = pipe(pipefd);  //创建管道
         assert(ret != -1);  
 
         while(1) {

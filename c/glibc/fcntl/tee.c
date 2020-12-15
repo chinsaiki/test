@@ -7,6 +7,24 @@
 #define __USE_GNU
 #include <fcntl.h>
 
+/*
+荣涛 2020.12.15
+
+    stdout          [0]                   [1]
+        |  splice   +-----------------------+   splice
+        +----+------|   pipefd_stdout       |<--------------stdin
+             |      +-----------------------+
+             |      
+             |      
+             |tee
+             |
+             |      [0]                   [1]
+             |      +-----------------------+   splice
+             +----->|   pipefd_file         |--------------> filefd = open("file.txt", ...);
+                    +-----------------------+
+*/
+
+
 int main(int argc,const char* argv[]){
     if(argc<2){
         printf("usage:%s <file>\n",argv[0]);

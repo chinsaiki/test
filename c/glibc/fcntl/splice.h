@@ -3,6 +3,18 @@
 
 int pipe(int pipefd[2]);
 int pipe2(int pipefd[2], int flags);
+/**
+ *	该函数返回两个文件描述符，fd[0], fd[1]
+ *	fd[0]：打开来读
+ *	fd[1]：打开来写
+ */
+    /* Flags for SPLICE and VMSPLICE.  */
+# define SPLICE_F_MOVE		1	/* Move pages instead of copying.  */
+# define SPLICE_F_NONBLOCK	2	/* Don't block on the pipe splicing
+                           (but we may still block on the fd
+                           we splice from/to).  */
+# define SPLICE_F_MORE		4	/* Expect more data.  */
+# define SPLICE_F_GIFT		8	/* Pages passed in are a gift.  */
 
 ssize_t splice(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out, size_t len, unsigned int flags);
 
