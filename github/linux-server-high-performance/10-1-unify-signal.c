@@ -12,6 +12,7 @@
 #include <sys/epoll.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include <stdbool.h>
 
 #define MAX_EVENT_NUMBER    1024
 static int pipefd[2];
@@ -26,7 +27,7 @@ int setnonblocking(int fd)
 
 void addfd(int epollfd, int fd)
 {
-    epoll_event event;
+    struct epoll_event event;
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
@@ -86,7 +87,7 @@ int main(int argc, const char *argv[])
     ret = listen(listenfd, 5);
     assert(ret != -1);
 
-    epoll_event events[MAX_EVENT_NUMBER];
+    struct epoll_event events[MAX_EVENT_NUMBER];
     int epollfd = epoll_create(5);
     assert(epollfd != -1);
     addfd(epollfd, listenfd);
@@ -112,8 +113,8 @@ int main(int argc, const char *argv[])
             fprintf(stderr, "epoll wait failure!\n");
             break;
         }
-
-        for(int i = 0; i < number; i++) 
+        int i;
+        for( i = 0; i < number; i++) 
         {
             int sockfd = events[i].data.fd;
             /*如果就绪的文件描述符是listenfd，则处理新的连接*/
@@ -142,9 +143,10 @@ int main(int argc, const char *argv[])
                     /* 因为每个信号值占1字节，所以按字节来逐个接收信号。我们以SIGTERM
                      * 为例，来说明如何安全地终止服务器主循环
                      */
-                    for(int i = 0; i < ret; i++) 
+                    int j;
+                    for(j = 0; j < ret; j++) 
                     {
-                        switch (signals[i])
+                        switch (signals[j])
                         {
                             case SIGCHLD:
                             case SIGHUP:
