@@ -11,7 +11,11 @@
 #include <fcntl.h>
 #include <sys/epoll.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdlib.h>
+
+//nc 127.0.0.1 1234
+
 
 #define  MAX_EVENT_NUMBER   1024
 #define  BUFFER_SIZE        10
@@ -30,7 +34,7 @@ int setnonblocking(int fd)
  * */
 void addfd(int epollfd, int fd, bool enable_et)
 {
-    epoll_event event;
+    struct epoll_event event;
     event.data.fd = fd;
     event.events = EPOLLIN;
     if (enable_et) 
@@ -44,10 +48,11 @@ void addfd(int epollfd, int fd, bool enable_et)
 
 
 /*LT模式的工作流程 */
-void lt(epoll_event *events, int number, int epollfd, int listenfd)
+void lt(struct epoll_event *events, int number, int epollfd, int listenfd)
 {
     char buf[BUFFER_SIZE];
-    for(int i = 0; i < number; i++) 
+    int i;
+    for(i = 0; i < number; i++) 
     {
         int sockfd = events[i].data.fd;
         if (sockfd == listenfd) 
@@ -77,10 +82,11 @@ void lt(epoll_event *events, int number, int epollfd, int listenfd)
 }
 
 /*ET模式的工作流程*/
-void et(epoll_event *events, int number, int epollfd, int listenfd)
+void et(struct epoll_event *events, int number, int epollfd, int listenfd)
 {
     char buf[BUFFER_SIZE];
-    for(int i = 0; i < number; i++) 
+    int i;
+    for(i = 0; i < number; i++) 
     {
         int sockfd = events[i].data.fd;
         if (sockfd == listenfd) 
@@ -156,7 +162,7 @@ int main(int argc, const char *argv[])
     ret = listen(listenfd, 5);
     assert(ret != -1);
 
-    epoll_event events[MAX_EVENT_NUMBER];
+    struct epoll_event events[MAX_EVENT_NUMBER];
     int epollfd = epoll_create(5);
     assert(epollfd != -1);
     addfd(epollfd, listenfd, true);

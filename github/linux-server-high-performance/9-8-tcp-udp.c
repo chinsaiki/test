@@ -26,7 +26,7 @@ int setnonblocking(int fd)
 
 void addfd(int epollfd, int fd)
 {
-    epoll_event event;
+     struct epoll_event event;
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
@@ -75,7 +75,7 @@ int main(int argc, const char *argv[])
     ret = bind(udpfd, (struct sockaddr *)&address, sizeof(address));
     assert(ret != -1);
 
-    epoll_event events[MAX_EVENT_NUMBER];
+    struct epoll_event events[MAX_EVENT_NUMBER];
     int epollfd = epoll_create(5);
     assert(epollfd != -1);
 
@@ -91,8 +91,8 @@ int main(int argc, const char *argv[])
             fprintf(stderr, "epoll_wait failure\n");
             break;
         }
-
-        for (int i = 0; i < number; i ++)
+            int i;
+        for (i = 0; i < number; i ++)
         {
             int sockfd = events[i].data.fd;
             if (sockfd == listenfd) 

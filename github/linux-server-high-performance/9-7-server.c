@@ -14,6 +14,9 @@
 #include <stdlib.h>
 #include <poll.h>
 
+//g++ 9-7-server.c
+
+
 #define USER_LIMIT    5 /*最大用户数量*/
 #define BUFFER_SIZE   1024
 #define FD_LIMIT      65535
@@ -71,7 +74,7 @@ int main(int argc, const char *argv[])
     /*尽管我们分配了足够的client_data 对象, 但为了提高poll的性能，
      * 仍然有必要限制用户的数量
      * */
-    pollfd fds[USER_LIMIT + 1];
+    struct pollfd fds[USER_LIMIT + 1];
     int user_counter = 0;
     for(int i = 0; i <= USER_LIMIT; i++) 
     {

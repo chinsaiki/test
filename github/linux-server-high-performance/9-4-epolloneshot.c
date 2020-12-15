@@ -11,11 +11,42 @@
 #include <stdlib.h>
 #include <sys/epoll.h>
 #include <pthread.h>
+#include <stdbool.h>
+
+//gcc 9-4-epolloneshot.c -pthread
+//epoll的总结之四LT和ET使用EPOLLONESHOT
+//
+//https://blog.csdn.net/liuhengxiao/article/details/46911129
+//-------------------------------------------------------
+//
+//在前面说过，epoll有两种触发的方式即LT（水平触发）和ET（边缘触发）两种，在前者，
+//只要存在着事件就会不断的触发，直到处理完成，而后者只触发一次相同事件或者说只在
+//从非触发到触发两个状态转换的时候儿才触发。
+//
+//
+//这会出现下面一种情况，如果是多线程在处理，一个SOCKET事件到来，数据开始解析，
+//这时候这个SOCKET又来了同样一个这样的事件，而你的数据解析尚未完成，那么程序会
+//自动调度另外一个线程或者进程来处理新的事件，这造成一个很严重的问题，不同的线程或者进程在处
+//理同一个SOCKET的事件，这会使程序的健壮性大降低而编程的复杂度大大增加！！即使在ET模
+//式下也有可能出现这种情况！！
+//
+//
+//解决这种现象有两种方法，一种是在单独的线程或进程里解析数据，也就是说，
+//接收数据的线程接收到数据后立刻将数据转移至另外的线程。
+//
+//
+//第一种方法
+//第二种方法就是本文要提到的EPOLLONESHOT这种方法，可以在epoll上注册这个事件，注册这个事
+//件后，如果在处理写成当前的SOCKET后不再重新注册相关事件，那么这个事件就不再响应了
+//或者说触发了。要想重新注册事件则需要调用epoll_ctl重置文件描述符上的事件，这样前面的
+//socket就不会出现竞态这样就可以通过手动的方式来保证同一SOCKET只能被一个线程处理，不会
+//跨越多个线程。
+
 
 #define MAX_EVENT_NUMBER     1024
 #define BUFFER_SIZE          1024
 
-struct fds
+struct file_fd_pair_s
 {
     int epollfd;
     int sockfd;
@@ -29,11 +60,12 @@ int setnonblocking(int fd)
     return old_option;
 }
 
-/*将fd上的EPOLLIN和EPOLLET事件注册到epollfd指示的epoll内核事件表中，参数oneshot指定是否注册fd上的EPOLLONESHOT事件
+/*将fd上的EPOLLIN和EPOLLET事件注册到epollfd指示的epoll内核事件表中，
+    参数oneshot指定是否注册fd上的EPOLLONESHOT事件
  */
 void addfd(int epollfd, int fd, bool oneshot)
 {
-    epoll_event event;
+    struct epoll_event event;
     event.data.fd = fd;
     event.events  = EPOLLIN | EPOLLET;
     if (oneshot) 
@@ -49,7 +81,7 @@ void addfd(int epollfd, int fd, bool oneshot)
 
 void reset_oneshot(int epollfd, int fd)
 {
-    epoll_event event;
+    struct epoll_event event;
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET | EPOLLONESHOT;
     epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
@@ -58,8 +90,8 @@ void reset_oneshot(int epollfd, int fd)
 /*工作线程*/
 void* worker(void *arg)
 {
-    int sockfd = ((fds *)arg)->sockfd;
-    int epollfd = ((fds *)arg)->epollfd;
+    int sockfd = ((struct file_fd_pair_s *)arg)->sockfd;
+    int epollfd = ((struct file_fd_pair_s *)arg)->epollfd;
     fprintf(stdout, "start new thread to receive data on fd: %d\n", sockfd);
     char buf[BUFFER_SIZE];
     memset(buf, '\0', BUFFER_SIZE);
@@ -121,7 +153,7 @@ int main(int argc, char *argv[])
     ret = listen(listenfd, 5);
     assert(ret != -1);
 
-    epoll_event events[MAX_EVENT_NUMBER];
+    struct epoll_event events[MAX_EVENT_NUMBER];
     int epollfd = epoll_create(5);
     assert(epollfd != -1);
 
@@ -136,8 +168,8 @@ int main(int argc, char *argv[])
             fprintf(stderr, "epoll failure\n");
             break;
         }
-
-        for(int i = 0; i < ret; i ++)
+        int i;
+        for(i = 0; i < ret; i ++)
         {
             int sockfd = events[i].data.fd;
             if (sockfd == listenfd) 
@@ -152,7 +184,7 @@ int main(int argc, char *argv[])
             else if (events[i].events & EPOLLIN) 
             {
                 pthread_t thread;
-                fds fds_for_new_worker;
+                struct file_fd_pair_s fds_for_new_worker;
                 fds_for_new_worker.epollfd = epollfd;
                 fds_for_new_worker.sockfd  = sockfd;
                 

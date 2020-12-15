@@ -11,6 +11,33 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+
+/** 百度百科 **
+ *
+ *	poll是linux中的字符设备驱动中的一个函数，linux2.5.44版本后，poll被epoll取代。
+ *	和select实现的功能差不多，poll的作用是把当前的文件指针挂到等待队列。
+ *
+ *	作用：把当前的文件指针挂到等待队列；
+ *	功能：和select差不多；
+ *
+ */
+/**
+  POLLIN        普通或优先级带数据可读
+  POLLRDNORM    普通数据可读
+  POLLRDBAND    优先级带数据可读
+  POLLPRI       高优先级数据可读
+  
+  POLLOUT       普通数据可写
+  POLLWRNORM    普通数据可写
+  POLLWRBAND    优先级带数据可写
+  
+  POLLERR       发生错误
+  POLLHUP       发生挂起
+  POLLNVAL      描述符不是一个可打开的文件
+
+ */
+
+
 #define BUFFER_SIZE   64
 
 int main(int argc, const char *argv[])
@@ -38,7 +65,7 @@ int main(int argc, const char *argv[])
         return 1;
     }
     
-    pollfd fds[2];
+    struct pollfd fds[2];
     /*注册文件描述符0（标准输入)和文件描述符sockfd上的可读事件*/
     fds[0].fd = 0;
     fds[0].events = POLLIN;
