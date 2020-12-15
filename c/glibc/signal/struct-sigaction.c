@@ -48,7 +48,13 @@ struct sigaction{
     sigset_t sa_mask;
     int sa_flags;
 };
-
+struct sigaction{
+	void     (*sa_handler)(int);
+	void     (*sa_sigaction)(int, siginfo_t *, void *);
+	sigset_t   sa_mask;
+	int        sa_flags;
+	void     (*sa_restorer)(void);
+};
 //Flags for sigaction
 // int SA_NOCLDSTOP [Macro]
 // This ﬂag is meaningful only for the SIGCHLD signal. When the ﬂag is set, the system

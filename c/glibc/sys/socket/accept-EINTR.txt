@@ -1,0 +1,14 @@
+在多进程服务器编写时候，父进程accept，但是会遇到EINTR错误：
+
+父进程接收链接请求，
+accept 阻塞的时候被信号中断 ， 处理信号对应的操作之后，、
+回来之后不阻塞了，直接返回 -1 ，这时候 errno == EINTR，
+需要将代码写为：
+
+-----------------------------------------
+int fd = accept(lfd, (struct sockaddr*)&client_addr, &cli_len);
+while(fd == -1 && errno == EINTR) {
+	fd = accept(lfd, (struct sockaddr*)&client_addr, &cli_len);
+}
+printf("connect successful.\n");
+-----------------------------------------
