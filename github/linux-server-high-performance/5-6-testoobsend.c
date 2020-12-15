@@ -7,6 +7,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+//4 * Out-of-Band 紧急的数据需要 quickly 发送的数据,忽略 流控制 和 拥塞问题，高优先级
+//5 * in-band 正常的 normal 数据
+
+
 int main(int argc, const char *argv[])
 {
     if (argc <= 2) 
@@ -35,6 +39,8 @@ int main(int argc, const char *argv[])
     {
         const char *oob_data = "abc";
         const char *normal_data = "123";
+
+        //Out-of-Band 紧急的数据需要 quickly 发送的数据,忽略 流控制 和 拥塞问题，高优先级
         send(sockfd, normal_data, strlen(normal_data), 0);
         send(sockfd, oob_data, strlen(oob_data), MSG_OOB);
         /* send(sockfd, normal_data, strlen(normal_data), 0); */

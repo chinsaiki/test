@@ -20,15 +20,18 @@
 //
 
 #include <sys/uio.h>
-ssize_t readv(int filedes, const struct iovec *iov, int iovcnt);
-ssize_t writev(int filedes, const struct iovec *iov, int iovcnt);
-//Both return: number of bytes read or written, –1 on error
-
 
 struct iovec {
 	void *iov_base; /* starting address of buffer */
 	size_t iov_len; /* size of buffer */
 };
+
+
+ssize_t readv(int filedes, const struct iovec *iov, int iovcnt);
+//ssize_t writev(int filedes, const struct iovec *iov, int iovcnt);
+//Both return: number of bytes read or written, –1 on error
+
+
 
 //The datatypes shown for the members of the iovec structure are those specified by POSIX. You may encounter implementations that define iov_base to be a char *, and iov_len to be an int.
 //There is some limit to the number of elements in the array of iovec structures that an implementation allows. Linux, for example, allows up to 1,024, while HP-UX has a limit of 2,100. POSIX requires that the constant IOV_MAX be defined by including the <sys/uio.h> header and that its value be at least 16.

@@ -8,6 +8,11 @@
 #include <errno.h>
 #include <string.h>
 
+
+//4 * Out-of-Band 紧急的数据需要 quickly 发送的数据,忽略 流控制 和 拥塞问题，高优先级
+//5 * in-band 正常的 normal 数据
+
+
 #define BUF_SIZE 1024
 
 int main(int argc, const char *argv[])
@@ -53,6 +58,7 @@ int main(int argc, const char *argv[])
         printf("got %d bytes of normal data '%s'\n", ret, buffer);
 
         memset(buffer, '\0', BUF_SIZE);
+        
         ret = recv(connfd, buffer, BUF_SIZE -1, MSG_OOB);
         printf("got %d bytes of oob data '%s'\n", ret, buffer);
 

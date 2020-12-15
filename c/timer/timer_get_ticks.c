@@ -23,8 +23,10 @@ unsigned long timer_get_ticks(void)
 
 int main()
 {
+    unsigned long start = 0;
 	while(1) {
-		printf("%ld.\n", timer_get_ticks());
+        start = timer_get_ticks();
+		printf("%ld.\n", timer_get_ticks()-start);
 		sleep(1);
 	}
 }

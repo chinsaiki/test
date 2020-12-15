@@ -177,6 +177,9 @@ enum
   {
     MSG_OOB		= 0x01,	/* Process out-of-band data.  */
 #define MSG_OOB		MSG_OOB
+    //4 * Out-of-Band 紧急的数据需要 quickly 发送的数据,忽略 流控制 和 拥塞问题，高优先级
+    //5 * in-band 正常的 normal 数据
+
     MSG_PEEK		= 0x02,	/* Peek at incoming messages.  */
 #define MSG_PEEK	MSG_PEEK
     MSG_DONTROUTE	= 0x04,	/* Don't use local routing.  */
