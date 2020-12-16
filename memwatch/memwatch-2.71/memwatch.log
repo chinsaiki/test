@@ -110,3 +110,37 @@ Memory usage statistics (detailed):
   60                                        1        200      200      0       
   59                                        1        20       20       20      
   57                                        1        210      210      0       
+
+============= MEMWATCH 2.71 Copyright (C) 1992-1999 Johan Lindh =============
+
+Started at Wed Dec 16 16:30:16 2020
+
+Modes: __STDC__ 64-bit mwDWORD==(unsigned int)
+mwROUNDALLOC==8 sizeof(mwData)==56 mwDataSize==56
+
+statistics: now collecting on a line basis
+Hello world!
+underflow: <5> test.c(62), 200 bytes alloc'd at <4> test.c(60)
+relink: <7> test.c(66) attempting to repair MW-0x14085a0...
+relink: MW-0x14085a0 is the head (first) allocation
+relink: MW-0x14085a0 prev pointer is non-NULL, you have a wild pointer
+relink: successful, no allocations lost
+assert trap: <8> test.c(69), 1==2
+
+Stopped at Wed Dec 16 16:30:19 2020
+
+unfreed: <3> test.c(59), 20 bytes at 0x1408310  	{FE FE FE FE FE FE FE FE FE FE FE FE FE FE FE FE ................}
+
+Memory usage statistics (global):
+ N)umber of allocations made: 4
+ L)argest memory usage      : 220
+ T)otal of all alloc() calls: 530
+ U)nfreed bytes totals      : 20
+
+Memory usage statistics (detailed):
+ Module/Line                                Number   Largest  Total    Unfreed 
+ test.c                                     4        220      530      20      
+  64                                        1        100      100      0       
+  60                                        1        200      200      0       
+  59                                        1        20       20       20      
+  57                                        1        210      210      0       
