@@ -1,10 +1,13 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <assert.h>
-#include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <stdlib.h>
 #include <sys/epoll.h>
 #include <signal.h>
 #include <sys/wait.h>
@@ -12,6 +15,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include <arpa/inet.h>
 
 
@@ -24,7 +28,7 @@
 //处理一个客户连接必要的数据
 struct client_data
 {
-    sockaddr_in address;              //客户端的socket地址
+    struct sockaddr_in address;              //客户端的socket地址
     int connfd;                       //socket文件描述符
     pid_t  pid;                       //处理这个连接的子进程的PID
     int    pipefd[2];                 //和父进程通信用的管道
@@ -35,11 +39,11 @@ int sig_pipefd[2];
 int epollfd;
 int listenfd;
 int shmfd;
-char* share_mem = 0;
+char* share_mem = NULL;
 //客户连接数组。进程用客户连接的编号来索引这个数组，即可取得相关的客户连接数据
-client_data* users = 0;
+struct client_data* users = NULL;
 //子进程和客户连接的映射关系。用进程的PID来索引这个数组，即可取得该进程所处理的客户连接的编号
-int* sub_process = 0;
+int* sub_process = NULL;
 
 //当前客户数量
 int user_count = 0;
@@ -55,7 +59,7 @@ int setnonblocking(int fd)
 
 void addfd(int epollfd, int fd)
 {
-    epoll_event event;
+    struct epoll_event event;
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
@@ -70,7 +74,7 @@ void sig_handler(int sig)
     errno = save_errno;
 }
 
-void addsig(int sig, void(*handler)(int), bool restart = true)
+void addsig(int sig, void(*handler)(int), bool restart)
 {
     struct sigaction sa;
     memset(&sa, '\0', sizeof(sa));
@@ -90,8 +94,10 @@ void del_resource()
     close(listenfd);
     close(epollfd);
     shm_unlink(shm_name);
-    delete [] users;
-    delete [] sub_process;
+//    delete [] users;
+//    delete [] sub_process;
+    free(users);
+    free(sub_process);
 }
 
 //停止一个子进程
@@ -101,9 +107,9 @@ void child_term_handler(int sig)
 }
 
 //子进程运行的函数。参数idx指出该子进程处理的客户连接的编号，users是保存所有客户端连接数据的数组，参数share_mem指出共享内存的起始地址
-int run_child(int idx, client_data* users, char* share_mem)
+int run_child(int idx, struct client_data* users, char* share_mem)
 {
-    epoll_event events[MAX_EVENT_NUMBER];
+    struct epoll_event events[MAX_EVENT_NUMBER];
     //子进程使用I/O复用技术来同时监听两个文件描述符：客户连接socket、与父进程通信的管道文件描述符
     int child_epollfd = epoll_create(5);
     assert(child_epollfd != -1);
@@ -213,14 +219,16 @@ int main(int argc, char *argv[])
     assert(ret != -1);
 
     user_count = 0;
-    users = new client_data[USER_LIMIT + 1];
-    sub_process = new int [PROCESS_LIMIT];
+//    users = new client_data[USER_LIMIT + 1];
+    users = (struct client_data*)malloc(sizeof(struct client_data)*(USER_LIMIT + 1));
+//    sub_process = new int [PROCESS_LIMIT];
+    sub_process = (int*)malloc(sizeof(int) * PROCESS_LIMIT);
     for( int i = 0; i < PROCESS_LIMIT; ++ i)
     {
         sub_process[i] = -1;
     }
 
-    epoll_event events[MAX_EVENT_NUMBER];
+    struct epoll_event events[MAX_EVENT_NUMBER];
     epollfd = epoll_create(1);
     assert(epollfd != -1);
     addfd(epollfd, listenfd);
@@ -230,10 +238,10 @@ int main(int argc, char *argv[])
     setnonblocking(sig_pipefd[1]);
     addfd(epollfd, sig_pipefd[0]);
     
-    addsig(SIGCHLD, sig_handler);
-    addsig(SIGTERM, sig_handler);
-    addsig(SIGINT, sig_handler);
-    addsig(SIGPIPE, SIG_IGN);
+    addsig(SIGCHLD, sig_handler, true);
+    addsig(SIGTERM, sig_handler, true);
+    addsig(SIGINT, sig_handler, true);
+    addsig(SIGPIPE, SIG_IGN, true);
     bool stop_server = false;
     bool terminate = false;
 
@@ -255,6 +263,7 @@ int main(int argc, char *argv[])
             printf("epoll failure\n");
             break;
         }
+        
         for (int i = 0; i < number; i ++ )
         {
             int sockfd = events[i].data.fd;

@@ -1,61 +1,73 @@
-/* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 06月 14日 星期五 09:05:29 CST. */
-/* 
- Copyright (C) Rong Tao @Beijing
+#include <stdio.h>
+#include <sys/socket.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
- Permission is granted to copy, distribute and/or modify this document
- under the terms of the GNU Free Documentation License, Version 1.3
- or any later version published by the Free Software Foundation;
- with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
- Texts. A copy of the license is included in the section entitled ‘‘GNU
- Free Documentation License’’.
-   2019年 03月 14日 星期四 19:24:32 CST. 
-*/
-/* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 13日 星期三 08:54:03 CST. */
-/* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 08日 星期五 08:10:16 CST. */
-/* Copyright (c) Colorado School of Mines, CST.*/
-/* All rights reserved.                       */
+static const int CONTROL_LEN = CMSG_LEN(sizeof(int));
 
-/* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 07日 星期四 20:27:53 CST. */
-/**
- *	16.8.3 Socket Pairs
- *	A socket pair consists of a pair of connected (but unnamed) sockets. It is very similar to
- *	a pipe and is used in much the same way. Socket pairs are created with the socketpair
- *	function, declared in ‘sys/socket.h’. A socket pair is much like a pipe; the main diﬀerence
- *	is that the socket pair is bidirectional, whereas the pipe has one input-only end and one
- *	output-only end (see Chapter 15 [Pipes and FIFOs], page 384).
- *	int socketpair (int namespace, int style, int protocol, int [Function]
- *	filedes[2])
- *	This function creates a socket pair, returning the fle descriptors in filedes[0] and
- *	filedes[1]. The socket pair is a full-duplex communications channel, so that both
- *	reading and writing may be performed at either end.
- *	The namespace, style and protocol arguments are interpreted as for the socket func
- *	tion. style should be one of the communication styles listed in Section 16.2 [Commu
- *	nication Styles], page 390. The namespace argument specifes the namespace, which
- *	must be AF_LOCAL (see Section 16.5 [The Local Namespace], page 395); protocol
- *	specifes the communications protocol, but zero is the only meaningful value.
- *
- *	If style specifes a connectionless communication style, then the two sockets you get
- *	are not connected, strictly speaking, but each of them knows the other as the default
- *	destination address, so they can send packets to each other.
- *	The socketpair function returns 0 on success and -1 on failure. The following errno
- *	error conditions are defned for this function:
- *	EMFILE The process has too many fle descriptors open.
- *	EAFNOSUPPORT
- *	The specifed namespace is not supported.
- *	EPROTONOSUPPORT
- *	The specifed protocol is not supported.
- *	EOPNOTSUPP
- *	The specifed protocol does not support the creation of socket pairs.
- */
- 
+//发送文件描述符,fd参数是用来传递信息的UNIX域socket，
+//fd_to_send参数是待发送的文件描述符
+
+void send_fd(int fd, int fd_to_send)
+{
+    struct iovec iov[1];
+    struct msghdr msg;
+    char buf[0];
+
+    iov[0].iov_base = buf;
+    iov[0].iov_len  = 1;
+    msg.msg_name  = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov     = iov;
+    msg.msg_iovlen  = 1;
+    
+    struct cmsghdr cm;
+    cm.cmsg_len = CONTROL_LEN;
+    cm.cmsg_level   = SOL_SOCKET;
+    cm.cmsg_type    = SCM_RIGHTS;
+    *(int *)CMSG_DATA(&cm) = fd_to_send;
+    msg.msg_control = &cm; //设置辅助数据
+    msg.msg_controllen = CONTROL_LEN;
+    
+    sendmsg(fd, &msg, 0);
+}
+
+//接收目标文件描述符
+int recv_fd(int fd)
+{
+    struct iovec iov[1];
+    struct msghdr msg;
+    char buf[0];
+
+    iov[0].iov_base = buf;
+    iov[0].iov_len  = 1;
+    msg.msg_name    = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov     = iov;
+    msg.msg_iovlen  = 1;
+
+    struct cmsghdr cm;
+    msg.msg_control  = &cm;
+    msg.msg_controllen = CONTROL_LEN;
+
+    recvmsg(fd, &msg, 0);
+
+    int fd_to_read = *(int *)CMSG_DATA( &cm);
+    return fd_to_read;
+}
+
 /**
  *	socketpair函数创建连个随后关联起来的套接字。
  *	本函数仅适用于Unix域套接字。
  */
 
-#include <sys/socket.h>
+//#include <sys/socket.h>
 
-int socketpair(int family, int type, int protocol, int sockfd[2]);
+//int socketpair(int family, int type, int protocol, int sockfd[2]);
 /**
  *	返回值：
  *		成功：0
@@ -69,3 +81,42 @@ int socketpair(int family, int type, int protocol, int sockfd[2]);
  *	本函数类似于Unix的pipe函数，会返回两个彼此连接的描述符，事实上，
  *	源自Berkeley的实现通过执行与socketpair一样的内部操作给出pipe接口。
  */
+
+
+int main(int argc, const char *argv[])
+{
+    int pipefd[2];
+    int fd_to_pass = 0;
+    //创建父、子进程间的管道，文件描述符pipefd[0]和pipefd[1]都是UNIX域socket
+    int ret = socketpair(PF_UNIX, SOCK_DGRAM, 0, pipefd);
+    assert(ret != -1);
+    
+    pid_t pid = fork();
+    assert(pid >= 0);
+
+    if (pid == 0) 
+    {
+        close(pipefd[0]);
+        fd_to_pass = open("test.txt", O_RDWR, 0666);
+        //子进程通过管道将文件描述符发送到父进程。如果文件text.txt打开失败，则子进程将标准输入文件描述符发送到父进程
+        send_fd(pipefd[1], (fd_to_pass > 0) ? fd_to_pass : 0 );
+//        char buf[1024];
+//        memset(buf, '\0', 1024);  
+//        read(fd_to_pass, buf, 1024); //读取目标文件描述符，以验证其有效性
+//        printf("[Children] I got fd %d and data %s\n", fd_to_pass, buf);
+        close(fd_to_pass);
+
+    } else if (pid>0) {
+        close(pipefd[1]);
+        
+        char buf[1024];
+        
+        int FD = recv_fd(pipefd[0]);
+        
+        read(FD, buf, 1024); 
+        printf("[Parent] I got fd %d and data %s\n", FD, buf);
+        
+        close(FD);
+    }
+    return 0;
+}
