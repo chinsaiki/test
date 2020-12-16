@@ -1,0 +1,76 @@
+MD5SUM(1)                                              FSF                                             MD5SUM(1)
+
+
+
+NAME
+       md5sum - 计算检验MD5效验码
+
+
+总
+       ../src/md5sum [OPTION] [FILE]...
+       ../src/md5sum [OPTION] --check [FILE]
+
+
+描
+       显示 或 检验 MD5 效验码. 如果 没有 FILE 或者 FILE 是 - 时, 就从 标准 输入 读入.
+
+       -b, --binary
+              以 二进制 模式 读入 文件 (DOS/Windows 下 默认)
+
+       -c, --check
+              对 给定 的 文件 检验 MD5 效验码
+
+       -t, --text
+              以 文本 模式 读入 文件 (默认)
+
+   下
+       --status
+              不显示 任何 输出, 用 返回码 表示 成功 与否
+
+       -w, --warn
+              对于 错误 的 MD5 效验码 行 的 格式 发出 警告
+
+       --help 显示 这个 帮助 然后 退出
+
+       --version
+              显示 版本 信息 然后 退出
+
+       效验码  用  RFC  1321 中 描述 的 算法 生成. 当 检验 的 时候, 输入 必需 是 这个 程序 以前 的 输出. 默认 的
+       模式 是 显示 一行 数据, 包括 效验码, 一个 指示 类型 的 字符 (`*' 表示 二进制, ` '  表示  文本),  和  每个
+       文件 的 名字.
+
+
+作
+       Ulrich Drepper
+
+
+错
+       把 错误 报告 给 <bug-textutils@gnu.org>.
+
+
+版
+       版权所有 © 1999 自由软件基金会
+       这一程序是自由软件； 拷贝条件见源文件。 没有任何担保； 甚至没有适合特定目的的隐含的担保。
+
+
+参
+       完整的  md5sum 文档 用 Texinfo 手册页 的 形式 写成. 如果 info 和 md5sum 程序 都 正确 的 安装 在 你的 机子
+       上, 用
+
+              info md5sum
+
+       命令 能够 查看 完整 的 手册页.
+
+
+[中
+       唐
+
+[中
+       2001/10/31
+
+[中
+       http://cmpp.linuxforum.net
+
+
+
+GNU textutils 2.0a                                December 1999                                        MD5SUM(1)
