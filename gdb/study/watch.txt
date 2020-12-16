@@ -1,0 +1,27 @@
+GDB watch变量过程
+
+------------------------------------
+1. 使用 -g 编译
+	gcc test.c -g
+
+2. 使用 gdb 运行程序
+	gdb a.out
+
+3. 设置断点
+	b main
+
+4. 运行，运行至指令执行时会停止
+5. watch a 变量
+	watch a
+
+6. 使用 continue 'c' 继续执行
+	(gdb) c
+	Continuing.
+	Hardware watchpoint 2: a
+
+	Old value = 0
+	New value = 1
+
+
+
+

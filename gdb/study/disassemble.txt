@@ -1,0 +1,40 @@
+显示反汇编代码
+
+gcc test-foo.c -g
+------------------------------------------------
+  1 #include <stdio.h>
+  2 #include <malloc.h>
+  3 #include <stdlib.h>
+  4 
+  5 int foo(int a) {
+  6 //    printf("foo a = %d\n", a);
+  7     return a+1;
+  8 }
+  9 int foo2(int a, int b) {
+ 10 //    printf("foo2 a = %d, b = %d\n", a, b);
+ 11     return foo(a)+foo(b);
+ 12 }
+ 13 
+ 14 int main(int argc, char *argv[]) {
+ 15     int a = foo2(1, 1);
+ 16     return 0;
+ 17 }
+------------------------------------------------
+
+(gdb) b foo
+Breakpoint 1 at 0x4004f4: file test-foo.c, line 7.
+(gdb) r
+Breakpoint 1, foo (a=1) at test-foo.c:7
+7	    return a+1;
+(gdb) disassemble 
+Dump of assembler code for function foo:
+   0x00000000004004ed <+0>:	push   %rbp
+   0x00000000004004ee <+1>:	mov    %rsp,%rbp
+   0x00000000004004f1 <+4>:	mov    %edi,-0x4(%rbp)
+=> 0x00000000004004f4 <+7>:	mov    -0x4(%rbp),%eax
+   0x00000000004004f7 <+10>:	add    $0x1,%eax
+   0x00000000004004fa <+13>:	pop    %rbp
+   0x00000000004004fb <+14>:	retq   
+End of assembler dump.
+(gdb) 
+

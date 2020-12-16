@@ -1,0 +1,39 @@
+set variable 设置变量
+
+---------------------------------------
+示例：
+(gdb) set args a b c d e f g
+...
+(gdb) set $i=0
+(gdb) set variable $p=argv[$i]
+(gdb) while $i!=argc
+>print $p=argv[$i++]
+>end
+$3 = 0x7fffffffdef0 "/work/workspace/test/gdb/study/watch/a.out"
+$4 = 0x7fffffffdf1b "a"
+$5 = 0x7fffffffdf1d "b"
+$6 = 0x7fffffffdf1f "c"
+$7 = 0x7fffffffdf21 "d"
+$8 = 0x7fffffffdf23 "e"
+$9 = 0x7fffffffdf25 "f"
+$10 = 0x7fffffffdf27 "g"
+
+------------------------------------------------
+示例2：
+(gdb) set args a b c d e f g
+..
+(gdb) set $p=argv[0]
+(gdb) set $i=0
+(gdb) while $p!=0
+>print $p=argv[$i++]
+>end
+$19 = 0x7fffffffdef0 "/work/workspace/test/gdb/study/watch/a.out"
+$20 = 0x7fffffffdf1b "a"
+$21 = 0x7fffffffdf1d "b"
+$22 = 0x7fffffffdf1f "c"
+$23 = 0x7fffffffdf21 "d"
+$24 = 0x7fffffffdf23 "e"
+$25 = 0x7fffffffdf25 "f"
+$26 = 0x7fffffffdf27 "g"
+$27 = 0x0
+  

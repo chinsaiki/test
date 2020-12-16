@@ -7,11 +7,13 @@ frame 是堆栈中的一段，标识一个函数的调用。
 
 backtrace 或者
 bt
+up 切换到到上一个frame
+down 切换到下个frame
 
 改变当前 frame 
 
 frame <FRAME NO.>
-up
+up	
 down
 
 TODO ...

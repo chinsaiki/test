@@ -1,0 +1,74 @@
+打印链表信息
+
+源程序
+----------------------------------------------------------
+  1 #include <stdio.h>
+  2 #include <malloc.h>
+  3 #include <stdlib.h>
+  4 
+  5 struct namelist {
+  6     char name[64];
+  7     struct namelist *next;
+  8 };
+  9 
+ 10 struct namelist rt1 = {"rt1", NULL};
+ 11 struct namelist rt2 = {"rt2", NULL};
+ 12 struct namelist rt3 = {"rt3", NULL};
+ 13 struct namelist rt4 = {"rt4", NULL};
+ 14 
+ 15 
+ 16 int main(int argc, char *argv[])
+ 17 {
+ 18     rt1.next = &rt2;
+ 19     rt2.next = &rt3;
+ 20     rt3.next = &rt4;
+ 21 
+ 22     struct namelist *l1 = &rt1;
+ 23 
+ 24     while(l1){
+ 25         printf("%s\n", l1->name);
+ 26         l1=l1->next;
+ 27     }
+ 28 
+ 29     return 0;
+ 30 }
+----------------------------------------------------------
+
+
+[root@localhost study]# gdb a.out 
+(gdb) list 20
+15	
+16	int main(int argc, char *argv[])
+17	{
+18	    rt1.next = &rt2;
+19	    rt2.next = &rt3;
+20	    rt3.next = &rt4;
+21	
+22	    struct namelist *l1 = &rt1;
+23	
+24	    while(l1){
+(gdb) b main
+Breakpoint 1 at 0x40053c: file test.c, line 18.
+(gdb) b 23
+Breakpoint 2 at 0x400565: file test.c, line 23.
+(gdb) r
+Breakpoint 1, main (argc=1, argv=0x7fffffffdb78) at test.c:18
+18	    rt1.next = &rt2;
+(gdb) c
+Continuing.
+
+Breakpoint 2, main (argc=1, argv=0x7fffffffdb78) at test.c:24
+24	    while(l1){
+(gdb) silent
+Undefined command: "silent".  Try "help".
+(gdb) set $p=l1
+(gdb) while $p!=0
+ >print $p->name
+ >set $p=$p->next
+ >end
+$1 = "rt1", '\000' <repeats 60 times>
+$2 = "rt2", '\000' <repeats 60 times>
+$3 = "rt3", '\000' <repeats 60 times>
+$4 = "rt4", '\000' <repeats 60 times>
+(gdb) 
+

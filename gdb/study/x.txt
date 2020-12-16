@@ -42,3 +42,18 @@ x /fmt <address>
 0x7fffffffdacc:	0x7fff	0x0
 0x7fffffffdadc:	0xfc9089ef00000000	0xa3aa89ef4a1b316b
 0x7fffffffdaec:	0x4a1b21d1	0x7fff
+
+------------------------------------------
+示例2： 查看 命令行参数 argv
+(gdb) set args a b c d e f
+...
+(gdb) x /10cb argv[0]
+0x7fffffffdef0:	47 '/'	119 'w'	111 'o'	114 'r'	107 'k'	47 '/'	119 'w'	111 'o'
+0x7fffffffdef8:	114 'r'	107 'k'
+(gdb) x /10cb argv[1]
+0x7fffffffdf1b:	97 'a'	0 '\000'	98 'b'	0 '\000'	99 'c'	0 '\000'	100 'd'	0 '\000'
+0x7fffffffdf23:	101 'e'	0 '\000'
+(gdb) x /cb argv[1]
+0x7fffffffdf1b:	97 'a'
+(gdb) x /cb argv[0]
+0x7fffffffdef0:	47 '/'
