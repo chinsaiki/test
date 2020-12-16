@@ -1,0 +1,121 @@
+SEND(2)                                     Linux Programmer's Manual                                    SEND(2)
+
+
+
+NAME
+       send, sendto, sendmsg - 从套接字发送消息
+
+概
+       #include <sys/types.h>
+       #include <sys/socket.h>
+
+       int send(int s, const void *msg, size_t len, int flags);
+       int sendto(int s, const void *msg, size_t len, int flags, const struct sockaddr *to, socklen_t tolen);
+       int sendmsg(int s, const struct msghdr *msg, int flags);
+
+描
+       Send,  sendto,  和  sendmsg  用于向另一个套接字传递消息.   Send  仅仅用于连接套接字,而  sendto 和 sendmsg
+       可用于任何情况下.
+
+       目标地址用 to 指定, tolen 定义其长度.消息的长度用 len 指定.  如果消息太长不能通过下层协议,函数将返回 EMS‐
+       GSIZE 错误,消息也不会被送出.
+
+       在数据传送过程中所产生的错误不会返回给 send.  如果发生本地错误,则返回-1.
+
+       当要发送的消息长度大于套接字当前可用缓冲区时,    send    将阻塞,除非在套接字上设置了非阻塞式输入输出模式.
+       对于非阻塞模式,这种情况下将返回 EAGAIN 错误.  The 系统调用 select(2) 可以用来检测何时可以发送更多的数据.
+
+       参数 flags 是一个标志字,可以包含下列标志:
+
+       对于支持带外数据的套接字,
+              MSG_OOB 将送出 out-of-band (带外)数据(比如, SOCK_STREAM 类型的套接字);  下层协议也必须支持.   带外
+              数据.
+
+       MSG_DONTROUTE
+              在送出分组时不使用网关.只有直接连接在网络上的主机 才能接收到数据.这个标志通常仅用于诊断和路由程序.
+              可路由的协议族才能使用这个标志;包套接字不可以.
+
+       MSG_DONTWAIT
+              使用非阻塞式操作;如果操作需要阻塞,将返回 EAGAIN 错误(也可以用  F_SETFL  fcntl(2)  设置  O_NONBLOCK
+              实现这个功能.)
+
+       MSG_NOSIGNAL
+              当流式套接字的另一端中断连接时不发送 SIGPIPE 信号,但仍然返回 EPIPE 错误.
+
+       MSG_CONFIRM (仅用于Linux 2.3以上版本)
+              通知链路层发生了转发过程:得到了另一端的成功应答.
+              如果链路层没有收到通知,它将按照常规探测网络上的相邻 主机(比如通过免费arp).  只能用于 SOCK_DGRAM 和
+              SOCK_RAW 类型的套接字,且仅对IPv4和IPv6有效.详情参见 arp(7)
+
+       结构体 msghdr 的定义如下.详情参见 recv(2) 和下文.
+
+              struct msghdr {
+                  void         * msg_name;     /*地址选项*/
+                  socklen_t    msg_namelen;    /*地址长度*/
+                  struct iovec * msg_iov;      /*消息数组*/
+                  size_t       msg_iovlen;     /*msg_iov中的元素个数*/
+                  void         * msg_control;  /*辅助信息,见下文*/
+                  socklen_t    msg_controllen; /*辅助数据缓冲区长度*/
+                  int          msg_flags;      /*接收消息标志*/
+              };
+
+       可以使用   msg_control   和   msg_controllen  成员发送任何控制信息.内核所能处理的最大控制消息缓冲区长度由
+       net.core.optmem_max sysctl对每个套接字进行限定;参见 socket(7).
+
+返
+       成功时返回发送的字符个数,否则返回-1.
+
+错
+       其中一些是套接字层产生的标准错误.其他的是下层协议模块产生的;参见 各自的man手册.
+
+       EBADF  指定了非法描述符.
+
+       ENOTSOCK
+              参数 s 不是一个套接字.
+
+       EFAULT 参数指定的用户地址空间非法.
+
+       EMSGSIZE
+              消息长度越界.
+
+       EAGAIN或者EWOULDBLOCK
+              套接字设置为非阻塞式,但所请求的操作需要阻塞.
+
+       ENOBUFS
+              网络接口输出队列已满.这通常表明接口已停止发送,也有可能是
+              暂时性的拥挤(这不会发生在linux下,当设备队列溢出时数据报 只是被简单丢弃.
+
+       EINTR  接收到信号.
+
+       ENOMEM 没有可用内存.
+
+       EINVAL 传递的参数非法.
+
+       EPIPE  连接套接字的本地端已关闭.这种情况下进程还会接收到 SIGPIPE 信号,除非设置了 MSG_NOSIGNAL
+
+兼
+       4.4BSD,SVr4,POSIX1003.1g草案(这些系统调用首次出现于4.2BSD).  MSG_CONFIRM 是Linux所做的扩展.
+
+注
+       上面给出的函数原型遵循Single         Unix         Specification,         glibc2也是这么做的;        flags
+       参数在BSD4.*中是`int',但在libc4和libc5中是`unsigned              int';              参数              len
+       在BSD4.*和libc4中是`int',但在libc5中是'size_t';   参数   tolen   在BSD4.*,libc4和libc5中都是`int'.   参见
+       accept(2).
+
+SEE ALSO
+       fcntl(2), recv(2), select(2), getsockopt(2), sendfile(2), socket(2), write(2), socket(7), ip(7),  tcp(7),
+       udp(7)
+
+
+[中
+       byeyear <love_my_love@263.net >
+
+[中
+       2002.02.27
+
+《
+       http://cmpp.linuxforum.net
+
+
+
+Linux Man Page                                      July 1999                                            SEND(2)
