@@ -1,0 +1,44 @@
+查看内存
+
+x /fmt <address>
+-----------------------------------
+	address	任何合法的表达式
+	fmt	格式字符
+		x	十六进制
+		d	十进制
+		u	无符号
+		o	八进制
+		t	二进制
+		a	十六进制打印地址
+		c	字符格式
+		f	浮点格式
+	fmt 由三部分组成，NFU
+		-----------------
+		N	查看的长度
+		F	格式，和 print 格式一致
+		U	单位，可以是 
+			-------------------
+			b	字节
+			h	半字（两个字节）
+			w	字（四个字节）
+			g	双字（八个字节）
+		
+----------------------------------
+示例
+(gdb) x /a &a
+0x7fffffffda7c:	0x3
+(gdb) x /aw &a
+0x7fffffffda7c:	0x3
+(gdb) x /ab &a
+0x7fffffffda7c:	0x3
+(gdb) x /ag &a
+0x7fffffffda7c:	0x3
+(gdb) x /16ag &a
+0x7fffffffda7c:	0x3	0xf7a2f55500000000
+0x7fffffffda8c:	0x7fff	0xffffdb6800000020
+0x7fffffffda9c:	0x7fff	0x40052d00000001
+0x7fffffffdaac:	0x0	0x49b089ef00000000
+0x7fffffffdabc:	0x400440b5e4ce94	0xffffdb6000000000
+0x7fffffffdacc:	0x7fff	0x0
+0x7fffffffdadc:	0xfc9089ef00000000	0xa3aa89ef4a1b316b
+0x7fffffffdaec:	0x4a1b21d1	0x7fff

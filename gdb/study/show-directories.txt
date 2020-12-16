@@ -1,0 +1,7 @@
+directory /PATH/NAME
+
+可执行文件中有调试信息，指定源代码中的位置，在那个文件哪一行上。
+文件名称一般是相对路径。
+--------------------------
+directory /PATH/NAME	添加一个查找路径，如果 directory 不带参数，就清空 sources directory
+show directories	查看 sources directory

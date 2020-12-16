@@ -1,0 +1,28 @@
+查看变量
+
+print /fmt <expr>
+-----------------------------------
+	expr	任何合法的表达式
+	fmt	格式字符
+		x	十六进制
+		d	十进制
+		u	无符号
+		o	八进制
+		t	二进制
+		a	十六进制打印地址
+		c	字符格式
+		f	浮点格式
+
+----------------------------------
+示例
+(gdb) print /d a
+$2 = 3
+(gdb) print /x a
+$3 = 0x3
+(gdb) print /t a
+$4 = 11
+(gdb) print /a a
+$5 = 0x3
+(gdb) print /a &a
+$6 = 0x7fffffffda7c
+

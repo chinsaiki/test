@@ -1,0 +1,11 @@
+info 查看信息
+
+info sources
+-----------------------------------------------
+示例
+(gdb) info sources 
+Source files for which symbols have been read in:
+
+/work/workspace/test/gdb/study/watch/test.c
+
+Source files for which symbols will be read in on demand:
