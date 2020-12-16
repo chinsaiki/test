@@ -39,6 +39,35 @@
  *	ﬂags contains ﬂags that control the nature of the map. One of MAP_SHARED or MAP_
  *	PRIVATE must be specifed.
  */
+    /**
+     *  Example of Memory-Mapped file
+     *
+     *              address space
+     *              of process
+     *  high memory +------+
+     *              |      |
+     *              |      |
+     *              +------+--------------------------------\
+     *              |      |                                |
+     *                                                      |
+     *                                                      |
+     *          memory mapped                               |
+     *          protion of file                             |
+     *                                                      |
+     *              |      |                                |
+     *return value->+------+----------------\               |
+     *  of mmap     |      |                |               |
+     *  low memory  +------+                |               |
+     *                                      |               |
+     *                                      |               |
+     *                                      |               |
+     *                                      |               |
+     *                          +------------------------------------+
+     *      file referenced by  |           |memory mapped  |        |
+     *              descriptorfd|           |protion of file|        |
+     *                          +------------------------------------+
+     *                          | offset    |  len          |
+     */ 
 
 #include <sys/mman.h>
 #include <sys/types.h>

@@ -31,7 +31,7 @@ void with_other_locale (char *new_locale, void (*subroutine) (int), int argument
     /* Copy the name so it won’t be clobbered by setlocale. */
     saved_locale = strdup (old_locale);
     if (saved_locale == NULL)
-        fatal ("Out of memory");
+        printf ("Out of memory\n");
     /* Now change the locale and do some stuﬀ with it. */
     setlocale (LC_ALL, new_locale);
     (*subroutine) (argument);
