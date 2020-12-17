@@ -3,7 +3,8 @@
 -----------------------------------
 *** sendfile:	test/c/glibc/sys/sendfile
 *** splice:	test/c/glibc/fcntl/splice 
-		*** test/zero-copy/github/eproxy 一个splice应用端口port转发器示例
+*** splice: test/c/glibc/fcntl/splice-server-client 一个 splice 服务端-客户端示例
+*** test/zero-copy/github/eproxy 一个splice应用端口port转发器示例
 *** tee:	test/c/glibc/fcntl/tee
 *** 高性能: test/github/linux-server-high-performance
 *** 高性能: test/high-performance
