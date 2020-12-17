@@ -1,0 +1,35 @@
+SIGPIPE
+　　在网络编程中，SIGPIPE这个信号是很常见的。当往一个写端关闭的管道或socket连接中连续
+写入数据时会引发SIGPIPE信号,
+引发SIGPIPE信号的写操作将设置errno为EPIPE。在TCP通信中，当通信的双方中的一方close一个连接
+时，若另一方接着发数据，根据TCP协议的规定，会收到一个RST响应报文，若再往这个服务
+器发送数据时，系统会发出一个SIGPIPE信号给进程，告诉进程这个连接已经断开了，不能再写入数据。
+
+见 
+
+	SIGPIPE-server.c 
+	SIGPIPE-client.c 
+
+源代码
+
+
+此外，因为SIGPIPE信号的默认行为是结束进程，而我们绝对不希望因为写操作的错误而导致程序退出，
+尤其是作为服务器程序来说就更恶劣了。所以我们应该对这种信号加以处理，在
+这里，介绍两种处理SIGPIPE信号的方式：
+
+　　１ 、给SIGPIPE设置SIG_IGN信号处理函数，忽略该信号:
+
+signal(SIGPIPE, SIG_IGN);
+
+　　前文说过，引发SIGPIPE信号的写操作将设置errno为EPIPE,
+。所以，第二次往关闭的socket中写入数据时, 会返回-1, 同时errno置为EPIPE. 
+这样，便能知道对端已经关闭，然后进行相应处理，而不会导致整个进程退出.
+
+　　2、使用send函数的MSG_NOSIGNAL 标志来禁止写操作触发SIGPIPE信号。
+
+send(sockfd , buf , size , MSG_NOSIGNAL);
+
+　　 同样，我们可以根据send函数反馈的errno来判断socket的读端是否已经关闭。
+　　 
+此外，我们也可以通过IO复用函数来检测管道和socket连接的读端是否已经关闭。以POLL为例，
+当socket连接被对方关闭时，socket上的POLLRDHUP事件将被触发。
