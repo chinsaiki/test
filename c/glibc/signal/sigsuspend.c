@@ -46,7 +46,7 @@ unsigned int my_sleep(unsigned int seconds)
     susset = oldset;
     sigprocmask(SIG_UNBLOCK,&susset,NULL); //确保susset中的SIGALRM没被屏蔽
     
-    //利用sigsuspend函数使进程挂起等待
+    //利用 sigsuspend 函数使进程挂起等待
     sigsuspend(&susset);
 
     int old = alarm(0); //将时钟清0 返回值为上一次时钟剩余秒数
