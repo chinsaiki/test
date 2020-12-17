@@ -1,8 +1,8 @@
 /*************************************************************************
-	> File Name: sigsuspend.c.c
+	> File Name: pause_sleep.c
 	> Author: 
 	> Mail: 
-    > Main:利用sigsuspend 解决时序竟态的问题
+    > Main:利用pause 和alrm函数实现sleep功能；
 	> Created Time: 2017年09月09日 星期六 22时22分00秒
  ************************************************************************/
 
@@ -19,10 +19,6 @@ void catch_fun(int signo)
 unsigned int my_sleep(unsigned int seconds)
 {
     int ret = 0;
-    //定义并初始化信号集
-    sigset_t newset,oldset,susset;
-    sigemptyset(&newset);
-    sigaddset(&newset,SIGALRM);
 
     //定义sigaction结构体并初始化
     struct sigaction act,oldact;
@@ -37,22 +33,19 @@ unsigned int my_sleep(unsigned int seconds)
         perror("sigaction\n");
         exit(1);
     }
-    //信号屏蔽字
-    sigprocmask(SIG_BLOCK,&newset,&oldset);
 
-    //利用sigsuspend函数和alarm函数实现sleep功能
+    //利用pause函数和alarm函数实现sleep功能
     alarm(seconds);
+    ret = pause();
 
-    susset = oldset;
-    sigprocmask(SIG_UNBLOCK,&susset,NULL); //确保susset中的SIGALRM没被屏蔽
-    
-    //利用sigsuspend函数使进程挂起等待
-    sigsuspend(&susset);
+    //慢速系统调用被信号打断
+    if(ret == -1 && errno == EINTR)
+    {
+        printf("----pause sucess----\n");
+    }
 
     int old = alarm(0); //将时钟清0 返回值为上一次时钟剩余秒数
     sigaction(SIGALRM,&oldact,NULL);//恢复SIGALRM函数原来的处理方式
-
-    sigprocmask(SIG_SETMASK,&oldset,NULL); //解除对SIGALRM信号的屏蔽；
 
     return old;  //返回值是上一次的剩余睡眠秒数
 

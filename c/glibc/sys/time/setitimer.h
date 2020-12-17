@@ -1,5 +1,6 @@
 #include <sys/time.h>
 
+//到时后，触发 SIGALRM
 //getitimer, setitimer - get or set value of an interval timer
 //int getitimer(int which, struct itimerval *curr_value);
 int setitimer(int which, const struct itimerval *new_value,
