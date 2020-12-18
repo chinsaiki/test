@@ -6,8 +6,10 @@
 #include <string.h>
 #include <errno.h>
 
+#define debug(fmt...) do{fprintf(stderr, "[%s:%s %d]", __FILE__, __func__, __LINE__);fprintf(stderr, fmt);}while(0)
+
 #define ERR(fmt, args...) fprintf(stderr, fmt, ##args);
-#define MSG(fmt, args...) fprintf(stdout, fmt, ##args);
+#define MSG(fmt, args...) fprintf(stderr, fmt, ##args);
 
 #define IF(con, ret) if(con) { return ret; }
 #define IFMSG(con, ret, fmt, args...) \

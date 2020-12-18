@@ -10,5 +10,6 @@ uint64_t elfentry(const char *path)
 	IF(fd < 0, 0);
 	read(fd, (void*)&ehdr, sizeof(ehdr));
 	close(fd);
+    /* 虚拟地址起点 */
 	return ehdr.e_entry;
 }
