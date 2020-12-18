@@ -43,8 +43,12 @@ int main(int argc, char** argv) {
 			ptrace(PTRACE_GETREGS, child_pid, NULL, &regs);
 			//取指令内容
 			unsigned instr = ptrace(PTRACE_PEEKTEXT, child_pid, regs.eip, 0);
-			printf("counter = %u,EIP = 0x%08x,instr = 0x%08x\n", counter,
-					regs.eip, instr);
+//            rip - 64位系统
+//            eip - 32位系统
+
+//			printf("counter = %u,EIP = 0x%08x,instr = 0x%08x\n", counter,
+//					regs.eip, instr);
+
 			//重新启动子进程，当子进程执行了下一条指令后再将其停止
 			if (ptrace(PTRACE_SINGLESTEP, child_pid, 0, 0) < 0) {
 				perror("ptrace singlestep error");

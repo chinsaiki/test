@@ -89,7 +89,7 @@ enum __ptrace_request
   /* Kill the process.  */
   PTRACE_KILL = 8,
 
-  /* Single step the process.
+  /* Single step the process. 使用PTRACE_SINGLESTEP计算进程的机器指令
      This is not supported on all machines.  */
   PTRACE_SINGLESTEP = 9,
 

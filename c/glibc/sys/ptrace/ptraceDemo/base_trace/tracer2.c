@@ -7,11 +7,12 @@
 #include <sys/reg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "common.h"
 
 /**
  * 读取子进程write系统调用参数
  * */
-int main() {
+int main(int argc, char *argv[]) {
 
 	pid_t child;
 	child = fork();
@@ -19,7 +20,7 @@ int main() {
 		perror("fork error");
 	} else if (child == 0) {
 		ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		execl("hello", "hello", NULL);
+		execl(argv[1], argv[1], NULL);
 	} else {
 		long orig_eax, eax;
 		long params[3];
@@ -37,12 +38,14 @@ int main() {
 					params[0] = ptrace(PTRACE_PEEKUSER, child, 4 * EBX, NULL);
 					params[1] = ptrace(PTRACE_PEEKUSER, child, 4 * ECX, NULL);
 					params[2] = ptrace(PTRACE_PEEKUSER, child, 4 * EDX, NULL);
-					printf("Write called with %ld, %ld, %ld \n", params[0],
-							params[1], params[2]);
+//					printf("Write called with %ld, %x, %ld\n", params[0],
+//							params[1], params[2]);
+					printf("Write called with %ld, %x, %ld | %s\n", params[0],
+							params[1], params[2], get_syscall_symbol(params[0]));
 				} else {
 					/* Syscall exit */
 					eax = ptrace(PTRACE_PEEKUSER, child, 4 * EAX, NULL);
-					printf("Write returned with %ld \n", eax);
+					printf("Write returned with %ld\n", eax);
 					insyscall = 0;
 				}
 			}

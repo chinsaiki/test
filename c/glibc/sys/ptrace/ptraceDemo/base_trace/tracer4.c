@@ -9,6 +9,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
+
+//[root@localhost base_trace]# ./a.out b.out 
+//!dlrow ,olleH
+//[root@localhost base_trace]# ./a.out b.out 
+//!dlrow ,olleH
+
 const int word_size = sizeof(int); //字长,本机系统是32位，所以字长应该为4字节
 
 /**
@@ -92,7 +99,7 @@ void putdata(pid_t child, long addr, char *str, int len) {
 	}
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
 	pid_t child;
 	child = fork();
@@ -101,7 +108,7 @@ int main() {
 	} else if (child == 0) {
 		//子进程执行
 		ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		execl("hello", "hello", NULL);
+		execl(argv[1], argv[1], NULL);
 	} else {
 		//父进程执行
 		long orig_eax;

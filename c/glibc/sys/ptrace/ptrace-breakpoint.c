@@ -45,7 +45,7 @@ bool install_breakpoint(void *addr, int bpno, void (*handler)(int)) {
 	pid_t parent = getpid();
 	int child_status = 0;
 
-	if (!(child = fork()))
+	if (!(child = fork())) //子进程
 	{
 		int parent_status = 0;
 		if (ptrace(PTRACE_ATTACH, parent, NULL, NULL))
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 	if (!install_breakpoint(&a, 0, handle))
 		printf("failed to set the breakpoint!\n");
 
-    for(i=0;i<100000;i++) {
+    for(i=0;i<100202;i++) {
         a = 1;
     }
 
@@ -127,6 +127,8 @@ int main(int argc, char **argv) {
 
 	if (!disable_breakpoint(0))
 		printf("failed to disable the breakpoint!\n");
+
+
 
 	return 1;
 }

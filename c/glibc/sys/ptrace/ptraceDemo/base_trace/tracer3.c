@@ -7,11 +7,12 @@
 #include <sys/reg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "common.h"
 
 /**
  * 读取子进程寄存器值
  * */
-int main()
+int main(int argc, char *argv[])
 {   pid_t child;
     long orig_eax, eax;
     long params[3];
@@ -21,20 +22,20 @@ int main()
     child = fork();
     if(child == 0) {
         ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-        execl("hello", "hello", NULL);
+        execl(argv[1], argv[1], NULL);
     }
     else {
        while(1) {
           wait(&status);
           if(WIFEXITED(status))
               break;
-          orig_eax = ptrace(PTRACE_PEEKUSER,child, 4 * ORIG_EAX,NULL);
+          orig_eax = ptrace(PTRACE_PEEKUSER, child, 4 * ORIG_EAX,NULL);
           if(orig_eax == SYS_write) {
               if(insyscall == 0) {
                  /* Syscall entry */
                  insyscall = 1;
-                 ptrace(PTRACE_GETREGS, child,NULL, &regs);
-                 printf("Write called with %ld, %ld, %ld \n",regs.ebx, regs.ecx,regs.edx);
+                 ptrace(PTRACE_GETREGS, child, NULL, &regs);
+                 printf("Write called with %ld, %ld, %ld -> %s \n",regs.ebx, regs.ecx,regs.edx, get_syscall_symbol(regs.ebx));
              }
              else { /* Syscall exit */
                  eax = ptrace(PTRACE_PEEKUSER,child, 4 * EAX,NULL);

@@ -42,6 +42,8 @@ int execve2(char *path, char *argv[], char *envp[])
 		ptrace(PTRACE_GETREGS, child, NULL, &regs);
 		if(regs.rip == entry)
 		{
+            //rip - 64位系统
+            //eip - 32位系统
 			MSG("EIP: _start %llx \r\n", regs.rip);
 			MSG("RSP: %llx\r\n", regs.rsp);
 			MSG("RSP + 8 => RDX(char **ubp_av) to __libc_start_main\r\n");

@@ -5,15 +5,13 @@
 #include <sys/reg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/reg.h>
 
-#ifndef ORIG_EAX
-#define ORIG_EAX 11
-#endif //ORIG_EAX
+#include "common.h"
+
 /**
  * 获取子进程系统调用号
  * */
-int main() {
+int main(int argc, char *argv[]) {
 
 	pid_t child;
 	child = fork();
@@ -23,7 +21,7 @@ int main() {
 	} else if (child == 0) {
 		//子进程执行
 		ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		execl("hello", "hello", NULL);
+		execl(argv[1], argv[1], NULL);
 	} else {
 		//父进程执行
 		long orig_eax;
@@ -35,7 +33,7 @@ int main() {
 				break;
 			//调用ptrace从子进程取数据
 			orig_eax = ptrace(PTRACE_PEEKUSER, child, 4 * ORIG_EAX, NULL);
-			printf("orig_eax = %ld \n", orig_eax);
+			printf("orig_eax = %3ld\n", orig_eax);
 			//让子进程继续执行
 			ptrace(PTRACE_SYSCALL, child, NULL, NULL);
 		}

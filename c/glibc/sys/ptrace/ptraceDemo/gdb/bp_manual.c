@@ -16,9 +16,27 @@
 #include <sys/user.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <elf.h>
+#include <stdint.h>
 
+//gcc bp_manual.c -m32
 
 extern char* strsignal(int);
+
+uint64_t elfentry(const char *path)
+{
+	Elf64_Ehdr ehdr;
+	int fd;
+	
+	fd = open(path, O_RDONLY);
+	if(fd < 0) return  0;
+	read(fd, (void*)&ehdr, sizeof(ehdr));
+	close(fd);
+    /* 虚拟地址起点 */
+	return ehdr.e_entry;
+}
+
 
 /* Run a target process in tracing mode by exec()-ing the given program name.
 */
@@ -35,7 +53,7 @@ void run_target(const char* programname)
     /* Replace this process's image with the given program */
     execl(programname, programname, 0);
 }
-void run_debugger(pid_t child_pid)
+void run_debugger(pid_t child_pid, const char* programname)
 {
     int wait_status;
     struct user_regs_struct regs;
@@ -45,14 +63,18 @@ void run_debugger(pid_t child_pid)
 
     /* 取子进程寄存器 */
     ptrace(PTRACE_GETREGS, child_pid, 0, &regs);
-    /* eip是子进程执行的指令地址 */
+    
+#ifdef __x86_64__
+# error compile with -m32 "gcc -m32 hello.c"
+#else    /* eip是子进程执行的指令地址 */
     printf("Child started. EIP = 0x%08x\n", regs.eip);
+#endif
 
     /* 读取地址0x804808a处 对应的指令*/
-    unsigned addr = 0x804808a;
+    unsigned addr = elfentry(programname);
     unsigned data = ptrace(PTRACE_PEEKTEXT, child_pid, (void*)addr, 0);
     printf("Original data at 0x%08x: 0x%08x\n", addr, data);
-
+    
     /* 把'int 3'替换进 0x804808a处 对应的指令*/
     unsigned data_with_trap = (data & 0xFFFFFF00) | 0xCC;
     ptrace(PTRACE_POKETEXT, child_pid, (void*)addr, (void*)data_with_trap);
@@ -74,14 +96,23 @@ void run_debugger(pid_t child_pid)
 
     /* 看看子进程目前执行到哪了 */
     ptrace(PTRACE_GETREGS, child_pid, 0, &regs);
+
+#ifdef __x86_64__
+# error compile with -m32 "gcc -m32 hello.c"
+#else    /* eip是子进程执行的指令地址 */
     printf("Child stopped at EIP = 0x%08x\n", regs.eip);
+#endif
     /*等 用户响应*/
     getchar();
 
     /* 移除int 3,把原先的指令写回去*/
     ptrace(PTRACE_POKETEXT, child_pid, (void*)addr, (void*)data);
     /* 指令地址 -1*/
+#ifdef __x86_64__
+# error compile with -m32 "gcc -m32 hello.c"
+#else
     regs.eip -= 1;
+#endif
     ptrace(PTRACE_SETREGS, child_pid, 0, &regs);
 
     ptrace(PTRACE_CONT, child_pid, 0, 0);
@@ -110,7 +141,7 @@ int main(int argc, char** argv)
     if (child_pid == 0)
         run_target(argv[1]);
     else if (child_pid > 0)
-        run_debugger(child_pid);
+        run_debugger(child_pid, argv[1]);
     else {
         perror("fork");
         return -1;
