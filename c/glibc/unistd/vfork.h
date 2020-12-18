@@ -113,3 +113,23 @@ long _do_fork(struct kernel_clone_args *args)
 	return nr;
 }
 
+/*
+ *	pid_t vfork (void) [Function]
+ *	The vfork function is similar to fork but on some systems it is more efcient; however,
+ *	there are restrictions you must follow to use it safely.
+ *	While fork makes a complete copy of the calling process’s address space and allows
+ *	both the parent and child to execute independently, vfork does not make this copy.
+ *	Instead, the child process created with vfork shares its parent’s address space until
+ *	it calls _exit or one of the exec functions. In the meantime, the parent process
+ *	suspends execution.
+ *	You must be very careful not to allow the child process created with vfork to modify
+ *	any global data or even local variables shared with the parent. Furthermore, the child
+ *	process cannot return from (or do a long jump out of) the function that called vfork!
+ *	This would leave the parent process’s control information very confused. If in doubt,
+ *	use fork instead.
+ */
+
+#include <unistd.h>
+#include <sys/types.h>
+
+pid_t vfork (void);
