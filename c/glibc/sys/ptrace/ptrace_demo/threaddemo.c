@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <pthread.h>
 
-static void *
-testFunc(void * p_count)
+static void *testFunc(void * p_count)
 {
-    printf("我是子线程\n");
+    printf("i am child process.\n");
 
     int count = *(int *)p_count;
     FILE * p_file;

@@ -7,20 +7,29 @@
 #include <syscall.h>
 #include <sys/user.h>
 #include <sys/ptrace.h>
+#include <linux/ptrace.h>
+
+/*
+    这也许是 ptrace3.c 的 测试 版本， 或者伪代码
+*/
+
+
+#define debug(fmt...) do{fprintf(stderr, "[%s:%s %d]", __FILE__, __func__, __LINE__);fprintf(stderr, fmt);}while(0)
+
 
 #define TRUE 1
 #define FALSE 0
-#define VAR_NUM 3
+#define VAR_NUM 1
 
 pid_t pids[VAR_NUM];
 
-static void setup(char **argv)
+static void ptrace2_setup(char **argv)
 {
     int status;
     pid_t pid;
     unsigned long long orig_rax;
-
-    for(int i = 0; i < VAR_NUM; ++i) {
+    int i;
+    for( i = 0; i < VAR_NUM; ++i) {
         pids[i] = fork();
         if(pids[i] < 0) {
             perror("fork error");
@@ -43,7 +52,7 @@ static void setup(char **argv)
             }
         }
     }
-    for(int i = 0; i < VAR_NUM; ++i) {
+    for( i = 0; i < VAR_NUM; ++i) {
         ptrace(PTRACE_SYSCALL, pids[i], NULL, NULL);
     }
 }
@@ -85,12 +94,14 @@ static void wait_for_procs()
     pid_t orphans[128] = { 0 };
     int status, event, sig;
     pid_t pid;
+    debug("\n");
 
     int count = 0;
     while (1)
     {
         if ((pid = waitpid(-1, &status, __WALL)) == -1)
             break;
+        debug("\n");
 
         event = status >> 16;
         sig = WSTOPSIG(status);
@@ -99,10 +110,12 @@ static void wait_for_procs()
 
         if (WIFSTOPPED(status) && sig == (SIGTRAP | 0x80))
         {
-            // handle_syscall(pid, 1);
+            debug("\n");
+//             handle_syscall(pid, 1);
         }
         else if (WIFEXITED(status))
         {
+            debug("\n");
             if(count % VAR_NUM == 0) {
                 break;
             }
@@ -129,9 +142,10 @@ static void wait_for_procs()
         }
         else if (sig == SIGTRAP && event == PTRACE_EVENT_EXEC)
         {
+            int i;
             // ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
             if(count % VAR_NUM == 0) {
-                for(int i = 0; i < VAR_NUM; ++i) {
+                for(i = 0; i < VAR_NUM; ++i) {
                     ptrace(PTRACE_SYSCALL, pids[i], NULL, NULL);
                 }
             }
@@ -226,8 +240,11 @@ static void wait_for_procs()
 
 int main(int argc, char *argv[])
 {
-    setup(argv + 1);
+    debug("\n");
+    ptrace2_setup(argv + 1);
+    debug("\n");
     wait_for_procs();
+    debug("\n");
 
     return 0;
 }

@@ -64,6 +64,11 @@ SIGVTALRM 终止进程 虚拟计时器到时
 #define	SIGQUIT		3	/* Quit (POSIX).  */
 #define	SIGILL		4	/* Illegal instruction (ANSI).  */
 #define	SIGTRAP		5	/* Trace trap (POSIX).  */
+//在大多数系统，gdb对使用fork创建的进程没有进行特别的支持。当父进程使用fork创建子进程
+//，gdb仍然只会调试父进程，而子进程没有得到控制和调试。这个时候，如果你在子进程执行到
+//的代码中设置了断点，那么当子进程执行到这个断点的时候，会产生一个SIGTRAP的信号，
+//如果没有对此信号进行捕捉处理，就会按默认的处理方式处理——终止进程。
+
 #define	SIGABRT		6	/* Abort (ANSI).  */
 #define	SIGIOT		6	/* IOT trap (4.2 BSD).  */
 #define	SIGBUS		7	/* BUS error (4.2 BSD).  */
