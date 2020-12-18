@@ -20,6 +20,7 @@
 #define PORT           1234
 #define LISTENQ        6666
 
+//客户端 ： nc 127.1 1234
 
 int main(int argc, char *argv[])
 {
