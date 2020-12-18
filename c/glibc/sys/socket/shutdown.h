@@ -65,8 +65,61 @@
 
 int socket (int namespace, int style, int protocol);
 
+/* The following constants should be used for the second parameter of
+   `shutdown'.  */
+enum
+{
+  SHUT_RD = 0,		/* No more receptions.  */
+#define SHUT_RD		SHUT_RD
+  SHUT_WR,		/* No more transmissions.  */
+#define SHUT_WR		SHUT_WR
+  SHUT_RDWR		/* No more receptions or transmissions.  */
+#define SHUT_RDWR	SHUT_RDWR
+};
+
+
 int shutdown (int socket, int how);
 
 //SHUT_RD:关闭读
 //SHUT_WR:关闭写的这一半
 //SHUT_RDWR:读写都关闭
+
+
+/**
+ *	终止网络连接的方法是close函数。不过close有两个限制：
+ *		1.close把描述符的引用计数-1，仅在该计数变为0时才关闭套接字；
+ *		2.close终止读和写两个方向的数据传送。
+ */
+int shutdown(int sockfd, int howto);
+
+/**
+ *	shutdown依赖于howto参数的值：
+ *		
+ *		SHUT_RD：关闭套接字读的这一半。
+ *				套接字中不再有数据可接收，而且套接字接收缓冲区中的现有数据都被丢弃。
+ *				进程不能再对这样的套接字调用任何读函数。对于TCP套接字这样调用
+ *				shutdown函数后，由该套接字接收的来自对端的任何数据都被确认，然后
+ *				悄然丢弃。
+ *
+ *		SHUT_WR：关闭连接的写的这一半。
+ *				对于TCP套接字，这称为半关闭。
+ *
+ *		SHUT_RDWR：连接的读半部和写半部都关闭。
+ *
+ *
+ *
+ *
+ *	SHUT_RD
+ *		The same semantics as for TCP discussed in Section 6.6(See 8.4.6); no SCTP 
+ *		protocol action is taken.
+ *	SHUT_WR
+ *		Disables further send operations and initiates the SCTP shutdown procedures, 
+ *		which will terminate the association. Note that this option does not provide 
+ *		a half-closed state, but does allow the local endpoint to read any queued data 
+ *		that the peer may have sent prior to receiving the SCTP SHUTDOWN message.
+ *	SHUT_RDWR
+ *		Disables all read and write operations, and initiates the SCTP shutdown procedure. 
+ *		Any queued data that was in transit to the local endpoint will be acknowledged and 
+ *		then silently discarded.
+ */
+

@@ -38,3 +38,16 @@ authority）规定，组播mac地址的高24bit为0x01005e，mac 地址的低23b
 
 由于ip组播地址的后28位中只有23位被映射到mac地址，这样就会有32个ip组播地址映射到同一m
 ac地址上。
+
+需要给服务器开放组播权限
+------------------------------------------------
+struct ip_mreqn flag;
+inet_pton(AF_INET, "239.0.0.10", &flag.imr_multiaddr.s_addr);
+inet_pton(AF_INET, "0.0.0.0", &flag.imr_address.s_addr);
+
+flag.imr_ifindex = if_nametoindex("eth0");
+
+setsocket(fd, IPPROTO_IP, IP_MULTICAST_IF, &flag, sizeof(flag));
+
+...
+------------------------------------------------
