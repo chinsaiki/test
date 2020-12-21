@@ -60,7 +60,8 @@ long get_child_eip(pid_t pid)
 void dump_process_memory(pid_t pid, unsigned from_addr, unsigned to_addr)
 {
     procmsg("Dump of %d's memory [0x%08X : 0x%08X]\n", pid, from_addr, to_addr);
-    for (unsigned addr = from_addr; addr <= to_addr; ++addr) {
+    unsigned addr;
+    for (addr = from_addr; addr <= to_addr; ++addr) {
         unsigned word = ptrace(PTRACE_PEEKTEXT, pid, addr, 0);
         printf("  0x%08X:  %02x\n", addr, word & 0xFF);
     }

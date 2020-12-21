@@ -72,7 +72,7 @@ enum __ptrace_request
   PTRACE_PEEKDATA = 2,
 
   /* Return the word in the process's user area at offset ADDR.  */
-  PTRACE_PEEKUSER = 3,
+  PTRACE_PEEKUSER = 3, /* peek: 窥探，偷看 */
 
   /* Write the word DATA into the process's text space at address ADDR.  */
   PTRACE_POKETEXT = 4,
@@ -81,7 +81,7 @@ enum __ptrace_request
   PTRACE_POKEDATA = 5,
 
   /* Write the word DATA into the process's user area at offset ADDR.  */
-  PTRACE_POKEUSER = 6,
+  PTRACE_POKEUSER = 6, /* poke: 戳，伸出，捅 */
 
   /* Continue the process.  */
   PTRACE_CONT = 7,
