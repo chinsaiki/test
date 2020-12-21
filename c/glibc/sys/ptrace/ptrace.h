@@ -63,104 +63,132 @@ enum __ptrace_request
   /* Indicate that the process making this request should be traced.
      All signals received by this process can be intercepted by its
      parent, and its parent can use the other `ptrace' requests.  */
-  PTRACE_TRACEME = 0,
-
+  PTRACE_TRACEME = 0, //本进程将被父进程跟踪，其父进程应该希望跟踪子进程
+                      //
   /* Return the word in the process's text space at address ADDR.  */
-  PTRACE_PEEKTEXT = 1,
-
+  PTRACE_PEEKTEXT = 1, //从内存地址 代码段 中读取一个字节，内存地址由addr给出
+                        //ptrace(PTRACE_PEEKTEXT, pid, addr, data);
+                        //addr 地址
+                        //data 读到的数据
   /* Return the word in the process's data space at address ADDR.  */
-  PTRACE_PEEKDATA = 2,
+  PTRACE_PEEKDATA = 2, //从内存地址 数据段 中读取一个字节，内存地址由addr给出
 
   /* Return the word in the process's user area at offset ADDR.  */
-  PTRACE_PEEKUSER = 3, /* peek: 窥探，偷看 */
-
+  PTRACE_PEEKUSER = 3, /* 从user区域中读取一个字节，偏移量由addr给出，peek: 窥探，偷看 */
+                        /*
+                            ptrace(PTRACE_PEEKUSER, pid, addr, data);
+                            //addr 地址
+                            //data 读到的数据
+                            USER 结构为 core 文件的前面一部分，它描述了进程终止时候的状态
+                                如：寄存器值，代码段，数据段大小，代码段数据段开始地址等
+                        */
   /* Write the word DATA into the process's text space at address ADDR.  */
-  PTRACE_POKETEXT = 4,
+  PTRACE_POKETEXT = 4, //向内存地址代码段中写入字节，内存地址由addr给出（见 PTRACE_PEEKTEXT ）
 
   /* Write the word DATA into the process's data space at address ADDR.  */
-  PTRACE_POKEDATA = 5,
+  PTRACE_POKEDATA = 5, //向内存地址数据段中写入字节，内存地址由addr给出（见 PTRACE_PEEKDATA ）
 
   /* Write the word DATA into the process's user area at offset ADDR.  */
-  PTRACE_POKEUSER = 6, /* poke: 戳，伸出，捅 */
+  PTRACE_POKEUSER = 6, /*向user区域中写入一个字节，偏移量由addr给出。见 PTRACE_PEEKUSER 。 poke: 戳，伸出，捅 */
 
   /* Continue the process.  */
-  PTRACE_CONT = 7,
+  PTRACE_CONT = 7, //继续运行
+                /*
+                    ptrace(PTRACE_CONT, pid, 0, signal);
+                    // signal 为 0，则忽略引起调试进程中止的信号， 若不为 0 ，则继续处理信号 signal 
+                */
 
   /* Kill the process.  */
-  PTRACE_KILL = 8,
+  PTRACE_KILL = 8, //杀死进程
+                       /*  ptrace(PTRACE_KILL, pid, 0, 0);
+                        */
 
-  /* Single step the process. 使用PTRACE_SINGLESTEP计算进程的机器指令
+  /* Single step the process. 
      This is not supported on all machines.  */
-  PTRACE_SINGLESTEP = 9,
+  PTRACE_SINGLESTEP = 9, //设置单步执行标志，单步执行一条指令 （使用PTRACE_SINGLESTEP计算进程的机器指令）
+                /*
+                    ptrace(PTRACE_SINGLESTEP, pid, 0, signal);
+                    // signal 为 0，则忽略引起调试进程中止的信号， 若不为 0 ，则继续处理信号 signal 
+                     当被跟踪进程单步执行完一个指令后，被跟踪进程别中止，并通知父进程。
+                */
 
   /* Get all general purpose registers used by a processes.
      This is not supported on all machines.  */
-   PTRACE_GETREGS = 12,
+   PTRACE_GETREGS = 12, //<Intel386特有> 读取寄存器
+                       /*  ptrace(PTRACE_GETREGS, pid, 0, data);
+                            此功能将读取所有 17 个 基本寄存器的值
+                        */
 
   /* Set all general purpose registers used by a processes.
      This is not supported on all machines.  */
-   PTRACE_SETREGS = 13,
+   PTRACE_SETREGS = 13, //<Intel386特有> 设置寄存器
+                       /*  ptrace(PTRACE_SETREGS, pid, 0, data);
+                            此功能将设置所有 17 个 基本寄存器的值
+                        */
 
   /* Get all floating point registers used by a processes.
      This is not supported on all machines.  */
-   PTRACE_GETFPREGS = 14,
+   PTRACE_GETFPREGS = 14, //<Intel386特有> 读取浮点寄存器
 
   /* Set all floating point registers used by a processes.
      This is not supported on all machines.  */
-   PTRACE_SETFPREGS = 15,
+   PTRACE_SETFPREGS = 15, //<Intel386特有> 设置浮点寄存器
 
   /* Attach to a process that is already running. */
-  PTRACE_ATTACH = 16,
-
+  PTRACE_ATTACH = 16, //跟踪指定 pid 进程，被跟踪的进程将成为当前进程的子进程，并进入中止状态
+                    /*  ptrace(PTRACE_ATTACH, pid, 0, 0);
+                        */
   /* Detach from a process attached to with PTRACE_ATTACH.  */
-  PTRACE_DETACH = 17,
+  PTRACE_DETACH = 17, //结束跟踪，结束跟踪后，被跟踪进程将继续执行
+                    /*  ptrace(PTRACE_DETACH, pid, 0, 0);
+                        */
 
   /* Get all extended floating point registers used by a processes.
      This is not supported on all machines.  */
-   PTRACE_GETFPXREGS = 18,
+   PTRACE_GETFPXREGS = 18, //
 
   /* Set all extended floating point registers used by a processes.
      This is not supported on all machines.  */
-   PTRACE_SETFPXREGS = 19,
+   PTRACE_SETFPXREGS = 19, //
 
   /* Continue and stop at the next (return from) syscall.  */
-  PTRACE_SYSCALL = 24,
+  PTRACE_SYSCALL = 24, //
 
   /* Set ptrace filter options.  */
-  PTRACE_SETOPTIONS = 0x4200,
+  PTRACE_SETOPTIONS = 0x4200, //
 
   /* Get last ptrace message.  */
-  PTRACE_GETEVENTMSG = 0x4201,
+  PTRACE_GETEVENTMSG = 0x4201, //
 
   /* Get siginfo for process.  */
-  PTRACE_GETSIGINFO = 0x4202,
+  PTRACE_GETSIGINFO = 0x4202, //
 
   /* Set new siginfo for process.  */
-  PTRACE_SETSIGINFO = 0x4203,
+  PTRACE_SETSIGINFO = 0x4203, //
 
   /* Get register content.  */
-  PTRACE_GETREGSET = 0x4204,
+  PTRACE_GETREGSET = 0x4204, //
 
   /* Set register content.  */
-  PTRACE_SETREGSET = 0x4205,
+  PTRACE_SETREGSET = 0x4205, //
 
   /* Like PTRACE_ATTACH, but do not force tracee to trap and do not affect
      signal or group stop state.  */
-  PTRACE_SEIZE = 0x4206,
+  PTRACE_SEIZE = 0x4206, //
 
   /* Trap seized tracee.  */
-  PTRACE_INTERRUPT = 0x4207,
+  PTRACE_INTERRUPT = 0x4207, //
 
   /* Wait for next group event.  */
-  PTRACE_LISTEN = 0x4208,
+  PTRACE_LISTEN = 0x4208, //
 
-  PTRACE_PEEKSIGINFO = 0x4209,
+  PTRACE_PEEKSIGINFO = 0x4209, //
 
-  PTRACE_GETSIGMASK = 0x420a,
+  PTRACE_GETSIGMASK = 0x420a, //
 
-  PTRACE_SETSIGMASK = 0x420b,
+  PTRACE_SETSIGMASK = 0x420b, //
 
-  PTRACE_SECCOMP_GET_FILTER = 0x420c
+  PTRACE_SECCOMP_GET_FILTER = 0x420c //
 };
 
 
