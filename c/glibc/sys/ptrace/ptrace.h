@@ -129,10 +129,16 @@ enum __ptrace_request
   /* Get all floating point registers used by a processes.
      This is not supported on all machines.  */
    PTRACE_GETFPREGS = 14, //<Intel386特有> 读取浮点寄存器
+                       /*  ptrace(PTRACE_GETFPREGS, pid, 0, data);
+                            此功能将读取所有浮点协处理器 387 的所有寄存器的值
+                        */
 
   /* Set all floating point registers used by a processes.
      This is not supported on all machines.  */
    PTRACE_SETFPREGS = 15, //<Intel386特有> 设置浮点寄存器
+                       /*  ptrace(PTRACE_GETFPREGS, pid, 0, data);
+                            此功能将设置所有浮点协处理器 387 的所有寄存器的值
+                        */
 
   /* Attach to a process that is already running. */
   PTRACE_ATTACH = 16, //跟踪指定 pid 进程，被跟踪的进程将成为当前进程的子进程，并进入中止状态

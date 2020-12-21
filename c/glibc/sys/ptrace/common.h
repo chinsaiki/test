@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <sys/user.h>
 
+#ifdef __x86_64__
 
 static void print_user_regs_struct(struct user_regs_struct *regs)
 {
@@ -67,5 +68,11 @@ static void print_user_regs_struct(struct user_regs_struct *regs)
     printf("gs      = 0x%016x\n", regs->gs); 
 
 }
+
+#else  //__x86_64__
+
+#error "Only support X86-64 arch linux OS."
+
+#endif  //__x86_64__
 
 #endif /*<__ptrace_common_h>*/
