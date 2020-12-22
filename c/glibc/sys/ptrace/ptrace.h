@@ -240,7 +240,7 @@ struct __ptrace_peeksiginfo_args
 
 enum __ptrace_peeksiginfo_flags
 {
-  /* Read signals from a shared (process wide) queue.  */
+  /* Read signals from a shared (process wide) queue. 从共享的信号队列里读取 siginfo */
   PTRACE_PEEKSIGINFO_SHARED = (1 << 0)
 };
 

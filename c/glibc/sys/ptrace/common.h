@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <sys/user.h>
 
+
+#define debug(fmt...) do{fprintf(stderr, "[%s:%s %d]", __FILE__, __func__, __LINE__);fprintf(stderr, fmt);}while(0)
+
+
 #ifdef __x86_64__
 
 static void print_user_regs_struct(struct user_regs_struct *regs)

@@ -1,0 +1,22 @@
+SYS_RT_SIGQUEUEINFO(9)                            Driver Basics                           SYS_RT_SIGQUEUEINFO(9)
+
+
+
+NAME
+       sys_rt_sigqueueinfo - send signal information to a signal
+
+SYNOPSIS
+       long sys_rt_sigqueueinfo(pid_t pid, int sig, siginfo_t __user * uinfo);
+
+ARGUMENTS
+       pid
+           the PID of the thread
+
+       sig
+           signal to be sent
+
+       uinfo
+           signal info to be sent
+
+COPYRIGHT
+Kernel Hackers Manual 3.10                          June 2019                             SYS_RT_SIGQUEUEINFO(9)

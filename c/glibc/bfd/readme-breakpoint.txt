@@ -8,3 +8,4 @@
 *** test/coroutine/lw_coroutine	断点协程实现 [和GDB断点无关]
 *** test/c/glibc/bfd	BinaryFileDescriptor二进制文件描述符
 *** test/c/glibc/sys/ptrace/ptrace-breakpoint.c	使用ptrace实现断点，检测内存被写
+*** test/c/glibc/sys/ptrace/breakpoint_test.c	breakpoint 和 watchpoint 在内核中的实例
