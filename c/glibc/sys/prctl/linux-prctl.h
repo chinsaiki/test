@@ -185,7 +185,7 @@ struct prctl_mm_map {
 #define PR_MPX_ENABLE_MANAGEMENT  43
 #define PR_MPX_DISABLE_MANAGEMENT 44
 
-/* Control the ambient capability set */
+/* Control the ambient capability set 控制周围能力 set */
 #define PR_CAP_AMBIENT			47
 # define PR_CAP_AMBIENT_IS_SET		1
 # define PR_CAP_AMBIENT_RAISE		2

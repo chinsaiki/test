@@ -1,0 +1,36 @@
+CAPNG_UPDATE(3)                                   Libcap-ng API                                  CAPNG_UPDATE(3)
+
+
+
+NAME
+       capng_update - update the stored capabilities settings
+
+SYNOPSIS
+       #include <cap-ng.h>
+
+       int capng_update(capng_act_t action, capng_type_t type,unsigned int capability);
+
+
+DESCRIPTION
+       capng_update  will update the internal posix capabilities settings based on the options passed to it. The
+       action should be eith CAPNG_DROP to set the capability bit to 0, or CAPNG_ADD to set the  capability  bit
+       to  1.  The operation is performed on the capability set specified in the type parameter. The values are:
+       CAPNG_EFFECTIVE, CAPNG_PERMITTED, CAPNG_INHERITABLE, CAPNG_BOUNDING_SET. The values may be or'ed together
+       to  perform  the same operation on multiple sets. The last paramter, capability, is the capability define
+       as given in linux/capability.h.
+
+
+RETURN VALUE
+       This returns 0 on success and -1 on failure.
+
+
+SEE ALSO
+       capng_updatev(3), capabilities(7)
+
+
+AUTHOR
+       Steve Grubb
+
+
+
+Red Hat                                             June 2009                                    CAPNG_UPDATE(3)

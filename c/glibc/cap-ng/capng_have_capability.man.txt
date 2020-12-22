@@ -1,0 +1,34 @@
+CAPNG_HAVE_CAPABILITY(3)                          Libcap-ng API                         CAPNG_HAVE_CAPABILITY(3)
+
+
+
+NAME
+       capng_have_capability - check for specific capability
+
+SYNOPSIS
+       #include <cap-ng.h>
+
+       int capng_have_capability(capng_type_t which, unsigned int capability);
+
+
+DESCRIPTION
+       capng_have_capability will check the specified internal capabilities set to see if the specified capabil‐
+       ity is set. The capabilities  sets  must  be  previously  setup  with  calls  to  capng_get_caps_process,
+       capng_get_caps_fd,  or  in  some other way setup. The values for which should be one of: CAPNG_EFFECTIVE,
+       CAPNG_PERMITTED, CAPNG_INHERITABLE, or CAPNG_BOUNDING_SET.
+
+
+RETURN VALUE
+       This funtion will return 1 if yes and 0 otherwise.
+
+
+SEE ALSO
+       capng_get_caps_process(3), capng_get_caps_fd(3), capng_have_capabilities(3), capabilities(7)
+
+
+AUTHOR
+       Steve Grubb
+
+
+
+Red Hat                                             June 2009                           CAPNG_HAVE_CAPABILITY(3)

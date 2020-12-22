@@ -1,0 +1,39 @@
+CAPNG_GET_CAPS_PROCESS(3)                         Libcap-ng API                        CAPNG_GET_CAPS_PROCESS(3)
+
+
+
+NAME
+       capng_get_caps_process - get the capabilities from a process
+
+SYNOPSIS
+       #include <cap-ng.h>
+
+       int capng_get_caps_process(void);
+
+
+DESCRIPTION
+       capng_get_caps_process  will  get  the capabilities and bounding set of the pid stored inside libcap-ng's
+       state table. The default is the pid of the running process. This can be changed by using the capng_setpid
+       function.
+
+
+RETURN VALUE
+       This returns 0 on success and -1 on failure.
+
+
+NOTES
+       If  you  are  doing  multi-threaded  programming, calling this function will only get capabilities on the
+       calling thread. If you want to get overall capabilities for a multi-threaded process,  you  can  only  do
+       that before creating any threads. Afterwards, threads may be able to independantly set capabilities.
+
+
+SEE ALSO
+       capng_setpid(3), capabilities(7)
+
+
+AUTHOR
+       Steve Grubb
+
+
+
+Red Hat                                             June 2009                          CAPNG_GET_CAPS_PROCESS(3)
