@@ -3,7 +3,7 @@
  *  
  *  作者：荣涛
  *  日期：2020年12月21日
- *
+ *      2020年12月22日   
  */
 /*
     x86 提供的8个调试寄存器(DR0-DR7)
@@ -50,6 +50,11 @@
 
 extern int errno;
 
+typedef enum {
+    DATA_BREAK, //数据断点
+    CMD_BREAK,  //指令断点
+}break_type;
+
 enum {
     BREAK_LOCAL = 0x1,
     BREAK_GLOBAL= 0x10,
@@ -84,11 +89,28 @@ enum {
  * hit, then _handler_ is invoked in a signal-
  * handling context.
  */
-bool set_breakpoint(void *addr, int bpno, void (*handler)(int)) {
+bool set_breakpoint(void *addr, int bpno, void (*handler)(int), break_type type) {
 	pid_t child = 0;
 	uint32_t enable_breakpoint = ENABLE_BREAKPOINT(bpno);
-	uint32_t enable_breakwrite = BREAK_TYPE_WRITE(bpno);
-    uint32_t break_len = BREAK_LEN_BYTE(bpno);
+
+    
+	uint32_t enable_breakwrite;
+    uint32_t break_len;
+
+    switch(type) {
+    case DATA_BREAK:
+        //数据断点这里可以自定义
+    	enable_breakwrite = BREAK_TYPE_WRITE(bpno);
+        break_len = BREAK_LEN_DWORD(bpno);
+        break;
+    case CMD_BREAK:
+        //指令断点这里必须为 0, 即 执行 和 1字节
+    	enable_breakwrite = BREAK_TYPE_EXEC(bpno);
+        break_len = BREAK_LEN_BYTE(bpno);
+        break;
+    }
+
+    
 	pid_t parent = getpid();
 	int child_status = 0;
     
@@ -142,9 +164,13 @@ bool set_breakpoint(void *addr, int bpno, void (*handler)(int)) {
  * and no handler function. See comments above
  * for implementation details.
  */
-bool del_breakpoint(int bpno) 
+bool del_breakpoint(int bpno, break_type type) 
 {
-	return set_breakpoint(0x0, bpno, NULL);
+	return set_breakpoint(0x0, bpno, NULL, type);
+}
+
+void do_foo() {
+    
 }
 
 /*
@@ -159,10 +185,23 @@ void handle_sigtrap(int s) {
 
 int main(int argc, char **argv) {
 	int i;
-    char a[3] = {0};
-
-	if (!set_breakpoint(a, 0, handle_sigtrap))
+    int16_t a[3] = {0};
+    break_type bp_type = CMD_BREAK;
+    
+	if (!set_breakpoint(do_foo, 0, handle_sigtrap, bp_type))
 		printf("failed to set the breakpoint!\n");
+
+
+    for(i=0;i<12321;i++) {
+        do_foo();
+    }
+	if (!del_breakpoint(0, bp_type))
+		printf("failed to disable the breakpoint!\n");
+
+    
+	if (!set_breakpoint(a, 1, handle_sigtrap, DATA_BREAK))
+		printf("failed to set the breakpoint!\n");
+
 
     for(i=0;i<12321;i++) {
         a[0] = 1;
@@ -170,10 +209,12 @@ int main(int argc, char **argv) {
         a[2] = 1;
     }
 
-	printf("handled_sigtrap: %d\n", handled_sigtrap);
 
-	if (!del_breakpoint(0))
+
+	if (!del_breakpoint(0, bp_type))
 		printf("failed to disable the breakpoint!\n");
+
+	printf("handled_sigtrap: %d\n", handled_sigtrap);
 
 
 
