@@ -1,0 +1,25 @@
+x86_64 内核空间的虚拟地址
+内核编译完成之后，生成的 System.map 文件
+
+下面是文件开始
+-----------------------------------------------
+0000000000000000 D __per_cpu_start
+0000000000000000 D fixed_percpu_data
+00000000000001d9 A kexec_control_code_size
+0000000000001000 D cpu_debug_store
+0000000000011260 D cpu_info
+
+...
+此处省略一百万行吧
+...
+
+ffffffff83200000 B __bss_stop
+ffffffff83200000 B __end_bss_decrypted
+ffffffff83200000 B __end_of_kernel_reserve
+ffffffff83210000 b .brk.dmi_alloc
+ffffffff83220000 b .brk.early_pgt_alloc
+ffffffff8322c000 B __brk_limit
+ffffffff8322c000 B _end
+ffffffff83400000 T __init_scratch_begin
+ffffffff83400000 t sme_workarea
+ffffffff83800000 T __init_scratch_end
