@@ -4,6 +4,7 @@ GETAUXVAL(3)                                Linux Programmer's Manual           
 
 NAME
        getauxval - retrieve a value from the auxiliary vector
+	   从辅助 vector 中检索一个值
 
 SYNOPSIS
        #include <sys/auxv.h>
@@ -13,6 +14,7 @@ SYNOPSIS
 DESCRIPTION
        The  getauxval()  function  retrieves values from the auxiliary vector, a mechanism that the kernel's ELF
        binary loader uses to pass certain information to user space when a program is executed.
+	   一种机制：当一个程序运行，从内存态将 ELF 特定的信息加载至 用户态
 
        Each entry in the auxiliary vector consists of a pair of values: a type that identifies what  this  entry
        represents,  and  a  value for that type.  Given the argument type, getauxval() returns the corresponding

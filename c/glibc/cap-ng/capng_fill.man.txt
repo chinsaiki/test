@@ -1,0 +1,33 @@
+CAPNG_FILL(3)                                        Libcap-ng API                                        CAPNG_FILL(3)
+
+
+
+NAME
+       capng_fill - fill chosen capabilities set
+
+SYNOPSIS
+       #include <cap-ng.h>
+
+       void capng_fill(capng_select_t set);
+
+
+DESCRIPTION
+       capng_fill  sets  all  bits to a 1 in the selected posix capabilities set. The options are CAPNG_SELECT_CAPS for
+       the traditional capabilities, CAPNG_SELECT_BOUNDS for the bounding set, or CAPNG_SELECT_BOTH if filling both  is
+       desired.
+
+
+RETURN VALUE
+       None.
+
+
+SEE ALSO
+       capabilities(7)
+
+
+AUTHOR
+       Steve Grubb
+
+
+
+Red Hat                                                June 2009                                          CAPNG_FILL(3)

@@ -1,0 +1,33 @@
+CAPNG_CLEAR(3)                                       Libcap-ng API                                       CAPNG_CLEAR(3)
+
+
+
+NAME
+       capng_clear - clear chosen capabilities set
+
+SYNOPSIS
+       #include <cap-ng.h>
+
+       void capng_clear(capng_select_t set);
+
+
+DESCRIPTION
+       capng_clear sets to 0 all bits in the selected posix capabilities set. The options are CAPNG_SELECT_CAPS for the
+       traditional capabilities, CAPNG_SELECT_BOUNDS for the bounding set, or CAPNG_SELECT_BOTH  if  clearing  both  is
+       desired.
+
+
+RETURN VALUE
+       None.
+
+
+SEE ALSO
+       capabilities(7)
+
+
+AUTHOR
+       Steve Grubb
+
+
+
+Red Hat                                                June 2009                                         CAPNG_CLEAR(3)

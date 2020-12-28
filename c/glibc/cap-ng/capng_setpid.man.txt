@@ -1,0 +1,32 @@
+CAPNG_SETPID(3)                                      Libcap-ng API                                      CAPNG_SETPID(3)
+
+
+
+NAME
+       capng_setpid - set working pid
+
+SYNOPSIS
+       #include <cap-ng.h>
+
+       void capng_setpid(int pid);
+
+
+DESCRIPTION
+       capng_pid  sets  the working pid for capabilities operations. This is useful if you want to get the capabilities
+       of a different process.
+
+
+RETURN VALUE
+       None.
+
+
+SEE ALSO
+       capng_get_caps_process(3), capabilities(7)
+
+
+AUTHOR
+       Steve Grubb
+
+
+
+Red Hat                                                June 2009                                        CAPNG_SETPID(3)

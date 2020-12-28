@@ -9,7 +9,22 @@
 
 #include "./kselftest.h"
 
-//gcc validate_cap.c -lcap-ng
+//[root@localhost capabilities]# gcc validate_cap.c -lcap-ng -DHAVE_GETAUXVAL
+//
+//[root@localhost capabilities]# ./a.out  1 1 1 1
+//# Wrong inheritable state (AT_SECURE is not set)
+//[root@localhost capabilities]# ./a.out  0 0 0 0 
+//# Wrong effective state (AT_SECURE is not set)
+//[root@localhost capabilities]# ./a.out  1 0 0 0 
+//# Wrong permitted state (AT_SECURE is not set)
+//[root@localhost capabilities]# ./a.out  1 1 0 0 
+//# validate_cap:: Capabilities after execve were correct
+//[root@localhost capabilities]# ./a.out  1 1 1 1 
+//# Wrong inheritable state (AT_SECURE is not set)
+//[root@localhost capabilities]# ./a.out  1 1 0 1 
+//# Wrong ambient state (AT_SECURE is not set)
+//[root@localhost capabilities]# ./a.out  1 1 0 0
+//# validate_cap:: Capabilities after execve were correct
 
 
 #ifndef PR_CAP_AMBIENT

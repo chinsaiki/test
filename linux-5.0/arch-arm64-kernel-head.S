@@ -56,7 +56,7 @@
 #endif
 
 /*
- * Kernel startup entry point.
+ * Kernel startup entry point. 内核启动点
  * ---------------------------
  *
  * The requirements are:
