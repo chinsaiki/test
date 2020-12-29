@@ -1,0 +1,50 @@
+中断		每个CPU中断发生次数						硬件	硬件源通道	造成中断请求的设备名
+向量号												来源	  信息
+			CPU0       CPU1       CPU2       CPU3       
+   1:          0          9          0          0   IO-APIC    1-edge      i8042
+   6:          0          0          0          3   IO-APIC    6-edge      floppy
+   8:          0          0          0          0   IO-APIC    8-edge      rtc0
+   9:          0          0          0          0   IO-APIC    9-fasteoi   acpi
+  10:          0          0          0          0   IO-APIC   10-fasteoi   ehci_hcd:usb1
+  11:          0          0         33          0   IO-APIC   11-fasteoi   uhci_hcd:usb2, virtio1
+  12:         15          0          0          0   IO-APIC   12-edge      i8042
+  14:     424593          0          0          0   IO-APIC   14-edge      ata_piix
+  15:          0          0          0          0   IO-APIC   15-edge      ata_piix
+  24:          0          0          0          0   PCI-MSI 458752-edge      xhci_hcd
+  25:          0          0          0          0   PCI-MSI 458753-edge      xhci_hcd
+  26:          0          0          0          0   PCI-MSI 458754-edge      xhci_hcd
+  27:          0          0          0          0   PCI-MSI 458755-edge      xhci_hcd
+  28:          0          0          0          0   PCI-MSI 458756-edge      xhci_hcd
+  29:          0          0          0          0   PCI-MSI 1064960-edge      virtio2-config
+  30:          0      19959          0      98822   PCI-MSI 1064961-edge      virtio2-req.0
+  31:          0          0          0          0   PCI-MSI 180224-edge      virtio0-config
+  32:      57956          0          0          0   PCI-MSI 180225-edge      virtio0-virtqueues
+  33:          0          0          0          0   PCI-MSI 2113536-edge      virtio4-config
+  34:          0          0    9935886          0   PCI-MSI 2113537-edge      virtio4-input.0
+  35:          0          0      32942    5309066   PCI-MSI 2113538-edge      virtio4-output.0
+  36:          0          0          0          0   PCI-MSI 1081344-edge      virtio3-config
+  37:          0          0     187487          0   PCI-MSI 1081345-edge      virtio3-req.0
+
+---------------------------------------------------------------------------------------------
+特定于体系结构的中断：
+如 LOC 本地计时器的中断请求号为 236
+
+ NMI:          0          0          0          0   Non-maskable interrupts
+ LOC:    9237061   10698463   11598438    9874119   Local timer interrupts	
+ SPU:          0          0          0          0   Spurious interrupts
+ PMI:          0          0          0          0   Performance monitoring interrupts
+ IWI:          0          0          0          0   IRQ work interrupts
+ RTR:          0          0          0          0   APIC ICR read retries
+ RES:     263217     225798     334750     240356   Rescheduling interrupts
+ CAL:    7710645    7580396    5883035    7511494   Function call interrupts
+ TLB:      46371      53389      55409      53733   TLB shootdowns
+ TRM:          0          0          0          0   Thermal event interrupts
+ THR:          0          0          0          0   Threshold APIC interrupts
+ DFR:          0          0          0          0   Deferred Error APIC interrupts
+ MCE:          0          0          0          0   Machine check exceptions
+ MCP:       1327       1327       1327       1328   Machine check polls
+ ERR:          0
+ MIS:          0
+ PIN:          0          0          0          0   Posted-interrupt notification event
+ NPI:          0          0          0          0   Nested posted-interrupt event
+ PIW:          0          0          0          0   Posted-interrupt wakeup event
