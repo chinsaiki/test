@@ -16,6 +16,13 @@
 ## 介绍
 
 该仓库包含`编程的各种内容`，以`顾名思义的文件夹命名`形式进行管理。
+例如:
+
+* `Linux`: Linux kernel and some other thing
+* `memory`: memory
+* `c`: c language
+* `cpp`: C++ language
+* `assembler`: assembler language
 
 
 ```
