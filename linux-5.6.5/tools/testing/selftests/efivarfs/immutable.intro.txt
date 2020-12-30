@@ -1,0 +1,4 @@
+immutable : 不变的
+
+从Java角度：immutable 是一种持久化数据结构，一旦创建，就不能更改的数据。
+
