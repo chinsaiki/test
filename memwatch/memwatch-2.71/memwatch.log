@@ -144,3 +144,33 @@ Memory usage statistics (detailed):
   60                                        1        200      200      0       
   59                                        1        20       20       20      
   57                                        1        210      210      0       
+
+============= MEMWATCH 2.71 Copyright (C) 1992-1999 Johan Lindh =============
+
+Started at Wed Dec 30 14:44:52 2020
+
+Modes: __STDC__ 64-bit mwDWORD==(unsigned int)
+mwROUNDALLOC==8 sizeof(mwData)==56 mwDataSize==56
+
+statistics: now collecting on a line basis
+Hello world!
+underflow: <5> test.c(62), 200 bytes alloc'd at <4> test.c(60)
+relink: <7> test.c(66) attempting to repair MW-0xadb5a0...
+relink: MW-0xadb5a0 is the head (first) allocation
+relink: MW-0xadb5a0 prev pointer is non-NULL, you have a wild pointer
+relink: successful, no allocations lost
+assert trap: <8> test.c(69), 1==2
+assert trap: <8> IGNORED - execution continues
+limit: old limit = none, new limit = 1000000 bytes
+grabbed: all allowed memory to no-mans-land (976 kb)
+Killing byte at 0xae7930
+Killing byte at 0xae2b10
+Killing byte at 0xadb9c8
+Killing byte at 0xadb57c
+check: <8> test.c(95), checking chain alloc nomansland 
+check: <8> test.c(95), complete; no errors
+internal: <10> test.c(105), checksum for MW-0xbd32a0 is incorrect
+underflow: <10> test.c(105), 0 bytes alloc'd at <9> test.c(865)
+overflow: <10> test.c(105), 0 bytes alloc'd at <9> test.c(865)
+internal: <10> test.c(107), no-mans-land MW-0xbd32a0 is corrupted
+realloc: <10> test.c(107), 0xbd32e0 was freed from test.c(105)
