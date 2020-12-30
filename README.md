@@ -18,12 +18,39 @@
 该仓库包含`编程的各种内容`，以`顾名思义的文件夹命名`形式进行管理。
 例如:
 
+* `5G`: Some 5G thing 5G相关的知识，软件
+* `HarmonyOS`: 鸿蒙系统
+* `StudyNotes`: 学习笔记
+* `ai`: 人工智能
+* `aio`: 异步IO
+* `algorithm`: 算法
+* `arm`: arm架构相关
+* `asm`: 汇编
+* `atomic`: 原子操作，原子性
+* `book`: 书籍
+* `bpf`: 柏克莱封包过滤器（Berkeley Packet Filter，缩写 BPF）
+* `bus`: 总线
+* `c`: C语言相关
+* `cmake`: cmake
+* `cmdline`: 命令行
+* `compile`: 编译原理，编译器 
+* `completion`: 补全命令，功能
+* `coroutine`: 协程
+* `cpp`: C++
+* `cwp`: 科罗拉多矿院 SU
+* `database`: 数据库
+* `design-patterns`: 设计模式
+* `disk`: 磁盘
+* `distribute-system`: 分布式系统
+* `dma`: 直接内存映射
+* `doc`: 文档
+* `docker`: Docker
 * `Linux`: Linux kernel and some other thing
 * `memory`: memory
 * `c`: c language
 * `cpp`: C++ language
 * `assembler`: assembler language
-
+* ** 包括但不限于此，etc. **
 
 ```
 quu..__
