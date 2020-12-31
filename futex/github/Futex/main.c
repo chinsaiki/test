@@ -3,7 +3,7 @@
 #include <sys/syscall.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <stdatomic.h>
+//#include <stdatomic.h>
 #include <pthread.h>
 
 
@@ -52,7 +52,9 @@ static void fpost(int *futexp)
 }
 
 void* worker(void* param){
-    for (int i = 0; i < 8; i++){
+    int i;
+
+    for ( i = 0; i < 8; i++){
         fwait(((struct worker_args*) param)->futex_1);
         printf("Thread\n");
         fpost(((struct worker_args*) param)->futex_2);
@@ -66,13 +68,14 @@ int main(){
     int futex_1 = 0;
     int futex_2 = 1;
     struct worker_args args;
-
+    int i;
+    
     args.futex_1 = &futex_1;
     args.futex_2 = &futex_2;
 
     ret = pthread_create( &thread, NULL, worker, (void*)&args);
 
-    for (int i = 0; i < 8; i++){
+    for ( i = 0; i < 8; i++){
         fwait(args.futex_2);
         printf("Main\n");
 

@@ -1,12 +1,14 @@
+#include <pthread.h>
+
 #include "align.h"
 #include "primitives.h"
+
 #define NODE_SIZE (1 << 12)
 #define N    NODE_SIZE
 #define NBITS    (N - 1)
 #define BOT ((void *)0)
 #define TOP ((void *)-1)
 
-#include <pthread.h>
 struct _node_t {
     struct _node_t* volatile next DOUBLE_CACHE_ALIGNED;
     long id DOUBLE_CACHE_ALIGNED;
@@ -54,10 +56,11 @@ static inline node_t* ob_new_node() {
 void ob_queue_register(obqueue_t* q, handle_t* th, int flag) {
     th->spare = ob_new_node();
     th->put_node = th->pop_node = q->init_node;
+    int i;
     
     if(flag & ENQ) {
         handle_t** tail = q->enq_handles;
-        for(int i = 0; ; ++i) {
+        for( i = 0; ; ++i) {
             handle_t* init = NULL;
             if(tail[i] == NULL && CAS(tail + i, &init, th)) {
                 break;
@@ -69,7 +72,7 @@ void ob_queue_register(obqueue_t* q, handle_t* th, int flag) {
     
     if(flag & DEQ) {
         handle_t** tail = q->deq_handles;
-        for(int i = 0; ; ++i) {
+        for( i = 0; ; ++i) {
             handle_t* init = NULL;    
             if(tail[i] == NULL && CAS(tail + i, &init, th)) {
                 break;
@@ -96,9 +99,10 @@ void ob_init_queue(obqueue_t* q, int enqs, int deqs, int threshold) {
 static void *ob_find_cell(node_t* volatile* ptr, long i, handle_t* th) {
     // get current node
     node_t *curr = *ptr;
+    long j;
     /*j is thread's local node'id(put node or pop node), (i / N) is the cell needed node'id.
       and we shoud take it, By filling the nodes between the j and (i / N) through 'next' field*/ 
-    for (long j = curr->id; j < i / N; ++j) {
+    for ( j = curr->id; j < i / N; ++j) {
         node_t *next = curr->next;
         // next is NULL, so we Start filling.
         if (next == NULL) {

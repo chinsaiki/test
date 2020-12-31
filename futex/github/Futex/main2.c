@@ -4,6 +4,7 @@
 #include <linux/futex.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 
 struct worker_args{
