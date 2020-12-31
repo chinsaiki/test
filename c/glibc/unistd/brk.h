@@ -1,9 +1,11 @@
 
 #include <unistd.h>
 
-////用来改变程序间断点的位置
+//扩展heap的上界，brk()设置新的上界地址，
 int brk(void *addr);
 
+
+//扩展heap的上界，sbrk()返回新的上界地址
 void *sbrk(intptr_t increment);
 
 
