@@ -7,5 +7,3 @@ function clean {
 	    find . -name $name -type f -print -exec rm -rf {} \;
 	done 
 }
-
-clean
