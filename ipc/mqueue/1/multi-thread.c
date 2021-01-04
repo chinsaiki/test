@@ -89,7 +89,7 @@ void mqueue_init()
     struct mq_attr attr;
     
     ret = mq_unlink(MQUEUE_NAME);
-    
+    perror("mq_unlink: ");
 
     attr.mq_flags = 0;
     attr.mq_msgsize = 1024;
