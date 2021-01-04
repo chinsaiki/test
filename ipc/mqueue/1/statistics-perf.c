@@ -208,6 +208,14 @@ void msgq_init()
 	}
 }
 
+void unix_sock_init()
+{
+    
+}
+
+
+
+
 void mqueue_init()
 {
     int ret;
@@ -241,6 +249,7 @@ int main()
 {
     mqueue_init();
     msgq_init();
+    unix_sock_init();
     task_init();
     task_join();
 }
