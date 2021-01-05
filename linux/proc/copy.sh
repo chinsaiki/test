@@ -14,6 +14,7 @@ if [ -f $file ]; then
 	 #  不要第一个 "-"
 	echo Copy ${swapfile:1} to $dst_dir 
 	cp $file $dst_dir/${swapfile:1} 
+	chmod 0666 $dst_dir/${swapfile:1}
 else
 	echo "Wrong file TYPE."	
 fi
