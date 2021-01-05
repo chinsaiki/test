@@ -1,0 +1,47 @@
+00400000-00423000 r-xp 00000000 fd:00 100670889                          /usr/bin/cp
+00623000-00624000 r--p 00023000 fd:00 100670889                          /usr/bin/cp
+00624000-00625000 rw-p 00024000 fd:00 100670889                          /usr/bin/cp
+00625000-00626000 rw-p 00000000 00:00 0 
+0255b000-0257c000 rw-p 00000000 00:00 0                                  [heap]
+7fb5cb7cd000-7fb5d1d0f000 r--p 00000000 fd:00 38557050                   /usr/lib/locale/locale-archive
+7fb5d1d0f000-7fb5d1d26000 r-xp 00000000 fd:00 237476                     /usr/lib64/libpthread-2.17.so
+7fb5d1d26000-7fb5d1f25000 ---p 00017000 fd:00 237476                     /usr/lib64/libpthread-2.17.so
+7fb5d1f25000-7fb5d1f26000 r--p 00016000 fd:00 237476                     /usr/lib64/libpthread-2.17.so
+7fb5d1f26000-7fb5d1f27000 rw-p 00017000 fd:00 237476                     /usr/lib64/libpthread-2.17.so
+7fb5d1f27000-7fb5d1f2b000 rw-p 00000000 00:00 0 
+7fb5d1f2b000-7fb5d1f2d000 r-xp 00000000 fd:00 150979                     /usr/lib64/libdl-2.17.so
+7fb5d1f2d000-7fb5d212d000 ---p 00002000 fd:00 150979                     /usr/lib64/libdl-2.17.so
+7fb5d212d000-7fb5d212e000 r--p 00002000 fd:00 150979                     /usr/lib64/libdl-2.17.so
+7fb5d212e000-7fb5d212f000 rw-p 00003000 fd:00 150979                     /usr/lib64/libdl-2.17.so
+7fb5d212f000-7fb5d218f000 r-xp 00000000 fd:00 151085                     /usr/lib64/libpcre.so.1.2.0
+7fb5d218f000-7fb5d238f000 ---p 00060000 fd:00 151085                     /usr/lib64/libpcre.so.1.2.0
+7fb5d238f000-7fb5d2390000 r--p 00060000 fd:00 151085                     /usr/lib64/libpcre.so.1.2.0
+7fb5d2390000-7fb5d2391000 rw-p 00061000 fd:00 151085                     /usr/lib64/libpcre.so.1.2.0
+7fb5d2391000-7fb5d2554000 r-xp 00000000 fd:00 150974                     /usr/lib64/libc-2.17.so
+7fb5d2554000-7fb5d2754000 ---p 001c3000 fd:00 150974                     /usr/lib64/libc-2.17.so
+7fb5d2754000-7fb5d2758000 r--p 001c3000 fd:00 150974                     /usr/lib64/libc-2.17.so
+7fb5d2758000-7fb5d275a000 rw-p 001c7000 fd:00 150974                     /usr/lib64/libc-2.17.so
+7fb5d275a000-7fb5d275f000 rw-p 00000000 00:00 0 
+7fb5d275f000-7fb5d2763000 r-xp 00000000 fd:00 151563                     /usr/lib64/libattr.so.1.1.0
+7fb5d2763000-7fb5d2962000 ---p 00004000 fd:00 151563                     /usr/lib64/libattr.so.1.1.0
+7fb5d2962000-7fb5d2963000 r--p 00003000 fd:00 151563                     /usr/lib64/libattr.so.1.1.0
+7fb5d2963000-7fb5d2964000 rw-p 00004000 fd:00 151563                     /usr/lib64/libattr.so.1.1.0
+7fb5d2964000-7fb5d296b000 r-xp 00000000 fd:00 151573                     /usr/lib64/libacl.so.1.1.0
+7fb5d296b000-7fb5d2b6b000 ---p 00007000 fd:00 151573                     /usr/lib64/libacl.so.1.1.0
+7fb5d2b6b000-7fb5d2b6c000 r--p 00007000 fd:00 151573                     /usr/lib64/libacl.so.1.1.0
+7fb5d2b6c000-7fb5d2b6d000 rw-p 00008000 fd:00 151573                     /usr/lib64/libacl.so.1.1.0
+7fb5d2b6d000-7fb5d2b91000 r-xp 00000000 fd:00 147447                     /usr/lib64/libselinux.so.1
+7fb5d2b91000-7fb5d2d90000 ---p 00024000 fd:00 147447                     /usr/lib64/libselinux.so.1
+7fb5d2d90000-7fb5d2d91000 r--p 00023000 fd:00 147447                     /usr/lib64/libselinux.so.1
+7fb5d2d91000-7fb5d2d92000 rw-p 00024000 fd:00 147447                     /usr/lib64/libselinux.so.1
+7fb5d2d92000-7fb5d2d94000 rw-p 00000000 00:00 0 
+7fb5d2d94000-7fb5d2db6000 r-xp 00000000 fd:00 5619710                    /usr/lib64/ld-2.17.so
+7fb5d2f73000-7fb5d2f78000 rw-p 00000000 00:00 0 
+7fb5d2fb4000-7fb5d2fb5000 rw-p 00000000 00:00 0 
+7fb5d2fb5000-7fb5d2fb6000 r--p 00021000 fd:00 5619710                    /usr/lib64/ld-2.17.so
+7fb5d2fb6000-7fb5d2fb7000 rw-p 00022000 fd:00 5619710                    /usr/lib64/ld-2.17.so
+7fb5d2fb7000-7fb5d2fb8000 rw-p 00000000 00:00 0 
+7ffd9b6d7000-7ffd9b6f9000 rw-p 00000000 00:00 0                          [stack]
+7ffd9b70c000-7ffd9b710000 r--p 00000000 00:00 0                          [vvar]
+7ffd9b710000-7ffd9b712000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
