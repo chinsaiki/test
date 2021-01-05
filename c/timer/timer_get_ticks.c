@@ -1,5 +1,14 @@
 #include <stdio.h>
+/**
+    从奔腾系列开始，Intel x86 处理器中增加了一个 64 位时间戳寄存器 TSC 
+    每经过一个时钟周期，该寄存器+1，及其重启时，该寄存器将清空。
 
+    rdtsc 指一条机器指令，用于读取该时间戳寄存器中的值。
+
+    查询CPU主频：
+    
+    cat /proc/cpuinfo | grep cpu | grep  MHz | sed -e 's/.*:[^0-9]//'
+*/
 unsigned long timer_get_ticks(void)
 {
     unsigned long ret;
@@ -26,8 +35,8 @@ int main()
     unsigned long start = 0;
 	while(1) {
         start = timer_get_ticks();
-		printf("%ld.\n", timer_get_ticks()-start);
 		sleep(1);
+		printf("%ld.\n", timer_get_ticks()-start);
 	}
 }
 

@@ -2,6 +2,8 @@
  *  统计 mqueue 消息队列的吞吐率和性能
  *  作者：荣涛  
  *  日期  ：2021年1月4日
+ *  修改历史
+ *      2021年1月5日 添加时间戳，计算时延
  */
 #include <stdio.h>
 #include <fcntl.h>           /* For O_* constants */
@@ -13,6 +15,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
+/*
+    在虚拟机中测得结果为：
+    
+[root@localhost 1]# gcc statistics-perf.c  -pthread -lrt -DTEST_SIZE=1500 -DTEST_NLOOP=100000
+[root@localhost 1]# ./a.out 
+
+    Message Queue - Client key is: 2064646621
+    TX rate 7628.327 Mbits/sec
+    Latency Per Message = 0.063252 ms
+    RX rate 7628.174 Mbits/sec
+    TX rate 6587.400 Mbits/sec
+    Latency Per Message = 0.010186 ms
+    RX rate 6588.272 Mbits/sec
+*/
 
 #ifndef TEST_SIZE
 #define TEST_SIZE   1024
@@ -38,13 +55,28 @@ struct dbg_msg {
     unsigned long msg_seq;
     unsigned long msg_ack;
     unsigned long msg_len;
+#ifdef CRC
     unsigned int crc32;
+#endif
+#ifndef NOTIMESTAMP
+    unsigned long timestamp;
+#endif
     char data[];
 };
 
 pthread_t task1, task2;
 mqd_t mqd;
 int msqid;
+
+static struct cpu_freq {
+    enum {CPU_3GMHZ, CPU_2_7GMHZ,}index;
+    unsigned long freq;
+    char *string;
+}CPU_MHZ[] = {
+    {CPU_3GMHZ, 3000000000, "3GMHz"},
+    {CPU_2_7GMHZ, 2700000000, "2.7GMHz"},
+};
+    
 
 static unsigned int crc32(unsigned char const *p, unsigned int len)
 {
@@ -62,6 +94,41 @@ static unsigned int crc32(unsigned char const *p, unsigned int len)
 }
 
 
+unsigned long __get_ticks(void)
+{
+    unsigned long ret;
+    union
+    {
+        unsigned long tsc_64;
+        struct
+        {
+            unsigned int lo_32;
+            unsigned int hi_32;
+        };
+    } tsc;
+
+    __asm volatile("rdtsc" :
+             "=a" (tsc.lo_32),
+             "=d" (tsc.hi_32));
+
+     ret = ((unsigned long)tsc.tsc_64);
+     return ret;
+}
+
+inline void set_msg_timestamp(struct dbg_msg*msg)
+{
+#ifndef NOTIMESTAMP
+    msg->timestamp = __get_ticks();
+#endif
+}
+inline unsigned long call_timestamp_diff(struct dbg_msg*msg)
+{
+#ifndef NOTIMESTAMP
+    return __get_ticks() - msg->timestamp;
+#else
+    return 0;
+#endif
+}
 
 static unsigned long int diff_timeval_usec(struct timeval *big, struct timeval *small)
 {
@@ -117,11 +184,13 @@ void test_mqueue_send(send_hook_fn send_fn)
     send_pdmsg->msg_seq = MSGQ_TYPE;
     send_pdmsg->msg_ack = 0;
     send_pdmsg->msg_len = sizeof(send_buffer);
+#ifdef CRC
     send_pdmsg->crc32 = crc32(send_pdmsg->data, send_pdmsg->msg_len-offsetof(struct dbg_msg, data));
+#endif
     
     gettimeofday(&start, NULL);
     while(++nloop <= TEST_NLOOP) {
-        
+        set_msg_timestamp(send_pdmsg);
         ret = send_fn((char*)send_pdmsg, send_pdmsg->msg_len);
         if(ret != 0) {
             continue;
@@ -154,6 +223,7 @@ void test_mqueue_recv(recv_hook_fn recv_fn)
     unsigned long nloop = 0;
     struct timeval start, end;
     unsigned long recv_bytes = 0;
+    unsigned long ticks_total = 0;
     
     gettimeofday(&start, NULL);
 
@@ -164,17 +234,22 @@ void test_mqueue_recv(recv_hook_fn recv_fn)
         } else {
             recv_bytes += n;
             pdmsg = (struct dbg_msg*)buffer;
+            ticks_total += call_timestamp_diff(pdmsg);
 //            printf("T2(%d/%ld): recv seq(%ld), ack(%ld), len(%ld)\n", \
 //                        n, recv_bytes, pdmsg->msg_seq, pdmsg->msg_ack, pdmsg->msg_len);
+#ifdef CRC
             if(pdmsg->crc32 != crc32(pdmsg->data, pdmsg->msg_len-offsetof(struct dbg_msg, data))) {
                 printf("crc32 error: %x vs %x\n", pdmsg->crc32, 
                             crc32(pdmsg->data, pdmsg->msg_len-offsetof(struct dbg_msg, data)));
             }
+#endif            
             pdmsg->msg_ack++;
+            
         }
     }
     gettimeofday(&end, NULL);
     
+    printf("Latency Per Message = %lf ms\n", ticks_total*1.0/(nloop-1)/CPU_MHZ[CPU_2_7GMHZ].freq*1000.0);
     printf_rate("RX", recv_bytes, diff_timeval_usec(&end, &start));
 
 }

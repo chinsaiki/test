@@ -5,6 +5,12 @@
 
 #define RTE_STD_C11
 #define CYC_PER_10MHZ 1E7
+/**
+    从奔腾系列开始，Intel x86 处理器中增加了一个 64 位时间戳寄存器 TSC 
+    每经过一个时钟周期，该寄存器+1，及其重启时，该寄存器将清空。
+
+    rdtsc 指一条机器指令，用于读取该时间戳寄存器中的值。
+*/
 
 static inline uint64_t
 rte_rdtsc(void)
