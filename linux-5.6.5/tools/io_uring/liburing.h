@@ -8,7 +8,9 @@ extern "C" {
 #include <sys/uio.h>
 #include <signal.h>
 #include <string.h>
+#include "liburing/compat.h"
 #include "liburing/io_uring.h"
+//#include "liburing/barrier.h"
 #include <inttypes.h>
 #include <linux/swab.h>
 #include "barrier.h"

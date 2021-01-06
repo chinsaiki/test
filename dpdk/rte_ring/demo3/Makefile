@@ -5,7 +5,7 @@ LIB+= -pthread
 
 CFLAGS+= -g
 
-TARGET= main
+TARGET= main.out
 ALL:$(TARGET)
 
 OBJ= async_ring.o main.o 

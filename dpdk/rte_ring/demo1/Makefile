@@ -5,7 +5,7 @@ LIB+= -pthread
 
 CFLAGS+= -g
 
-TARGET= main
+TARGET= main.out
 ALL:$(TARGET)
 
 OBJ= rte_ring.o main.o 
