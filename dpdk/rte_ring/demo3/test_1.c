@@ -104,7 +104,7 @@ int main(int argc,char *argv[])
         nr_dequeue_thread = atoi(argv[2]); 
         ring_size = atoi(argv[3]); 
     } else {
-        printf("usage: %s [nthread-enqueue] [nthread-dequeue] [ring-size].\n");
+        printf("usage: %s [nthread-enqueue] [nthread-dequeue] [ring-size].\n", argv[0]);
         exit(1);
     } 
 
@@ -126,10 +126,10 @@ int main(int argc,char *argv[])
     sleep(5);
     
     for(i=0;i<nr_enqueue_thread;i++) {
-        pthread_join(&enqueue_threads[i], NULL);
+        pthread_join(enqueue_threads[i], NULL);
     }
     for(i=0;i<nr_dequeue_thread;i++) {
-        pthread_join(&dequeue_threads[i], NULL);
+        pthread_join(dequeue_threads[i], NULL);
     }
     printf("threads join.\n");
     
