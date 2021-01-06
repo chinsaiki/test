@@ -176,10 +176,10 @@ async_ring_dump(FILE *f, const struct async_ring *r)
 	fprintf(f, "  flags=%x\n", r->flags);
 	fprintf(f, "  size=%"PRIu32"\n", r->size);
 	fprintf(f, "  capacity=%"PRIu32"\n", r->capacity);
-	fprintf(f, "  ct=%"PRIu32"\n", r->cons.tail);
-	fprintf(f, "  ch=%"PRIu32"\n", r->cons.head);
-	fprintf(f, "  pt=%"PRIu32"\n", r->prod.tail);
-	fprintf(f, "  ph=%"PRIu32"\n", r->prod.head);
+	fprintf(f, "  consumer tail=%"PRIu32"\n", r->cons.tail);
+	fprintf(f, "  consumer head=%"PRIu32"\n", r->cons.head);
+	fprintf(f, "  producer tail=%"PRIu32"\n", r->prod.tail);
+	fprintf(f, "  producer head=%"PRIu32"\n", r->prod.head);
 	fprintf(f, "  used=%u\n", async_ring_count(r));
 	fprintf(f, "  avail=%u\n", async_ring_free_count(r));
 }

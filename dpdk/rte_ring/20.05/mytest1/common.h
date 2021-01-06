@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <malloc.h>
+#include <assert.h>
 
 #define RTE_CACHE_LINE_SIZE 64
 #define RTE_MEMZONE_NAMESIZE 32
@@ -12,6 +13,8 @@
 #ifndef offsetof
 #define offsetof(type, member) __builtin_offsetof(type, member)
 #endif
+
+#define RTE_ASSERT assert
 
 /**
  * Force alignment
@@ -31,6 +34,105 @@ typedef uint16_t unaligned_uint16_t;
 /** Force alignment to cache line. */
 #define __rte_cache_aligned __rte_aligned(RTE_CACHE_LINE_SIZE)
 
+
+/**
+ * Macro to align a pointer to a given power-of-two. The resultant
+ * pointer will be a pointer of the same type as the first parameter, and
+ * point to an address no higher than the first parameter. Second parameter
+ * must be a power-of-two value.
+ */
+#define RTE_PTR_ALIGN_FLOOR(ptr, align) \
+	((typeof(ptr))RTE_ALIGN_FLOOR((uintptr_t)ptr, align))
+
+/**
+ * Macro to align a value to a given power-of-two. The resultant value
+ * will be of the same type as the first parameter, and will be no
+ * bigger than the first parameter. Second parameter must be a
+ * power-of-two value.
+ */
+#define RTE_ALIGN_FLOOR(val, align) \
+	(typeof(val))((val) & (~((typeof(val))((align) - 1))))
+
+/**
+ * Macro to align a pointer to a given power-of-two. The resultant
+ * pointer will be a pointer of the same type as the first parameter, and
+ * point to an address no lower than the first parameter. Second parameter
+ * must be a power-of-two value.
+ */
+#define RTE_PTR_ALIGN_CEIL(ptr, align) \
+	RTE_PTR_ALIGN_FLOOR((typeof(ptr))RTE_PTR_ADD(ptr, (align) - 1), align)
+
+/**
+ * Macro to align a value to a given power-of-two. The resultant value
+ * will be of the same type as the first parameter, and will be no lower
+ * than the first parameter. Second parameter must be a power-of-two
+ * value.
+ */
+#define RTE_ALIGN_CEIL(val, align) \
+	RTE_ALIGN_FLOOR(((val) + ((typeof(val)) (align) - 1)), align)
+
+/**
+ * Macro to align a pointer to a given power-of-two. The resultant
+ * pointer will be a pointer of the same type as the first parameter, and
+ * point to an address no lower than the first parameter. Second parameter
+ * must be a power-of-two value.
+ * This function is the same as RTE_PTR_ALIGN_CEIL
+ */
+#define RTE_PTR_ALIGN(ptr, align) RTE_PTR_ALIGN_CEIL(ptr, align)
+
+/**
+ * Macro to align a value to a given power-of-two. The resultant
+ * value will be of the same type as the first parameter, and
+ * will be no lower than the first parameter. Second parameter
+ * must be a power-of-two value.
+ * This function is the same as RTE_ALIGN_CEIL
+ */
+#define RTE_ALIGN(val, align) RTE_ALIGN_CEIL(val, align)
+
+/**
+ * Macro to align a value to the multiple of given value. The resultant
+ * value will be of the same type as the first parameter and will be no lower
+ * than the first parameter.
+ */
+#define RTE_ALIGN_MUL_CEIL(v, mul) \
+	(((v + (typeof(v))(mul) - 1) / ((typeof(v))(mul))) * (typeof(v))(mul))
+
+/**
+ * Macro to align a value to the multiple of given value. The resultant
+ * value will be of the same type as the first parameter and will be no higher
+ * than the first parameter.
+ */
+#define RTE_ALIGN_MUL_FLOOR(v, mul) \
+	((v / ((typeof(v))(mul))) * (typeof(v))(mul))
+
+/**
+ * Macro to align value to the nearest multiple of the given value.
+ * The resultant value might be greater than or less than the first parameter
+ * whichever difference is the lowest.
+ */
+#define RTE_ALIGN_MUL_NEAR(v, mul)				\
+	({							\
+		typeof(v) ceil = RTE_ALIGN_MUL_CEIL(v, mul);	\
+		typeof(v) floor = RTE_ALIGN_MUL_FLOOR(v, mul);	\
+		(ceil - v) > (v - floor) ? floor : ceil;	\
+	})
+
+/**
+ * Checks if a pointer is aligned to a given power-of-two value
+ *
+ * @param ptr
+ *   The pointer whose alignment is to be checked
+ * @param align
+ *   The power-of-two value to which the ptr should be aligned
+ *
+ * @return
+ *   True(1) where the pointer is correctly aligned, false(0) otherwise
+ */
+//static inline int
+//rte_is_aligned(void *ptr, unsigned align)
+//{
+//	return RTE_PTR_ALIGN(ptr, align) == ptr;
+//}
 
 
 /**
@@ -179,6 +281,8 @@ struct rte_tailq_elem {
  */
 #define RTE_TAILQ_LOOKUP(name, struct_name) \
 	RTE_TAILQ_CAST(rte_eal_tailq_lookup(name), struct_name)
+
+
 
 /**
  * Dump tail queues to a file.

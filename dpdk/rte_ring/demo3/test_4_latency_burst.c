@@ -8,6 +8,10 @@
 
 #include "common.h"
 
+/*
+    async_ring_dequeue_burst 这个接口调用有问题
+*/
+
 #define TID pthread_self()
 
 #define log_enqueue(fmt...)  do{printf("\033[33m[%d]", TID);printf(fmt);printf("\033[m");}while(0)
@@ -98,10 +102,11 @@ void *dequeue_ring(void *arg)
     
     unsigned long int dequeue_count = 0;
     unsigned long int dequeue_count_err = 0;
-    struct test_data_struct *data = NULL;
+    struct test_data_struct *data = NULL, **obj_table;
     unsigned long ticks = 0, latencyticks_total = 0;
     struct timeval tv;
     unsigned long int diff_usec = 0, diff_usec_total = 0;
+    unsigned int available = 0, i;
     
     pthread_setspecific(keydequeue_count, (void*)dequeue_count);
     pthread_setspecific(keydequeue_count_err, (void*)dequeue_count_err);
@@ -111,35 +116,45 @@ void *dequeue_ring(void *arg)
             continue;
         }
 dequeue:
+#if 0
+        if(async_ring_dequeue_burst(ring, (void**)obj_table, 1, &available) != 0) {
+//            printf("Dequeue error.\n");
+            goto dequeue;
+        } else {
+            for(i=0;i<available;i++) {
+                data = obj_table[i];
+#else
         if(async_ring_dequeue(ring, (void**)&data) != 0) {
 //            printf("Dequeue error.\n");
             goto dequeue;
         } else {
+            {
+#endif
+                ticks = call_timestamp_diff(data->timestamp);
+                latencyticks_total += ticks;
 
-            ticks = call_timestamp_diff(data->timestamp);
-            latencyticks_total += ticks;
-
-            gettimeofday(&tv, NULL);
-            diff_usec = diff_timeval_usec(&tv, &data->tv);
-            diff_usec_total += diff_usec;
-            
-            dequeue_count++;
-            if(data->msg_type != MSG_TYPE || data->msg_code != MSG_CODE || data->msg_len != MSG_LEN) {
-                dequeue_count_err++;
-//                log_dequeue("dequeue %x, %x, %x.\n", data->msg_code, data->msg_type, data->msg_len);
+                gettimeofday(&tv, NULL);
+                diff_usec = diff_timeval_usec(&tv, &data->tv);
+                diff_usec_total += diff_usec;
+                
+                dequeue_count++;
+                if(data->msg_type != MSG_TYPE || data->msg_code != MSG_CODE || data->msg_len != MSG_LEN) {
+                    dequeue_count_err++;
+    //                log_dequeue("dequeue %x, %x, %x.\n", data->msg_code, data->msg_type, data->msg_len);
+                }
+                if(dequeue_count % STAT_INTERVAL_NLOOP == 0) {
+                    log_dequeue("dequeue %ld, err = %ld. "\
+                                    "latency(Total %ld/%ld, %lf/%lf ms)"\
+                                    "(Total %ld/%ld, %lf us)\n", \
+                                    dequeue_count, dequeue_count_err, \
+                                    ticks, latencyticks_total,
+                                    ticks*1.0/CPU_MHZ[CPU_2_7GMHZ].freq*1000.0,
+                                    latencyticks_total*1.0/(dequeue_count-1)/CPU_MHZ[CPU_2_7GMHZ].freq*1000.0,
+                                    diff_usec, diff_usec_total, 
+                                    diff_usec_total*1.0/(dequeue_count-1));
+                }
+                free(data);
             }
-            if(dequeue_count % STAT_INTERVAL_NLOOP == 0) {
-                log_dequeue("dequeue %ld, err = %ld. "\
-                                "latency(Total %ld/%ld, %lf/%lf ms)"\
-                                "(Total %ld/%ld, %lf us)\n", \
-                                dequeue_count, dequeue_count_err, \
-                                ticks, latencyticks_total,
-                                ticks*1.0/CPU_MHZ[CPU_2_7GMHZ].freq*1000.0,
-                                latencyticks_total*1.0/(dequeue_count-1)/CPU_MHZ[CPU_2_7GMHZ].freq*1000.0,
-                                diff_usec, diff_usec_total, 
-                                diff_usec_total*1.0/(dequeue_count-1));
-            }
-            free(data);
         }
     }
     pthread_exit(NULL);

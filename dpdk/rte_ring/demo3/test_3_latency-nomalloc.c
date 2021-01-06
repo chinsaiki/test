@@ -8,6 +8,17 @@
 
 #include "common.h"
 
+/*
+    测量结果好像和每次分配内存差不多，
+[root@localhost demo3]# ./test_3_latency-nomalloc.out 3 1 2 
+[-93989120]dequeue 1000000, err = 0. latency(Total 2484/2439308318, 0.000920/0.000903 ms)(Total 2/1666033, 1.666035 us)
+[-93989120]dequeue 2000000, err = 0. latency(Total 1956/4836656976, 0.000724/0.000896 ms)(Total 1/3306649, 1.653325 us)
+[-68811008]enqueue 1000000.
+[-93989120]dequeue 3000000, err = 0. latency(Total 2076/7298557638, 0.000769/0.000901 ms)(Total 1/4995323, 1.665108 us)
+[-85596416]enqueue 1000000.
+[-77203712]enqueue 1000000.
+*/
+
 #define TID pthread_self()
 
 #define log_enqueue(fmt...)  do{printf("\033[33m[%d]", TID);printf(fmt);printf("\033[m");}while(0)
@@ -15,7 +26,7 @@
 
 
 #define STAT_INTERVAL_NLOOP 1000000
-
+#define NR_MALLOC   (4096*1)
 
 struct test_data_struct {
     int msg_type;
@@ -57,27 +68,31 @@ void sig_handler(int signum)
 
 void *enqueue_ring(void *arg) 
 {
-    unsigned long int enqueue_count = 0;
+    unsigned long int enqueue_count = 0, i;
     
     pthread_setspecific(keyenqueue_count, (void*)enqueue_count);
     
-    struct test_data_struct *data = NULL;
+    struct test_data_struct *data = memalign(4096, NR_MALLOC*MSG_LEN);
+    assert(data);
+    for(i=0;i<NR_MALLOC;i++) {
+        data[i].msg_type = MSG_TYPE;
+        data[i].msg_code = MSG_CODE;
+        data[i].msg_len = MSG_LEN;
+    }
+
+    
     while(1) {
         if(async_ring_full(ring)) {
             continue;
         }
-        data = malloc(MSG_LEN);
-        data->msg_type = MSG_TYPE;
-        data->msg_code = MSG_CODE;
-        data->msg_len = MSG_LEN;
 
         /* 时间戳 */
-        set_timestamp(&data->timestamp);
-        gettimeofday(&data->tv, NULL);
+        set_timestamp(&data[enqueue_count%NR_MALLOC].timestamp);
+        gettimeofday(&data[enqueue_count%NR_MALLOC].tv, NULL);
 enqueue:
-        if(async_ring_enqueue(ring, data) != 0) {
+        if(async_ring_enqueue(ring, &data[enqueue_count%NR_MALLOC]) != 0) {
 //            printf("Enqueue error.\n");
-            set_timestamp(&data->timestamp);
+            set_timestamp(&data[enqueue_count%NR_MALLOC].timestamp);
             goto enqueue;
         } else {
             enqueue_count++;
@@ -139,7 +154,6 @@ dequeue:
                                 diff_usec, diff_usec_total, 
                                 diff_usec_total*1.0/(dequeue_count-1));
             }
-            free(data);
         }
     }
     pthread_exit(NULL);
@@ -198,4 +212,5 @@ int main(int argc,char *argv[])
     printf("threads join.\n");
     
 }
+
 
