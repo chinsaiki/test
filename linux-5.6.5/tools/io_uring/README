@@ -37,3 +37,7 @@ fs/io_uring.c:8717:static long io_uring_setup(u32 entries, struct io_uring_param
 fs/io_uring.c:8737:SYSCALL_DEFINE2(io_uring_setup, u32, entries,
 fs/io_uring.c:8740:	return io_uring_setup(entries, params);
 
+
+-----------------------------------------------------------------------------
+好像也不能这么说吧，毕竟 epoll 也是文件系统的 荣涛 2021年1月6日17:25:17
+
