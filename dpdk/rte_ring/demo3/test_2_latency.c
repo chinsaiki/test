@@ -74,9 +74,10 @@ void *enqueue_ring(void *arg)
         /* 时间戳 */
         set_timestamp(&data->timestamp);
         gettimeofday(&data->tv, NULL);
-        
+enqueue:
         if(async_ring_enqueue(ring, data) != 0) {
-            printf("Enqueue error.\n");
+//            printf("Enqueue error.\n");
+            goto enqueue;
         } else {
             enqueue_count++;
             if(enqueue_count % STAT_INTERVAL_NLOOP == 0) {
@@ -108,8 +109,10 @@ void *dequeue_ring(void *arg)
         if(async_ring_empty(ring)) {
             continue;
         }
+dequeue:        
         if(async_ring_dequeue(ring, (void**)&data) != 0) {
-            printf("Dequeue error.\n");
+//            printf("Dequeue error.\n");
+            goto dequeue;
         } else {
 
             ticks = call_timestamp_diff(data->timestamp);
