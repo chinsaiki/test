@@ -1,12 +1,17 @@
-SRCS = lockfree_queue.c hazard_ptr.c tester.c lockfree_reapd.c
+SRCS = lockfree_queue.c hazard_ptr.c lockfree_reapd.c
 
-all: queue-32 queue-64
+PROGRAMS= test_3_latency
 
-queue-32: $(SRCS)
-	gcc -std=c99 -g -m32 -lpthread $^ -o run_tests-32
+all: $(PROGRAMS)
 
-queue-64: $(SRCS)
-	gcc -std=c99 -g -m64 -lpthread $^ -o run_tests-64
+test_1:$(SRCS)
+	gcc -std=c99 -g -m64 -lpthread $^ test_1.c -o test_1.out
+	
+test_2:$(SRCS)
+	gcc -std=c99 -g -m64 -lpthread $^ test_2.c -o test_2.out
+	
+test_3_latency:$(SRCS)
+	gcc -std=c99 -g -m64 -lpthread $^ test_3_latency.c -o test_3_latency.out
 
 clean:
-	rm run_tests*
+	rm *.out
