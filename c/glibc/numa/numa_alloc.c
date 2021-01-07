@@ -11,7 +11,7 @@ int main()
 
     printf("numa_max_node = %d\n", numa_max_node());
 
-    numa_free(str);
+    numa_free(str, numa_pagesize());
 }
 
 
