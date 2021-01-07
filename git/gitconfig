@@ -1,0 +1,13 @@
+[credential]
+	helper = store
+[push]
+	default = simple
+[http]
+	proxy = http://10.170.9.2:808
+[https]
+	proxy = http://10.170.9.2:808
+[user]
+	name = rtoax
+#email = 2386499836@qq.com
+[core]
+	ignorecase = true
