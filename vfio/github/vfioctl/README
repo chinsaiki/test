@@ -1,0 +1,19 @@
+vfioctl
+=======
+
+vfioctl is a small helper utility to allow unprivileged users to bind
+a set of allowed devices under the vfio driver.
+
+The vfioctl binary is installed with the suid bit set under /usr/bin/vfioctl.
+It is symlinked to both /usr/bin/vfio-bind and /usr/bin/vfio-unbind.
+
+- The bind operation unbinds the device from the current driver and rebinds it under vfio-pci.
+- The unbind opetation unbinds the device from the vfio-pci driver and initiates a device probe.
+
+The /etc/vfio/vfioctl.lst file contains the list of allowed devices,
+each specified on a different line:
+
+== sample vfioctl.lst ==
+0000:01:00.0
+0000:01:00.1
+========================
