@@ -1,0 +1,31 @@
+volatile
+
+volatile type qualifier
+In C/C++ the volatile keyword was intended to:
+● allow access to memory mapped devices
+● allow uses of variables between setjmp and longjmp
+● allow uses of sig_atomic_t variables in signal handlers.
+
+Useful side effects:
+● compiler can’t optimize out volatile access
+● compiler can’t reorder volatile access relative to
+	some other special access (e.g. another volatile
+	access).
+
+Disadvantages:
+● operations on volatile variables are not atomic
+● compiler may reorder volatile access relative to
+	regular variable access
+● CPU may reorder volatile access relative to any
+	other access (e.g. another volatile access).
+
+------------ WARNING -------------
+According to the C++11 ISO Standard, the volatile
+keyword is only meant for use for hardware access; do
+not use it for inter-thread communication.
+------------ WARNING -------------
+
+References
+● https://en.wikipedia.org/wiki/Volatile_(computer_programming)
+● http://en.cppreference.com/w/c/language/volatile
+● https://msdn.microsoft.com/en-us/library/12a04hfd.aspx

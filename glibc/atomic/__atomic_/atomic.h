@@ -61,8 +61,11 @@ void __atomic_store_n (type *ptr, type val,int memorder);
 type __atomic_exchange_n (type *ptr, type val,int memorder);
 bool __atomic_compare_exchange_n (type *ptr, type *expected, type desired,bool weak,
 								        int success_memorder,int failure_memorder);
-
 //函数的用途从函数名可知，上面的带_n的后缀版本如果去掉_n就是不用提供memorder的seq_cst版本。
+
+
+
+
 
 bool __atomic_test_and_set (void *ptr, int memorder);
 void __atomic_clear (bool *ptr, int memorder);
