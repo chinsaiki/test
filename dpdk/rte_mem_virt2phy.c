@@ -115,7 +115,7 @@ int main()
 	printf("addr1 = %p\n", addr1);
 	rte_iova_t rte_iova = rte_mem_virt2iova(addr1);
 
-	printf("addr1 = %p, 0x%x\n", addr1, (void*)rte_iova);
+	printf("addr1 = %p, 0x%lx\n", addr1, (void*)rte_iova);
 
 	return 0;
 }
