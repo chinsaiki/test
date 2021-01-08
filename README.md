@@ -19,37 +19,174 @@
 例如:
 
 * `5G`: Some 5G thing 5G相关的知识，软件
-* `HarmonyOS`: 鸿蒙系统
-* `StudyNotes`: 学习笔记
 * `ai`: 人工智能
 * `aio`: 异步IO
 * `algorithm`: 算法
 * `arm`: arm架构相关
 * `asm`: 汇编
+* `assembler`: assembler language
 * `atomic`: 原子操作，原子性
+* `AUTHORS`:
 * `book`: 书籍
 * `bpf`: 柏克莱封包过滤器（Berkeley Packet Filter，缩写 BPF）
 * `bus`: 总线
 * `c`: C语言相关
+* `cas`: Copy and Swap
+* `cgroups`: Control Groups
 * `cmake`: cmake
 * `cmdline`: 命令行
 * `compile`: 编译原理，编译器 
 * `completion`: 补全命令，功能
 * `coroutine`: 协程
-* `cpp`: C++
+* `cpp`: C++language
+* `cpu`: CPU 处理器相关
 * `cwp`: 科罗拉多矿院 SU
 * `database`: 数据库
+* `design`:
 * `design-patterns`: 设计模式
 * `disk`: 磁盘
 * `distribute-system`: 分布式系统
 * `dma`: 直接内存映射
 * `doc`: 文档
 * `docker`: Docker
-* `Linux`: Linux kernel and some other thing
+* `dpdk`: 数据平面开发套件(DPDK,Data Plane Development Kit)
+* `driver`: 驱动
+* `elasticache`: 完全托管型内存中数据存储(与 `Redis` 或 `Memcached` 兼容)
+* `ffmpeg`: 用来记录、转换数字音频、视频，并能将其转化为流的开源计算机程序
+* `fftw`: 快速傅里叶变换
+* `fio`: flexible I/O tester
+* `firewall`: 防火墙
+* `fs-filesystem`: 文件系统(Linux)
+* `fstack`: F-Stack:高性能用户态协议栈
+* `ftp`: 文件传输协议
+* `futex`: 快速的健壮的用户空间互斥锁
+* `garbage-collection`: 垃圾回收
+* `gcc`: GCC编译器
+* `gdb`: GDB调试工具
+* `git`: Git(代码托管工具)
+* `github`: 全球最大的通行交由网站 GitHub
+* `glibc`: GLibc
+* `gnu`: GNU is not UNIX
+* `google`: 谷歌的黑科技
+* `gperftools`: 谷歌的性能开发套件
+* `grub`: `grub2-mkconfig -o grub.cfg`
+* `gSOAP`: 简单开发SOAP/XML Web服务
+* `gtest`: 谷歌的Google TEST
+* `hadoop`: Hadoop[大数据]
+* `HarmonyOS`: 鸿蒙系统
+* `hash`: 哈希
+* `high-performance`: 高性能Linux服务器
+* `hpc`: 高性能计算(High Performance Calculation)
+* `hugepage`: 大页内存
+* `ipc`: 进程间通信
+* `java`: Java语言
+* `javascript`: JavaScript语言
+* `jemalloc`: JEMalloc内存分配器
+* `json`: Json语言与开元框架
+* `jvm`: Java虚拟机
+* `kvm`: Linux KVM虚拟机技术
+* `latex`: 写作
+* `leetcode`: 力扣算法[rtoax](https://leetcode-cn.com/u/rtoax/)
+* `libaio`: 异步IO库
+* `libco`: 腾讯开源的携程库
+* `libconfig`: 配置文件加载读取输出
+* `libconfigini`:  配置文件加载读取输出
+* `libcurl`: C-url库
+* `libevent`: Libevent库
+* `libmemif`: Shared Memory Packet Interface (memif) Library
+* `libumem`: 对应用程序进行内存管理(替换程序中的malloc接口)
+* `libunwind`: 栈回溯
+* `liburing`: 异步IO库
+* `libuv`: 异步 TCP 和 UDP sockets
+* `libvirt`: Linux虚拟机
+* `libxml2`: XML库
+* `license`: License
+* `LICENSE`: LICENSE
+* `linenoise`: 命令行(Redis采用)
+* `linux`: Linux kernel and some other thing
+* `linux-5.0`: 《奔跑吧Linux内核》
+* `linux-5.6.5`: 源码学习
+* `lxc`: 
+* `make`: Makefile代码编译工具
+* `memcached`: 内存缓存
 * `memory`: memory
-* `c`: c language
-* `cpp`: C++ language
-* `assembler`: assembler language
+* `mempool`: 内存池和内存分配性能对比
+* `memwatch`: 内存泄漏检测和越界检测的轻量库
+* `mimalloc`: 微软的内存分配器
+* `mqtt`: 客户端服务端架构的发布/订阅模式的消息传输协议
+* `netmap`: 高性能收发原始数据包框架
+* `network`: 计算机网络
+* `nfs`: fstab format and options for the nfs file systems
+* `nginx`: Nginx反向代理
+* `nic`: 网络接口卡
+* `ninja`: 
+* `nvdimm`: 非易失性双列直插式内存模块 (Nonvolatile Dual In-line Memory Module)
+* `openbfdd`: 
+* `opencv`: 基于BSD许可（开源）发行的跨平台计算机视觉库
+* `openldap`: OpenLDAP轻量级的文件夹访问协议
+* `openmp`: OpenMP多线程[see also hpc]
+* `openssl`: 安全套接字
+* `openstack`: 云计算开源框架
+* `openvswitch`: OVS虚拟交换机
+* `ovs`: 见上
+* `perl`: Perl语言
+* `php`: PHP语言
+* `pmdk`: 持久性内存开发套件
+* `posix`: POSIX
+* `programmer`: 那些仰慕的大神们
+* `proxy`: 代理
+* `ptmalloc`: PTMalloc内存分配器
+* `python`: Python语言
+* `rabbitmq`: 部署最广泛的开源消息代理
+* `ram`: 随机存储器
+* `rapidxml`: XML解析工具
+* `readline`: 命令行
+* `README.md`: README
+* `redis`: 缓存服务器 Remote Dictionary Server
+* `regular-expression`: 正则表达式
+* `rocketmq`: 消息队列作为高并发系统的核心组件
+* `rpc`: 远端过程访问
+* `samba`: 向客户提供SMB/CIFS服务的服务器
+* `scripts`: 
+* `sdl`: 
+* `seismic`: 
+* `selinux`: 
+* `sentinel`: 
+* `shell`: 
+* `slab`: 
+* `snmp`: 
+* `socat`: 
+* `software`: 
+* `spdk`: 
+* `ssh`: 
+* `StudyNotes`: 学习笔记
+* `sync.sh`: 
+* `tcmalloc`: 
+* `tcp-ip`: 
+* `test.sh`: 
+* `threadpool`: 
+* `timer`: 
+* `tools`: 
+* `tshark`: 
+* `ui`: 
+* `uio`: 
+* `unicode`: 
+* `unix`: 
+* `url`: 
+* `valgrind`: 
+* `virtio`: 
+* `virtual-network`: 
+* `vmem`: 
+* `vos`: 
+* `vpp`: 
+* `windows`: 
+* `x86_64`: 
+* `yaml`: 
+* `yocto`: 
+* `zero-copy`: 
+* `zeromq`: 
+* `zlog`: 
+* `zookeeper`: 
 * ** 包括但不限于此，etc. **
 
 ```
