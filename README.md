@@ -147,46 +147,46 @@
 * `rocketmq`: 消息队列作为高并发系统的核心组件
 * `rpc`: 远端过程访问
 * `samba`: 向客户提供SMB/CIFS服务的服务器
-* `scripts`: 
-* `sdl`: 
-* `seismic`: 
-* `selinux`: 
-* `sentinel`: 
-* `shell`: 
-* `slab`: 
-* `snmp`: 
-* `socat`: 
-* `software`: 
-* `spdk`: 
-* `ssh`: 
+* `scripts`: 本仓库中用到的脚本
+* `sdl`: （Simple DirectMedia Layer）开源跨平台多媒体开发库
+* `seismic`: 地球物理
+* `selinux`: Security Enhanced Linux (安全强化 Linux)
+* `sentinel`: 哨兵 Sentinel
+* `shell`: 脚本语言
+* `slab`: slab是Linux操作系统的一种内存分配机制，采用cache 存储内核对象
+* `snmp`: 简单网络管理协议
+* `socat`: 双向数据传输的中继，和NC齐名的瑞士军刀
+* `software`: 软件工程
+* `spdk`: Storage Performance Development Kit (SPDK)
+* `ssh`: Security Shell
 * `StudyNotes`: 学习笔记
 * `sync.sh`: 
-* `tcmalloc`: 
-* `tcp-ip`: 
-* `test.sh`: 
-* `threadpool`: 
-* `timer`: 
-* `tools`: 
-* `tshark`: 
-* `ui`: 
-* `uio`: 
-* `unicode`: 
-* `unix`: 
-* `url`: 
-* `valgrind`: 
-* `virtio`: 
-* `virtual-network`: 
-* `vmem`: 
-* `vos`: 
-* `vpp`: 
-* `windows`: 
-* `x86_64`: 
+* `tcmalloc`: 谷歌的内存分配器，隶属于 `gperftools`
+* `tcp-ip`: TCP/IP协议栈
+* `test.sh`: 加载`scripts`文件夹中的脚本
+* `threadpool`: 线程池
+* `timer`: 定时器
+* `tools`: 工具代码
+* `tshark`: Dump and analyze network traffic
+* `ui`: 用户界面(GTK，Qt，Xwindow)
+* `uio`: user-space IO、UIO-DMA
+* `unicode`: 16 位统一超级字符集
+* `unix`: UNIX
+* `url`: 统一资源定位符
+* `valgrind`: Valgrind工具套件: 调试和性能分析工具
+* `virtio`: virtio是一种半虚拟化的设备抽象接口规范
+* `virtual-network`: 虚拟网络
+* `vmem`: malloc-like volatile allocations
+* `vos`: Virtual Operation System
+* `vpp`: 向量包处理器 FD.io
+* `windows`: windows
+* `x86_64`: x86_64
 * `yaml`: 
-* `yocto`: 
-* `zero-copy`: 
-* `zeromq`: 
-* `zlog`: 
-* `zookeeper`: 
+* `yocto`: Yocto是一个开源社区。它通过提供模版、工具和方法帮助开发者创建基于linux内核的定制系统，支持ARM, PPC, MIPS, x86 (32 & 64 bit)硬件体系架构
+* `zero-copy`: 零拷贝技术
+* `zeromq`: ZeroMQ（也称为ØMQ，0MQ或ZMQ）是一种高性能的异步消息传递库
+* `zlog`: 日志系统
+* `zookeeper`: Zookeeper作为Hadoop和Hbase的重要组件，为分布式应用程序协调服务
 * ** 包括但不限于此，etc. **
 
 ```
