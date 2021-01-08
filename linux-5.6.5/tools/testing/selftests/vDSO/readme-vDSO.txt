@@ -5,4 +5,4 @@ Virtual Dynamically-lined Shared Object
 ----------------------------------------
 1. test/linux/vDSO
 2. test/linux-5.6.5/tools/testing/selftests/vDSO
-3. 
+3. test/linux-5.6.5/tools/testing/selftests/x86	有一些vdso示例
