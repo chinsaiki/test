@@ -36,6 +36,7 @@ static struct lthread_key key_table[LTHREAD_MAX_KEYS];
 
 RTE_INIT(thread_tls_ctor)
 {
+    printf("%s:\n", __func__);
 	key_pool = NULL;
 	key_pool_init = 0;
 }

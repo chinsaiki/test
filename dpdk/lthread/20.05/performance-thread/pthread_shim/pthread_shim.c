@@ -18,7 +18,12 @@
 
 #define POSIX_ERRNO(x)  (x)
 
-#define debug(fmt...) do{printf("[Call %s]", __func__);printf(fmt);}while(0)
+#define debug(fmt...) do{ \
+    if(override){\
+        printf("[Override Call %s]", __func__);\
+        printf(fmt);\
+    }\
+    }while(0)
 
 /* some releases of FreeBSD 10, e.g. 10.0, don't have CPU_COUNT macro */
 #ifndef CPU_COUNT
@@ -176,6 +181,7 @@ static void *__libc_dl_handle = RTLD_NEXT;
  */
 RTE_INIT(pthread_intercept_ctor)
 {
+    printf("%s:\n", __func__);
 	override = 0;
 	/*
 	 * Get the original functions
@@ -442,8 +448,9 @@ int pthread_getcpuclockid(pthread_t a, clockid_t *b)
 
 int pthread_join(pthread_t tid, void **val)
 {
-	if (override)
+	if (override) {
 		return lthread_join((struct lthread *)tid, val);
+    }
 	return _sys_pthread_funcs.f_pthread_join(tid, val);
 }
 

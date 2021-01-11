@@ -139,7 +139,7 @@ rte_timer_subsystem_init(void)
 //	const struct rte_memzone *mz;
 	struct rte_timer_data *data;
 	int i, lcore_id;
-	static const char *mz_name = "rte_timer_mz";
+//	static const char *mz_name = "rte_timer_mz";
 	const size_t data_arr_size =
 			RTE_MAX_DATA_ELS * sizeof(*rte_timer_data_arr);
 	const size_t mem_size = data_arr_size + sizeof(*rte_timer_mz_refcnt);

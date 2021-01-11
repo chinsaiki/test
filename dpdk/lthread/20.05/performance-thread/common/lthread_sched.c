@@ -63,6 +63,7 @@ uint64_t diag_mask;
 /* constructor */
 RTE_INIT(lthread_sched_ctor)
 {
+    printf("%s:\n", __func__);
 	memset(schedcore, 0, sizeof(schedcore));
 	rte_atomic16_init(&num_schedulers);
 	rte_atomic16_set(&num_schedulers, 1);

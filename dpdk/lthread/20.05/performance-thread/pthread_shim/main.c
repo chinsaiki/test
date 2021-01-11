@@ -23,8 +23,12 @@
 
 void* test_task_fn(void* unused)
 {
-	printf("TASK: %ld.\n", pthread_self());
+	printf("TASK Func: %ld.\n", pthread_self());
 
+    int i = 0;
+    while(i++ < 2) {
+        printf("TASK: %ld -> %d.\n", pthread_self(), i);
+    }
     
     pthread_exit(NULL);
 	return NULL;
@@ -32,13 +36,22 @@ void* test_task_fn(void* unused)
 /* The main program. */
 int main(int argc, char **argv)
 {
-	pthread_t t1, t2;
     
-	pthread_create(&t1, NULL, test_task_fn, NULL);
-	pthread_create(&t2, NULL, test_task_fn, NULL);
-
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
+    pthread_override_set(1);
+    
+    int nr_threads = 4;
+    if(argc >= 2) {
+        nr_threads = atoi(argv[1])?atoi(argv[1]):4;
+    }
+    
+	pthread_t threadids[nr_threads];
+    int i;
+    for(i=0;i<nr_threads;i++) {
+        pthread_create(&threadids[i], NULL, test_task_fn, NULL);
+    }
+    for(i=0;i<nr_threads;i++) {
+        pthread_join(threadids[i], NULL);
+    }
 
 	return 0;
 }

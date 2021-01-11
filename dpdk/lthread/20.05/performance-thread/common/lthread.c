@@ -467,8 +467,3 @@ void lthread_set_funcname(const char *f)
 	strncpy(lt->funcname, f, sizeof(lt->funcname));
 	lt->funcname[sizeof(lt->funcname)-1] = 0;
 }
-
-//int main()
-//{
-//    
-//}
