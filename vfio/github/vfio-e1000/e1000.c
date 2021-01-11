@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
@@ -18,9 +19,11 @@
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 #include <netinet/tcp.h>
+#define __FAVOR_BSD //for struct udphdr
 #include <netinet/udp.h>
 
 #include <linux/vfio.h>
+
 
 #include "e1000.h"
 
@@ -130,13 +133,14 @@ static inline void clear_flags_u32(struct device* dev, int offset,
 
 static void open_vfio(struct device* dev, int segn, int busn, int devn,
                       int funcn) {
+    int i;
     dev->device_info.argsz = sizeof(struct vfio_device_info);
     dev->group_status.argsz = sizeof(struct vfio_group_status);
     dev->iommu_info.argsz = sizeof(struct vfio_iommu_type1_info);
-    for (int i = 0; i < VFIO_PCI_NUM_REGIONS; i++) {
+    for (i = 0; i < VFIO_PCI_NUM_REGIONS; i++) {
         dev->regs[i].argsz = sizeof(struct vfio_region_info);
     }
-    for (int i = 0; i < VFIO_PCI_NUM_IRQS; i++) {
+    for (i = 0; i < VFIO_PCI_NUM_IRQS; i++) {
         dev->irqs[i].argsz = sizeof(struct vfio_irq_info);
     }
 
@@ -226,6 +230,7 @@ static void get_device_info(struct device* dev) {
 // To check actual configuration space, `sudo lspci -xxxx -s <device>`
 static void dump_configuration_space(struct device* dev) {
     char buf[4096];
+    int i, j;
     struct vfio_region_info* cs_info = &dev->regs[VFIO_PCI_CONFIG_REGION_INDEX];
     int ret = pread(dev->fd, buf, cs_info->size > 4096 ? 4096 : cs_info->size,
                     cs_info->offset);
@@ -238,9 +243,9 @@ static void dump_configuration_space(struct device* dev) {
     }
     len = (len + 16) - (len + 16) % 16;
 
-    for (int i = 0; i < len;) {
+    for (i = 0; i < len;) {
         printf("%3X: ", i);
-        for (int j = 0; j < 16 && i < len; i++, j++) {
+        for (j = 0; j < 16 && i < len; i++, j++) {
             printf("%02X ", (u8)buf[i]);
         }
         printf("\n");
@@ -287,6 +292,8 @@ static u64 get_iova(u64 virt_addr, ssize_t size) {
 // Allocate rx_ring and DMA buffer
 // XXX: should use hugetlb
 static u64 init_rx_buf(struct device* dev) {
+    int i;
+
     struct vfio_iommu_type1_dma_map dma_map = {
         .argsz = sizeof(dma_map),
         .flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE};
@@ -310,7 +317,7 @@ static u64 init_rx_buf(struct device* dev) {
     ASSERT(ret == 0, "failed to map rx_ring");
 
     // allocate buffer
-    for (int i = 0; i < NUM_OF_DESC; i++) {
+    for (i = 0; i < NUM_OF_DESC; i++) {
         void* buffer = mmap(NULL, BUFSIZE, PROT_READ | PROT_WRITE,
                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         ASSERT(buffer != MAP_FAILED, "failed to mmap rx buffer");
@@ -331,6 +338,8 @@ static u64 init_rx_buf(struct device* dev) {
 // allocate tx_ring
 // XXX: should use hugetlb
 static u64 init_tx_buf(struct device* dev) {
+    int i;
+
     struct vfio_iommu_type1_dma_map dma_map = {
         .argsz = sizeof(dma_map),
         .flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE};
@@ -354,7 +363,7 @@ static u64 init_tx_buf(struct device* dev) {
     ASSERT(ret == 0, "failed to map dev->tx_ring");
 
     // allocate buffer
-    for (int i = 0; i < NUM_OF_DESC; i++) {
+    for (i = 0; i < NUM_OF_DESC; i++) {
         void* buffer = mmap(NULL, BUFSIZE, PROT_READ | PROT_WRITE,
                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         ASSERT(buffer != MAP_FAILED, "failed to mmap tx buffer");
@@ -429,6 +438,8 @@ static void enable_msi(struct device* dev) {
 // Enable MSI-X Interrupt
 // 82574L has five MSI-X interrupt vectors
 static void enable_msix(struct device* dev) {
+    int i;
+
     debug("Use MSI-X interrupt");
     struct vfio_irq_set* irq_set;
     char irq_set_buf[sizeof(struct vfio_irq_set) +
@@ -439,7 +450,7 @@ static void enable_msix(struct device* dev) {
     irq_set->flags = VFIO_IRQ_SET_DATA_EVENTFD | VFIO_IRQ_SET_ACTION_TRIGGER;
     irq_set->index = VFIO_PCI_MSIX_IRQ_INDEX;
     irq_set->start = 0;
-    for (int i = 0; i < MAX_MSIX_VECTOR_NUM; i++) {
+    for (i = 0; i < MAX_MSIX_VECTOR_NUM; i++) {
         dev->efds[i] = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK);
         ASSERT(dev->efds[i] >= 0, "efd init failed");
     }
@@ -736,7 +747,9 @@ static void handle_intr(struct device* dev) {
     int ret = epoll_ctl(dev->epfd, EPOLL_CTL_ADD, dev->efd, &ev);
     ASSERT(ret == 0, "cannot add fd to epoll");
 #else
-    for (int i = 0; i < MAX_MSIX_VECTOR_NUM; i++) {
+    int i;
+
+    for (i = 0; i < MAX_MSIX_VECTOR_NUM; i++) {
         struct epoll_event ev = {.events = EPOLLIN | EPOLLPRI,
                                  .data.fd = dev->efds[i]};
         int ret = epoll_ctl(dev->epfd, EPOLL_CTL_ADD, dev->efds[i], &ev);
