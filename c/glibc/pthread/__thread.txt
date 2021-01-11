@@ -1,0 +1,55 @@
+__thread 存储类
+
+Thread-Local Storage Access Models - TLS
+
+--------------------------------------------------------------------------------------
+当标记有 __thread 存储类说明符的变量，都将被视为多线程应用程序中每个线程的本地变量。
+在运行时，为访问他的每个线程创建变量的副本，并在线程结束时销毁。
+
+子选项允许指定线程本地存储模型，这些模型可提供更好的性能，但在其实用性方面更具限制。
+
+
+default( -qtls only )
+--------------------------------------------------------------------------------------
+	根据 -fPIC(-qpic) 选项设置使用合适的模型，该选项决定是否生成与位置无关的代码。
+		当 -fPIC(-qpic)生效时，此子选项导致 -qtls=global-dynamic；
+		当 -fno-pic(-fno-PIC,-qnopic)生效时，子选项导致 -qtls=initial-exec
+
+global-dynamic
+--------------------------------------------------------------------------------------
+	最常用，所有线程局部变量都可以使用。
+
+local-dynamic
+--------------------------------------------------------------------------------------
+	比 global-dynamic 有更好的性能，并可用于定义在动态加载模块中的线程局部变量。
+	但是只有当线程局部变量的所有引用都包含在变量定义的统一模块中时，才能使用它。
+
+inital-exec
+--------------------------------------------------------------------------------------
+	该模块提供比 global-dynamic 和 local-dynamic 更好的性能，并且可以用于动态加载模块
+	中定义的线程局部变量，前提是这些模块和可执行文件同时加载。也就是说，它只能在所有
+	局部变量定义在不是通过 dlopen 加载的模块时使用。
+
+local-exec
+--------------------------------------------------------------------------------------
+	该模块提供的性能最好，当时只有当所有的线程局部变量被主可执行文件和引用时使用。
+
+
+```c
+// /usr/include/mesa-private/llvm/Transforms/Instrumentation.h
+
+#if defined(__GNUC__) && defined(__linux__) && !defined(ANDROID)
+inline void *getDFSanArgTLSPtrForJIT() {
+  extern __thread __attribute__((tls_model("initial-exec")))
+    void *__dfsan_arg_tls;
+  return (void *)&__dfsan_arg_tls;
+}
+
+inline void *getDFSanRetValTLSPtrForJIT() {
+  extern __thread __attribute__((tls_model("initial-exec")))
+    void *__dfsan_retval_tls;
+  return (void *)&__dfsan_retval_tls;
+}
+#endif
+
+```
