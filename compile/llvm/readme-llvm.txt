@@ -10,4 +10,15 @@ Low Level Virtual Machine - LLVM
 --------------------------------------------------------------------------
 1. test/llvm
 2. test/compile/llvm
- 
+
+
+我的系统中关于 LLVM 的头文件如下：
+--------------------------------------------------------------------------
+[rongtao@localhost include]$ pwd
+/usr/include
+[rongtao@localhost include]$ find -name "*llvm*"
+./boost159/boost/predef/compiler/llvm.h
+./mesa-private/llvm
+./mesa-private/llvm/Config/llvm-config-64.h
+./mesa-private/llvm/Config/llvm-config.h
+./mesa-private/llvm-c
