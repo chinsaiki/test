@@ -10,6 +10,8 @@
 #ifndef _RTE_RING_GENERIC_H_
 #define _RTE_RING_GENERIC_H_
 
+#include "common.h"
+
 static __rte_always_inline void
 update_tail(struct rte_ring_headtail *ht, uint32_t old_val, uint32_t new_val,
 		uint32_t single, uint32_t enqueue)

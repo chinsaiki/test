@@ -27,6 +27,7 @@ void sig_handler(int signum)
             async_ring_free(ring);
         default:;
     }
+    exit(1);
 }
 
 void *enqueue_ring(void *arg) 
@@ -75,6 +76,8 @@ int main(int argc,char *argv[])
     int i;
     pthread_t penqueue1,penqueue2,penqueue3;
     pthread_t pdequeue1,pdequeue2,pdequeue3;
+    
+    signal(SIGINT, sig_handler);
     
     ring = async_ring_create("test",1024, 0);
 

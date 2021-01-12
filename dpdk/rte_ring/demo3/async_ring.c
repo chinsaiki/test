@@ -152,7 +152,7 @@ async_ring_create(const char *name, unsigned count,
 		return NULL;
 	}
 
-    r = (struct  async_ring *)valloc(ring_size);
+    r = (struct  async_ring *)valloc(ring_size+0);
 
     async_ring_init(r, name, requested_count, flags);
 

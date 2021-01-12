@@ -14,7 +14,63 @@
 #define offsetof(type, member) __builtin_offsetof(type, member)
 #endif
 
+/* Required compiler attributes */
+#define likely(x)	__builtin_expect(!!(x), 1)
+#define unlikely(x)	__builtin_expect(!!(x), 0)
+
+/**
+ * Compiler barrier.
+ *
+ * Guarantees that operation reordering does not occur at compile time
+ * for operations directly before and after the barrier.
+ */
+#define	rte_compiler_barrier() do {		\
+	asm volatile ("" : : : "memory");	\
+} while(0)
+    
+#define	rte_mb() _mm_mfence()
+    
+#define	rte_wmb() _mm_sfence()
+    
+#define	rte_rmb() _mm_lfence()
+    
+#define rte_smp_wmb() rte_compiler_barrier()
+    
+#define rte_smp_rmb() rte_compiler_barrier()
+
+#include <emmintrin.h>
+static inline void rte_pause(void)
+{
+	_mm_pause();
+}
+#define RTE_MAX_LCORE 4
+#if RTE_MAX_LCORE == 1
+#define MPLOCKED                        /**< No need to insert MP lock prefix. */
+#else
+#define MPLOCKED        "lock ; "       /**< Insert MP lock prefix. */
+#endif
+
+static inline int
+rte_atomic32_cmpset(volatile uint32_t *dst, uint32_t exp, uint32_t src)
+{
+	uint8_t res;
+
+	asm volatile(
+			MPLOCKED
+			"cmpxchgl %[src], %[dst];"
+			"sete %[res];"
+			: [res] "=a" (res),     /* output */
+			  [dst] "=m" (*dst)
+			: [src] "r" (src),      /* input */
+			  "a" (exp),
+			  "m" (*dst)
+			: "memory");            /* no-clobber list */
+	return res;
+}
+
+
 #define RTE_ASSERT assert
+
 
 /**
  * Force alignment
@@ -166,6 +222,11 @@ typedef uint16_t unaligned_uint16_t;
 #else
 #define RTE_STD_C11
 #endif
+/**
+ * definition to mark a variable or function parameter as used so
+ * as to avoid a compiler warning
+ */
+#define RTE_SET_USED(x) (void)(x)
 
 /* SPDX-License-Identifier: BSD-3-Clause
  * Copyright(c) 2015 Neil Horman <nhorman@tuxdriver.com>.
@@ -203,149 +264,6 @@ __attribute__((section(".text.internal")))
 
 #endif /* _RTE_COMPAT_H_ */
 
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2010-2014 Intel Corporation
- */
-
-#ifndef _RTE_TAILQ_H_
-#define _RTE_TAILQ_H_
-
-/**
- * @file
- *  Here defines rte_tailq APIs for only internal use
- *
- */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <sys/queue.h>
-#include <stdio.h>
-//#include <rte_debug.h>
-
-/** dummy structure type used by the rte_tailq APIs */
-struct rte_tailq_entry {
-	TAILQ_ENTRY(rte_tailq_entry) next; /**< Pointer entries for a tailq list */
-	void *data; /**< Pointer to the data referenced by this tailq entry */
-};
-/** dummy */
-TAILQ_HEAD(rte_tailq_entry_head, rte_tailq_entry);
-
-#define RTE_TAILQ_NAMESIZE 32
-
-/**
- * The structure defining a tailq header entry for storing
- * in the rte_config structure in shared memory. Each tailq
- * is identified by name.
- * Any library storing a set of objects e.g. rings, mempools, hash-tables,
- * is recommended to use an entry here, so as to make it easy for
- * a multi-process app to find already-created elements in shared memory.
- */
-struct rte_tailq_head {
-	struct rte_tailq_entry_head tailq_head; /**< NOTE: must be first element */
-	char name[RTE_TAILQ_NAMESIZE];
-};
-
-struct rte_tailq_elem {
-	/**
-	 * Reference to head in shared mem, updated at init time by
-	 * rte_eal_tailqs_init()
-	 */
-	struct rte_tailq_head *head;
-	TAILQ_ENTRY(rte_tailq_elem) next;
-	const char name[RTE_TAILQ_NAMESIZE];
-};
-
-/**
- * Return the first tailq entry cast to the right struct.
- */
-#define RTE_TAILQ_CAST(tailq_entry, struct_name) \
-	(struct struct_name *)&(tailq_entry)->tailq_head
-
-/**
- * Utility macro to make looking up a tailqueue for a particular struct easier.
- *
- * @param name
- *   The name of tailq
- *
- * @param struct_name
- *   The name of the list type we are using. (Generally this is the same as the
- *   first parameter passed to TAILQ_HEAD macro)
- *
- * @return
- *   The return value from rte_eal_tailq_lookup, typecast to the appropriate
- *   structure pointer type.
- *   NULL on error, since the tailq_head is the first
- *   element in the rte_tailq_head structure.
- */
-#define RTE_TAILQ_LOOKUP(name, struct_name) \
-	RTE_TAILQ_CAST(rte_eal_tailq_lookup(name), struct_name)
-
-
-
-/**
- * Dump tail queues to a file.
- *
- * @param f
- *   A pointer to a file for output
- */
-void rte_dump_tailq(FILE *f);
-
-/**
- * Lookup for a tail queue.
- *
- * Get a pointer to a tail queue header of a tail
- * queue identified by the name given as an argument.
- * Note: this function is not multi-thread safe, and should only be called from
- * a single thread at a time
- *
- * @param name
- *   The name of the queue.
- * @return
- *   A pointer to the tail queue head structure.
- */
-struct rte_tailq_head *rte_eal_tailq_lookup(const char *name);
-
-/**
- * Register a tail queue.
- *
- * Register a tail queue from shared memory.
- * This function is mainly used by EAL_REGISTER_TAILQ macro which is used to
- * register tailq from the different dpdk libraries. Since this macro is a
- * constructor, the function has no access to dpdk shared memory, so the
- * registered tailq can not be used before call to rte_eal_init() which calls
- * rte_eal_tailqs_init().
- *
- * @param t
- *   The tailq element which contains the name of the tailq you want to
- *   create (/retrieve when in secondary process).
- * @return
- *   0 on success or -1 in case of an error.
- */
-int rte_eal_tailq_register(struct rte_tailq_elem *t);
-
-#define EAL_REGISTER_TAILQ(t) \
-RTE_INIT(tailqinitfn_ ##t) \
-{ \
-	if (rte_eal_tailq_register(&t) < 0) \
-		rte_panic("Cannot initialize tailq: %s\n", t.name); \
-}
-
-/* This macro permits both remove and free var within the loop safely.*/
-#ifndef TAILQ_FOREACH_SAFE
-#define TAILQ_FOREACH_SAFE(var, head, field, tvar)		\
-	for ((var) = TAILQ_FIRST((head));			\
-	    (var) && ((tvar) = TAILQ_NEXT((var), field), 1);	\
-	    (var) = (tvar))
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _RTE_TAILQ_H_ */
-
 /**
  * 128-bit integer structure.
  */
@@ -366,4 +284,71 @@ typedef struct {
 
 #define rte_panic(fmt...) do{printf(fmt);assert(0);}while(0)
 
-#define rte_zmalloc(name, size, align) memalign(size, align)
+#define rte_zmalloc(name, align, size) memalign(align, size)
+//#define rte_malloc rte_zmalloc
+static void*
+rte_malloc(size_t size)
+{
+	return malloc(size);
+}
+static void
+rte_free(void *addr)
+{
+	return free(addr);
+}
+
+#define strlcpy(dst, src, size) rte_strlcpy(dst, src, size)
+
+/**
+ * @internal
+ * DPDK-specific version of strlcpy for systems without
+ * libc or libbsd copies of the function
+ */
+static inline size_t
+rte_strlcpy(char *dst, const char *src, size_t size)
+{
+	return (size_t)snprintf(dst, size, "%s", src);
+}
+
+
+/**
+ * Combines 32b inputs most significant set bits into the least
+ * significant bits to construct a value with the same MSBs as x
+ * but all 1's under it.
+ *
+ * @param x
+ *    The integer whose MSBs need to be combined with its LSBs
+ * @return
+ *    The combined value.
+ */
+static inline uint32_t
+rte_combine32ms1b(uint32_t x)
+{
+	x |= x >> 1;
+	x |= x >> 2;
+	x |= x >> 4;
+	x |= x >> 8;
+	x |= x >> 16;
+
+	return x;
+}
+
+
+/**
+ * Aligns input parameter to the next power of 2
+ *
+ * @param x
+ *   The integer value to align
+ *
+ * @return
+ *   Input parameter aligned to the next power of 2
+ */
+static inline uint32_t
+rte_align32pow2(uint32_t x)
+{
+	x--;
+	x = rte_combine32ms1b(x);
+
+	return x + 1;
+}
+
