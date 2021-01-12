@@ -1,0 +1,213 @@
+内存管理区的信息 在内核中是 下面函数打印的
+```c
+static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+									struct zone *zone);
+```
+
+--------------------------------------------------
+Node 0, zone      DMA	====表示当前节点是 第 0 个 内存节点，当前内存管理区为 DMA32
+  per-node stats	====下面是该内存节点的总体信息
+      nr_inactive_anon 112085
+      nr_active_anon 370
+      nr_inactive_file 95616
+      nr_active_file 422549
+      nr_unevictable 384
+      nr_slab_reclaimable 135190
+      nr_slab_unreclaimable 47758
+      nr_isolated_anon 0
+      nr_isolated_file 0
+      workingset_nodes 5833
+      workingset_refault_anon 0
+      workingset_refault_file 8602
+      workingset_activate_anon 0
+      workingset_activate_file 7660
+      workingset_restore_anon 0
+      workingset_restore_file 312
+      workingset_nodereclaim 212
+      nr_anon_pages 107725
+      nr_mapped    64532
+      nr_file_pages 523093
+      nr_dirty     1
+      nr_writeback 0
+      nr_writeback_temp 0
+      nr_shmem     5475
+      nr_shmem_hugepages 0
+      nr_shmem_pmdmapped 0
+      nr_file_hugepages 0
+      nr_file_pmdmapped 0
+      nr_anon_transparent_hugepages 82
+      nr_vmscan_write 57
+      nr_vmscan_immediate_reclaim 0
+      nr_dirtied   1156532
+      nr_written   1032036
+      nr_kernel_misc_reclaimable 0
+      nr_foll_pin_acquired 23
+      nr_foll_pin_released 23
+      nr_kernel_stack 9936
+  pages free     3560	====当前内存管理区中空闲页面的数量
+        min      32	===处于最低警戒水位的数量
+        low      40 ===处于低水位的页面数量
+        high     48 ===处于高水位的页面数量
+        spanned  4095 ===这个管理区里包含的页面数量
+        present  3998 ===实际管理的页面数量
+        managed  3840 ===被伙伴系统管理的页面数量
+        protection: (0, 2890, 7811, 7811, 7811) ===预留的页面
+      nr_free_pages 3560	====详细的页面信息
+      nr_zone_inactive_anon 0
+      nr_zone_active_anon 0
+      nr_zone_inactive_file 0
+      nr_zone_active_file 0
+      nr_zone_unevictable 0
+      nr_zone_write_pending 0
+      nr_mlock     0
+      nr_page_table_pages 0
+      nr_bounce    0
+      nr_zspages   0
+      nr_free_cma  0
+      numa_hit     3
+      numa_miss    0
+      numa_foreign 0
+      numa_interleave 1
+      numa_local   3
+      numa_other   0
+  pagesets	====每个CPU内存分配器的信息
+    cpu: 0
+              count: 0
+              high:  0
+              batch: 1
+  vm stats threshold: 6	===
+    cpu: 1
+              count: 0
+              high:  0
+              batch: 1
+  vm stats threshold: 6
+    cpu: 2
+              count: 0
+              high:  0
+              batch: 1
+  vm stats threshold: 6
+    cpu: 3
+              count: 0
+              high:  0
+              batch: 1
+  vm stats threshold: 6
+  node_unreclaimable:  0	===页面回收失败的次数
+  start_pfn:           1	===内存管理区的其实页帧号
+Node 0, zone    DMA32
+  pages free     758629
+        min      6341
+        low      7926
+        high     9511
+        spanned  1044480
+        present  782208
+        managed  759228
+        protection: (0, 0, 4921, 4921, 4921)
+      nr_free_pages 758629
+      nr_zone_inactive_anon 0
+      nr_zone_active_anon 0
+      nr_zone_inactive_file 0
+      nr_zone_active_file 0
+      nr_zone_unevictable 0
+      nr_zone_write_pending 0
+      nr_mlock     0
+      nr_page_table_pages 0
+      nr_bounce    0
+      nr_zspages   0
+      nr_free_cma  0
+      numa_hit     569749
+      numa_miss    0
+      numa_foreign 0
+      numa_interleave 1
+      numa_local   569749
+      numa_other   0
+  pagesets
+    cpu: 0
+              count: 330
+              high:  378
+              batch: 63
+  vm stats threshold: 36
+    cpu: 1
+              count: 0
+              high:  378
+              batch: 63
+  vm stats threshold: 36
+    cpu: 2
+              count: 4
+              high:  378
+              batch: 63
+  vm stats threshold: 36
+    cpu: 3
+              count: 0
+              high:  378
+              batch: 63
+  vm stats threshold: 36
+  node_unreclaimable:  0
+  start_pfn:           4096
+Node 0, zone   Normal
+  pages free     372190
+        min      10522
+        low      13152
+        high     15782
+        spanned  1310720
+        present  1310720
+        managed  1259907
+        protection: (0, 0, 0, 0, 0)
+      nr_free_pages 372190
+      nr_zone_inactive_anon 112085
+      nr_zone_active_anon 370
+      nr_zone_inactive_file 95616
+      nr_zone_active_file 422549
+      nr_zone_unevictable 384
+      nr_zone_write_pending 1
+      nr_mlock     0
+      nr_page_table_pages 7833
+      nr_bounce    0
+      nr_zspages   0
+      nr_free_cma  0
+      numa_hit     25886219
+      numa_miss    0
+      numa_foreign 0
+      numa_interleave 51093
+      numa_local   25886219
+      numa_other   0
+  pagesets
+    cpu: 0
+              count: 308
+              high:  378
+              batch: 63
+  vm stats threshold: 42
+    cpu: 1
+              count: 188
+              high:  378
+              batch: 63
+  vm stats threshold: 42
+    cpu: 2
+              count: 289
+              high:  378
+              batch: 63
+  vm stats threshold: 42
+    cpu: 3
+              count: 177
+              high:  378
+              batch: 63
+  vm stats threshold: 42
+  node_unreclaimable:  0
+  start_pfn:           1048576
+Node 0, zone  Movable
+  pages free     0
+        min      0
+        low      0
+        high     0
+        spanned  0
+        present  0
+        managed  0
+        protection: (0, 0, 0, 0, 0)
+Node 0, zone   Device
+  pages free     0
+        min      0
+        low      0
+        high     0
+        spanned  0
+        present  0
+        managed  0
+        protection: (0, 0, 0, 0, 0)
