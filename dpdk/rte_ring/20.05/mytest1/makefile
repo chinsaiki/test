@@ -1,7 +1,7 @@
 objects = main.o rte_ring.o
 CC = gcc
 
-DEFS=-DALLOW_EXPERIMENTAL_API
+DEFS=
 
 all: $(objects)
 	$(CC) -g -o main $(objects) -lpthread -I. $(DEFS)

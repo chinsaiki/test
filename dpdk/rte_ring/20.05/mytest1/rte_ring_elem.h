@@ -23,6 +23,22 @@ extern "C" {
 #include <rte_ring_core.h>
 
 /**
+ * 128-bit integer structure.
+ */
+RTE_STD_C11
+typedef struct {
+	RTE_STD_C11
+	union {
+		uint64_t val[2];
+#ifdef RTE_ARCH_64
+		__extension__ __int128 int128;
+#endif
+	};
+} __rte_aligned(16) rte_int128_t;
+
+
+
+/**
  * @warning
  * @b EXPERIMENTAL: this API may change without prior notice
  *

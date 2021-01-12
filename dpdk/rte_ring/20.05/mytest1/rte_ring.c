@@ -15,8 +15,6 @@
 #include <errno.h>
 #include <sys/queue.h>
 
-#include "common.h"
-
 #include "rte_ring.h"
 #include "rte_ring_elem.h"
 
@@ -29,6 +27,74 @@
 //#define rte_errno RTE_PER_LCORE(_rte_errno)
 static int rte_errno = 0;
 
+
+#define RTE_LOG_ERR(fmt...) do{printf(fmt);assert(0);}while(0)
+
+/**
+ * @internal
+ * DPDK-specific version of strlcpy for systems without
+ * libc or libbsd copies of the function
+ */
+static inline size_t
+rte_strlcpy(char *dst, const char *src, size_t size)
+{
+	return (size_t)snprintf(dst, size, "%s", src);
+}
+
+static void*
+rte_malloc(size_t size)
+{
+	return malloc(size);
+}
+static void
+rte_free(void *addr)
+{
+	return free(addr);
+}
+
+
+/**
+ * Combines 32b inputs most significant set bits into the least
+ * significant bits to construct a value with the same MSBs as x
+ * but all 1's under it.
+ *
+ * @param x
+ *    The integer whose MSBs need to be combined with its LSBs
+ * @return
+ *    The combined value.
+ */
+static inline uint32_t
+rte_combine32ms1b(uint32_t x)
+{
+	x |= x >> 1;
+	x |= x >> 2;
+	x |= x >> 4;
+	x |= x >> 8;
+	x |= x >> 16;
+
+	return x;
+}
+
+
+/**
+ * Aligns input parameter to the next power of 2
+ *
+ * @param x
+ *   The integer value to align
+ *
+ * @return
+ *   Input parameter aligned to the next power of 2
+ */
+static inline uint32_t
+rte_align32pow2(uint32_t x)
+{
+	x--;
+	x = rte_combine32ms1b(x);
+
+	return x + 1;
+}
+
+
 /* return the size of memory occupied by a ring */
 ssize_t
 rte_ring_get_memsize_elem(unsigned int esize, unsigned int count)
@@ -37,15 +103,14 @@ rte_ring_get_memsize_elem(unsigned int esize, unsigned int count)
 
 	/* Check if element size is a multiple of 4B */
 	if (esize % 4 != 0) {
-		RTE_LOG(ERR, RING, "element size is not a multiple of 4\n");
+		RTE_LOG_ERR("element size is not a multiple of 4\n");
 
 		return -EINVAL;
 	}
 
 	/* count must be a power of 2 */
 	if ((!POWEROF2(count)) || (count > RTE_RING_SZ_MASK )) {
-		RTE_LOG(ERR, RING,
-			"Requested number of elements is invalid, must be power of 2, and not exceed %u\n",
+		RTE_LOG_ERR("Requested number of elements is invalid, must be power of 2, and not exceed %u\n",
 			RTE_RING_SZ_MASK);
 
 		return -EINVAL;
@@ -83,6 +148,7 @@ reset_headtail(void *p)
 		ht->head = 0;
 		ht->tail = 0;
 		break;
+#ifdef ALLOW_EXPERIMENTAL_API
 	case RTE_RING_SYNC_MT_RTS:
 		ht_rts->head.raw = 0;
 		ht_rts->tail.raw = 0;
@@ -90,6 +156,7 @@ reset_headtail(void *p)
 	case RTE_RING_SYNC_MT_HTS:
 		ht_hts->ht.raw = 0;
 		break;
+#endif    
 	default:
 		/* unknown sync mode */
 		RTE_ASSERT(0);
@@ -124,12 +191,14 @@ get_sync_type(uint32_t flags, enum rte_ring_sync_type *prod_st,
 	case RING_F_SP_ENQ:
 		*prod_st = RTE_RING_SYNC_ST;
 		break;
+#ifdef ALLOW_EXPERIMENTAL_API
 	case RING_F_MP_RTS_ENQ:
 		*prod_st = RTE_RING_SYNC_MT_RTS;
 		break;
 	case RING_F_MP_HTS_ENQ:
 		*prod_st = RTE_RING_SYNC_MT_HTS;
 		break;
+#endif    
 	default:
 		return -EINVAL;
 	}
@@ -141,12 +210,14 @@ get_sync_type(uint32_t flags, enum rte_ring_sync_type *prod_st,
 	case RING_F_SC_DEQ:
 		*cons_st = RTE_RING_SYNC_ST;
 		break;
+#ifdef ALLOW_EXPERIMENTAL_API
 	case RING_F_MC_RTS_DEQ:
 		*cons_st = RTE_RING_SYNC_MT_RTS;
 		break;
 	case RING_F_MC_HTS_DEQ:
 		*cons_st = RTE_RING_SYNC_MT_HTS;
 		break;
+#endif    
 	default:
 		return -EINVAL;
 	}
@@ -184,7 +255,7 @@ rte_ring_init(struct rte_ring *r, const char *name, unsigned count,
 
 	/* init the ring structure */
 	memset(r, 0, sizeof(*r));
-	ret = strlcpy(r->name, name, sizeof(r->name));
+	ret = rte_strlcpy(r->name, name, sizeof(r->name));
 	if (ret < 0 || ret >= (int)sizeof(r->name))
 		return -ENAMETOOLONG;
 	r->flags = flags;
@@ -198,8 +269,7 @@ rte_ring_init(struct rte_ring *r, const char *name, unsigned count,
 		r->capacity = count;
 	} else {
 		if ((!POWEROF2(count)) || (count > RTE_RING_SZ_MASK)) {
-			RTE_LOG(ERR, RING,
-				"Requested size is invalid, must be power of 2, and not exceed the size limit %u\n",
+			RTE_LOG_ERR("Requested size is invalid, must be power of 2, and not exceed the size limit %u\n",
 				RTE_RING_SZ_MASK);
 			return -EINVAL;
 		}
@@ -207,13 +277,14 @@ rte_ring_init(struct rte_ring *r, const char *name, unsigned count,
 		r->mask = count - 1;
 		r->capacity = r->mask;
 	}
-
+    
+#ifdef ALLOW_EXPERIMENTAL_API
 	/* set default values for head-tail distance */
 	if (flags & RING_F_MP_RTS_ENQ)
 		rte_ring_set_prod_htd_max(r, r->capacity / HTD_MAX_DEF);
 	if (flags & RING_F_MC_RTS_DEQ)
 		rte_ring_set_cons_htd_max(r, r->capacity / HTD_MAX_DEF);
-
+#endif
 	return 0;
 }
 
@@ -274,7 +345,7 @@ rte_ring_create(const char *name, unsigned int count, int socket_id,
 void
 rte_ring_free(struct rte_ring *r)
 {
-    printf("++++++++++++++++++++++++++++++++++\n");
+//    printf("++++++++++++++++++++++++++++++++++\n");
 
 	if (r == NULL)
 		return;

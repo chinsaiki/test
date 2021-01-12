@@ -1,4 +1,15 @@
-#pragma once
+/* SPDX-License-Identifier: BSD-3-Clause
+ *
+ * Modify By Rong Tao
+ * Copyright (c) 2017,2018 HXT-semitech Corporation.
+ * Copyright (c) 2007-2009 Kip Macy kmacy@freebsd.org
+ * All rights reserved.
+ * Derived from FreeBSD's bufring.h
+ * Used as BSD-3 Licensed with permission from Kip Macy.
+ */
+
+#ifndef _RTE_RING_COMMON_
+#define _RTE_RING_COMMON_
 
 #include <stdio.h>
 #include <malloc.h>
@@ -15,8 +26,12 @@
 #endif
 
 /* Required compiler attributes */
+#ifndef likely
 #define likely(x)	__builtin_expect(!!(x), 1)
+#endif
+#ifndef unlikely
 #define unlikely(x)	__builtin_expect(!!(x), 0)
+#endif
 
 /**
  * Compiler barrier.
@@ -25,8 +40,8 @@
  * for operations directly before and after the barrier.
  */
 #define	rte_compiler_barrier() do {		\
-	asm volatile ("" : : : "memory");	\
-} while(0)
+    	asm volatile ("" : : : "memory");	\
+    } while(0)
     
 #define	rte_mb() _mm_mfence()
     
@@ -39,22 +54,19 @@
 #define rte_smp_rmb() rte_compiler_barrier()
 
 #include <emmintrin.h>
-static inline void rte_pause(void)
-{
+static inline void rte_pause(void) {
 	_mm_pause();
 }
-#define RTE_MAX_LCORE 4
-#if RTE_MAX_LCORE == 1
-#define MPLOCKED                        /**< No need to insert MP lock prefix. */
-#else
-#define MPLOCKED        "lock ; "       /**< Insert MP lock prefix. */
-#endif
 
 static inline int
-rte_atomic32_cmpset(volatile uint32_t *dst, uint32_t exp, uint32_t src)
-{
+rte_atomic32_cmpset(volatile uint32_t *dst, uint32_t exp, uint32_t src) {
 	uint8_t res;
-
+#define RTE_MAX_LCORE 4 /*这里默认多核 荣涛*/
+#if RTE_MAX_LCORE == 1
+# define MPLOCKED                        /**< No need to insert MP lock prefix. */
+#else
+# define MPLOCKED        "lock ; "       /**< Insert MP lock prefix. */
+#endif
 	asm volatile(
 			MPLOCKED
 			"cmpxchgl %[src], %[dst];"
@@ -68,9 +80,9 @@ rte_atomic32_cmpset(volatile uint32_t *dst, uint32_t exp, uint32_t src)
 	return res;
 }
 
-
+#ifndef RTE_ASSERT
 #define RTE_ASSERT assert
-
+#endif
 
 /**
  * Force alignment
@@ -108,6 +120,31 @@ typedef uint16_t unaligned_uint16_t;
  */
 #define RTE_ALIGN_FLOOR(val, align) \
 	(typeof(val))((val) & (~((typeof(val))((align) - 1))))
+
+
+/**
+ * add a byte-value offset to a pointer
+ */
+#define RTE_PTR_ADD(ptr, x) ((void*)((uintptr_t)(ptr) + (x)))
+
+/**
+ * subtract a byte-value offset from a pointer
+ */
+#define RTE_PTR_SUB(ptr, x) ((void*)((uintptr_t)ptr - (x)))
+
+/**
+ * get the difference between two pointer values, i.e. how far apart
+ * in bytes are the locations they point two. It is assumed that
+ * ptr1 is greater than ptr2.
+ */
+#define RTE_PTR_DIFF(ptr1, ptr2) ((uintptr_t)(ptr1) - (uintptr_t)(ptr2))
+
+/**
+ * Workaround to cast a const field of a structure to non-const type.
+ */
+#define RTE_CAST_FIELD(var, field, type) \
+	(*(type *)((uintptr_t)(var) + offsetof(typeof(*(var)), field)))
+
 
 /**
  * Macro to align a pointer to a given power-of-two. The resultant
@@ -184,37 +221,16 @@ typedef uint16_t unaligned_uint16_t;
  * @return
  *   True(1) where the pointer is correctly aligned, false(0) otherwise
  */
-//static inline int
-//rte_is_aligned(void *ptr, unsigned align)
-//{
-//	return RTE_PTR_ALIGN(ptr, align) == ptr;
-//}
-
-
-/**
- * Hint never returning function
- */
-#define __rte_noreturn __attribute__((noreturn))
+static inline int
+rte_is_aligned(void *ptr, unsigned align)
+{
+	return RTE_PTR_ALIGN(ptr, align) == ptr;
+}
 
 /**
  * Force a function to be inlined
  */
 #define __rte_always_inline inline __attribute__((always_inline))
-
-/**
- * Force a function to be noinlined
- */
-#define __rte_noinline __attribute__((noinline))
-
-/**
- * Hint function in the hot path
- */
-#define __rte_hot __attribute__((hot))
-
-/**
- * Hint function in the cold path
- */
-#define __rte_cold __attribute__((cold))
 
 /** C extension macro for environments lacking C11 features. */
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 201112L
@@ -228,13 +244,7 @@ typedef uint16_t unaligned_uint16_t;
  */
 #define RTE_SET_USED(x) (void)(x)
 
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2015 Neil Horman <nhorman@tuxdriver.com>.
- * All rights reserved.
- */
-
-#ifndef _RTE_COMPAT_H_
-#define _RTE_COMPAT_H_
+#define ALLOW_EXPERIMENTAL_API /* 我加的，实验性的API */
 
 #ifndef ALLOW_EXPERIMENTAL_API
 
@@ -243,112 +253,8 @@ __attribute__((deprecated("Symbol is not yet part of stable ABI"), \
 section(".text.experimental")))
 
 #else
-
 #define __rte_experimental \
 __attribute__((section(".text.experimental")))
-
 #endif
 
-#ifndef ALLOW_INTERNAL_API
-
-#define __rte_internal \
-__attribute__((error("Symbol is not public ABI"), \
-section(".text.internal")))
-
-#else
-
-#define __rte_internal \
-__attribute__((section(".text.internal")))
-
-#endif
-
-#endif /* _RTE_COMPAT_H_ */
-
-/**
- * 128-bit integer structure.
- */
-RTE_STD_C11
-typedef struct {
-	RTE_STD_C11
-	union {
-		uint64_t val[2];
-#ifdef RTE_ARCH_64
-		__extension__ __int128 int128;
-#endif
-	};
-} __rte_aligned(16) rte_int128_t;
-
-
-
-#define RTE_LOG(MOD, LEVEL, fmt...) printf(fmt)
-
-#define rte_panic(fmt...) do{printf(fmt);assert(0);}while(0)
-
-#define rte_zmalloc(name, align, size) memalign(align, size)
-//#define rte_malloc rte_zmalloc
-static void*
-rte_malloc(size_t size)
-{
-	return malloc(size);
-}
-static void
-rte_free(void *addr)
-{
-	return free(addr);
-}
-
-#define strlcpy(dst, src, size) rte_strlcpy(dst, src, size)
-
-/**
- * @internal
- * DPDK-specific version of strlcpy for systems without
- * libc or libbsd copies of the function
- */
-static inline size_t
-rte_strlcpy(char *dst, const char *src, size_t size)
-{
-	return (size_t)snprintf(dst, size, "%s", src);
-}
-
-
-/**
- * Combines 32b inputs most significant set bits into the least
- * significant bits to construct a value with the same MSBs as x
- * but all 1's under it.
- *
- * @param x
- *    The integer whose MSBs need to be combined with its LSBs
- * @return
- *    The combined value.
- */
-static inline uint32_t
-rte_combine32ms1b(uint32_t x)
-{
-	x |= x >> 1;
-	x |= x >> 2;
-	x |= x >> 4;
-	x |= x >> 8;
-	x |= x >> 16;
-
-	return x;
-}
-
-
-/**
- * Aligns input parameter to the next power of 2
- *
- * @param x
- *   The integer value to align
- *
- * @return
- *   Input parameter aligned to the next power of 2
- */
-static inline uint32_t
-rte_align32pow2(uint32_t x)
-{
-	x--;
-	x = rte_combine32ms1b(x);
-
-	return x + 1;
-}
-
+#endif /*<_RTE_RING_COMMON_>*/

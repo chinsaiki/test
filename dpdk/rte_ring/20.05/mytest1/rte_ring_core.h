@@ -29,7 +29,7 @@ extern "C" {
 #include <sys/queue.h>
 #include <errno.h>
 
-#include "common.h"
+#include "rte_common.h"
 
 #define RTE_TAILQ_RING_NAME "RTE_RING"
 
