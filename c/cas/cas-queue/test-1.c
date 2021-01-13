@@ -1,74 +1,66 @@
+/**
+ *  test-1.c
+ *  
+ *  夹带消息（内存指针）的发送接收
+ *  
+ *  荣涛  2021年1月13日
+ *  
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <pthread.h>
 
-#include "cas.h"
+#include "cas-queue.h"
 
-#define TEST_NUM    (1UL<<20)
+#define TEST_NUM   (1UL<<20)
 
-typedef enum  {
-    READY_TO_ENQUEUE = 1,
-    READY_TO_DEQUEUE = 2,
-}QUEUE_OPS;
-
-typedef unsigned long queue_t;
-
-queue_t test_queue = READY_TO_ENQUEUE;
+static struct {
+    unsigned long que_id;
+    void *data;
+}test_queue = {READY_TO_ENQUEUE, NULL};
 
 uint64_t latency;
 
-#define cas_queue_can_enqueue(queue) \
-    CAS(&queue, READY_TO_ENQUEUE, READY_TO_ENQUEUE)
-    
-#define cas_queue_ready_enqueue(queue) \
-    CAS(&queue, READY_TO_DEQUEUE, READY_TO_ENQUEUE)
-    
-#define cas_sendto_queue(queue) \
-    CAS(&queue, READY_TO_ENQUEUE, READY_TO_DEQUEUE)
-
-#define cas_recvfrom_queue(queue) \
-    CAS(&queue, READY_TO_DEQUEUE, READY_TO_DEQUEUE)
-
 void *enqueue_task(void*arg){
-
     int i =0;
+    static unsigned long test_msgs[TEST_NUM] = {0UL};
+    for(i=0;i<TEST_NUM;i++) {
+        test_msgs[i] = i+1;
+    }
+    i=0;
     while(1) {
-        if(cas_queue_can_enqueue(test_queue)) {
-
+        if(CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_ENQUEUE)) {
             latency = RDTSC();
+            test_queue.data = (void*)&test_msgs[i];
             
-            cas_sendto_queue(test_queue);
-            
+            CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_DEQUEUE);
             if(++i == TEST_NUM) break;
         }
     }
-
     pthread_exit(NULL);
 }
 
 void *dequeue_task(void*arg){
 
     int i =0;
-    
     uint64_t latency_total = 0;
-    
+    unsigned long *pmsg;
     while(1) {
-        if(cas_recvfrom_queue(test_queue)) {
-            
+        if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_DEQUEUE)) {
+
+            pmsg = (unsigned long*)test_queue.data;
+//            printf("%ld\n", *pmsg);
             latency_total += RDTSC() - latency;
-                        
             latency=0;
-            
-            cas_queue_ready_enqueue(test_queue);
+            CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_ENQUEUE);
             if(++i == TEST_NUM) break;
         }
-        
     }
     printf("dequeue. latency ticks = %lf(%lf ns)\n", 
             latency_total*1.0/TEST_NUM, 
             latency_total*1.0/TEST_NUM/3000000000*1000000000);
-
 
     pthread_exit(NULL);
 }
@@ -87,3 +79,4 @@ int main()
 
     return EXIT_SUCCESS;
 }
+
