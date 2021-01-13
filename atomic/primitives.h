@@ -96,6 +96,19 @@ _compare_and_swap(void ** ptr, void ** expected, void * desired) {
 #define CASra CAS
 #define CASa  CAS
 
+static void test_cas()
+{
+#define print_cas(val, old, new) \
+    printf("%ld = CAS(%ld, %ld, %ld)\n", CAS(&val, old, new), val, old, new);
+    
+    unsigned long val = 2;
+    print_cas(val, 1, 1);
+    print_cas(val, 2, 2);
+    print_cas(val, 2, 3);
+    print_cas(val, 0, 4);
+    print_cas(val, 0, 5);
+}
+
 /* 1 if 'type' is a pointer type, 0 otherwise.  */
 # define __pointer_type(type) (__builtin_classify_type ((type) 0) == 5)
 

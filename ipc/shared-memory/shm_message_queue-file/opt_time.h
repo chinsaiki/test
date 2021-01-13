@@ -36,6 +36,19 @@
 #define AADD(ptr, val) __asm__ __volatile__("lock ; add"ASUFFIX" %1,%0" :"+m" (*ptr) :"ir" (val))
 #define CAS(ptr, val_old, val_new)({ char ret; __asm__ __volatile__("lock; cmpxchg"ASUFFIX" %2,%0; setz %1": "+m"(*ptr), "=q"(ret): "r"(val_new),"a"(val_old): "memory"); ret;})
 
+static void test_cas()
+{
+#define print_cas(val, old, new) \
+    printf("%ld = CAS(%ld, %ld, %ld)\n", CAS(&val, old, new), val, old, new);
+    
+    unsigned long val = 2;
+    print_cas(val, 1, 1);
+    print_cas(val, 2, 2);
+    print_cas(val, 2, 3);
+    print_cas(val, 0, 4);
+    print_cas(val, 0, 5);
+}
+
 
 #define REGET_TIME_US_GTOD   1
 #define REGET_TIME_US_TIME   1
