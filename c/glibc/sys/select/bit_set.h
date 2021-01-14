@@ -1,5 +1,5 @@
 /**
- *  bitset.h
+ *  bit_set.h
  *  
  *  提供简单 bitmap 操作
  *  
@@ -23,7 +23,7 @@ typedef struct {
     __bits_mask __bits[__BITS_SETSIZE/__NBITS];
 #define __BITS(set) ((set)->__bits)
 #define __BITS_SET_INITIALIZER    {0}
-}__bits_set;
+}__attribute__((aligned(64))) __bits_set;
 
 
 #define __BITS_ZERO(s) \
@@ -55,4 +55,5 @@ typedef __bits_set bits_set;
 
 
 #endif /*<__CRYPTO_BITS_TYPES_BITS_SET_H>*/
+
 

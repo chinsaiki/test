@@ -31,11 +31,11 @@ void *enqueue_task(void*arg){
     }
     i=0;
     while(1) {
-        if(CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_ENQUEUE)) {
+        if(CAS(&test_queue.que_id, READY_TO_ENQUEUE, ENQUEUING)) {
             latency = RDTSC();
             test_queue.data = (void*)&test_msgs[i];
             
-            CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_DEQUEUE);
+            CAS(&test_queue.que_id, ENQUEUING, READY_TO_DEQUEUE);
             if(++i == TEST_NUM) break;
         }
     }
@@ -48,13 +48,13 @@ void *dequeue_task(void*arg){
     uint64_t latency_total = 0;
     unsigned long *pmsg;
     while(1) {
-        if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_DEQUEUE)) {
+        if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, DEQUEUING)) {
 
             pmsg = (unsigned long*)test_queue.data;
 //            printf("%ld\n", *pmsg);
             latency_total += RDTSC() - latency;
             latency=0;
-            CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_ENQUEUE);
+            CAS(&test_queue.que_id, DEQUEUING, READY_TO_ENQUEUE);
             if(++i == TEST_NUM) break;
         }
     }

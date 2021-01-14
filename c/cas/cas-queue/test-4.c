@@ -1,10 +1,11 @@
 /**
- *  test-2.c
+ *  test-4.c
  *  
- *  夹带多消息（内存指针）的发送接收
+ *  夹带多消息（内存指针）的发送接收,使用最新的宏定义
  *  
  *  荣涛  2021年1月13日
  *  荣涛2021年1月14日  添加绑核
+ *  荣涛2021年1月14日  改成宏定义
  *  
  */
 #define _GNU_SOURCE
@@ -25,14 +26,7 @@
 #define MULTI_SEND  10
 #endif
 
-typedef struct cas_queue_s {
-    unsigned long que_id;
-    int bitmap_maxbits;
-    bits_set  bitmap_active;
-    void  * data[BITS_SETSIZE];
-}__attribute__((aligned(64))) cas_queue_t;
-
-cas_queue_t test_queue = {READY_TO_ENQUEUE, -1, BITS_SET_INITIALIZER, NULL};
+fast_queue_t test_queue = {READY_TO_ENQUEUE, -1, BITS_SET_INITIALIZER, NULL};
 
 uint64_t latency;
 
@@ -57,7 +51,7 @@ static inline int set_cpu_affinity(int i)
     return 0;
 }
 
-
+        
 void *enqueue_task(void*arg){
 
     set_cpu_affinity(0);
@@ -67,11 +61,12 @@ void *enqueue_task(void*arg){
     while(1) {
         if(CAS(&test_queue.que_id, READY_TO_ENQUEUE, ENQUEUING)) {
             
-            latency = RDTSC();
-            
             if(BITS_ISSET(i%BITS_SETSIZE, &test_queue.bitmap_active)) {
+                CAS(&test_queue.que_id, ENQUEUING, READY_TO_ENQUEUE);
                 continue;
             }
+            latency = RDTSC();
+            
             int multi_send = MULTI_SEND;
             while(multi_send > 0 && i < TEST_NUM) {
                 if(test_queue.bitmap_maxbits < i%BITS_SETSIZE) {
@@ -184,5 +179,6 @@ int main()
     
     return EXIT_SUCCESS;
 }
+
 
 

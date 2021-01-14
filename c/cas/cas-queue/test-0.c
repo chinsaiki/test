@@ -23,9 +23,9 @@ uint64_t latency;
 void *enqueue_task(void*arg){
     int i =0;
     while(1) {
-        if(CAS(&test_queue, READY_TO_ENQUEUE, READY_TO_ENQUEUE)) {
+        if(CAS(&test_queue, READY_TO_ENQUEUE, ENQUEUING)) {
             latency = RDTSC();
-            CAS(&test_queue, READY_TO_ENQUEUE, READY_TO_DEQUEUE);
+            CAS(&test_queue, ENQUEUING, READY_TO_DEQUEUE);
             if(++i == TEST_NUM) break;
         }
     }
@@ -38,10 +38,10 @@ void *dequeue_task(void*arg){
     uint64_t latency_total = 0;
     void *pmsg;
     while(1) {
-        if(CAS(&test_queue, READY_TO_DEQUEUE, READY_TO_DEQUEUE)) {
+        if(CAS(&test_queue, READY_TO_DEQUEUE, DEQUEUING)) {
             latency_total += RDTSC() - latency;
             latency=0;
-            CAS(&test_queue, READY_TO_DEQUEUE, READY_TO_ENQUEUE);
+            CAS(&test_queue, DEQUEUING, READY_TO_ENQUEUE);
             if(++i == TEST_NUM) break;
         }
     }

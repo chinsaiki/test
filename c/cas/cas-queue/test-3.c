@@ -1,7 +1,7 @@
 /**
  *  test-3.c
  *  
- *  夹带多消息（内存指针）的发送接收
+ *  夹带多消息（内存指针）的发送接收，使用封装的API接口
  *  
  *  荣涛  2021年1月14日
  *  
@@ -15,7 +15,6 @@
 #include <pthread.h>
 
 #include "cas-queue.h"
-#include "bitset.h"
 #include "log.h"
 
 
@@ -31,7 +30,7 @@ typedef struct test_msgs_s {
     int magic;
     unsigned long value;
     uint64_t latency;
-}CACHE_ALIGNED test_msgs_t;
+}__attribute__((aligned(64))) test_msgs_t;
 
 
 fast_queue_t * my_queue;
