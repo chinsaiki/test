@@ -4,6 +4,7 @@
  *  夹带多消息（内存指针）的发送接收
  *  
  *  荣涛  2021年1月13日
+ *  荣涛2021年1月14日  添加绑核
  *  
  */
 #define _GNU_SOURCE
@@ -28,9 +29,9 @@
 typedef struct cas_queue_s {
     unsigned long que_id;
     int bitmap_maxbits;
-    bits_set bitmap_active;
-    void *data[BITS_SETSIZE];
-}cas_queue_t;
+    bits_set CACHE_ALIGNED bitmap_active;
+    void CACHE_ALIGNED * data[BITS_SETSIZE];
+}CACHE_ALIGNED cas_queue_t;
 
 cas_queue_t test_queue = {READY_TO_ENQUEUE, -1, BITS_SET_INITIALIZER, NULL};
 
@@ -61,17 +62,14 @@ static inline int set_cpu_affinity(int i)
 void *enqueue_task(void*arg){
 
     set_cpu_affinity(0);
-
+    
     int i =0;
-    test_msgs_t *test_msgs = malloc(sizeof(test_msgs_t)*TEST_NUM);
-    for(i=0;i<TEST_NUM;i++) {
-        test_msgs[i].magic = TEST_MSG_MAGIC;
-        test_msgs[i].value = i+1;
-    }
-    i=0;
+    test_msgs_t *pmsgs = (test_msgs_t *)arg;
     while(1) {
-        if(CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_ENQUEUE)) {
+        if(CAS(&test_queue.que_id, READY_TO_ENQUEUE, ENQUEUING)) {
+            
             latency = RDTSC();
+            
             if(BITS_ISSET(i%BITS_SETSIZE, &test_queue.bitmap_active)) {
                 continue;
             }
@@ -81,13 +79,13 @@ void *enqueue_task(void*arg){
                     test_queue.bitmap_maxbits = i%BITS_SETSIZE;
                 }
                 
-                test_queue.data[i%BITS_SETSIZE] = (void*)&test_msgs[i];
+                test_queue.data[i%BITS_SETSIZE] = (void*)&pmsgs[i];
                 BITS_SET(i%BITS_SETSIZE, &test_queue.bitmap_active);
 //                printf("Send -> %ld, i = %d\n", test_msgs[i], i);
                 i++;
                 multi_send--;
             }
-            CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_DEQUEUE);
+            CAS(&test_queue.que_id, ENQUEUING, READY_TO_DEQUEUE);
             if(i >= TEST_NUM) break;
             
             if(i % 100000 == 0) {
@@ -99,6 +97,16 @@ void *enqueue_task(void*arg){
     pthread_exit(NULL);
 }
 
+inline int test_msg_handler(test_msgs_t *pmsg){
+    if(pmsg->magic != TEST_MSG_MAGIC) {
+        return 0; //消息错误
+    }
+
+    /* 消息处理流程 */
+    
+    return 1; //消息成功
+}
+
 void *dequeue_task(void*arg){
     
     set_cpu_affinity(1);
@@ -108,8 +116,9 @@ void *dequeue_task(void*arg){
     uint64_t error_msgs = 0;
     uint64_t latency_total = 0;
     test_msgs_t *pmsg;
+    
     while(1) {
-        if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_DEQUEUE)) {
+        if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, DEQUEUING)) {
 
             if(test_queue.bitmap_maxbits < 0) {
                 continue;
@@ -122,6 +131,7 @@ void *dequeue_task(void*arg){
                     if(pmsg->magic != TEST_MSG_MAGIC) {
                         error_msgs++;
                     }
+                    error_msgs += test_msg_handler(pmsg)?0:1;
 //                    printf("Recv -> %ld, i = %d\n", *pmsg, i);
                     BITS_CLR(j, &test_queue.bitmap_active);
                     i++;
@@ -132,7 +142,7 @@ void *dequeue_task(void*arg){
             
             latency_total += RDTSC() - latency;
             latency=0;
-            CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_ENQUEUE);
+            CAS(&test_queue.que_id, DEQUEUING, READY_TO_ENQUEUE);
 //            printf("recv ok i = %d.\n", i);
             if(i >= TEST_NUM) break;
 
@@ -141,10 +151,12 @@ void *dequeue_task(void*arg){
             }
         }
     }
+    
     printf("dequeue. per ticks %lf, per msgs \033[1;31m%lf ns\033[m, msgs (recv %ld, err %ld, total %ld).\n", 
             latency_total*1.0/TEST_NUM/MULTI_SEND, 
             latency_total*1.0/TEST_NUM/MULTI_SEND/3000000000*1000000000,
             total_msgs, error_msgs, TEST_NUM);
+    
     log_dequeue("dequeue exit.\n");
 
     pthread_exit(NULL);
@@ -156,12 +168,21 @@ int main()
 {
     pthread_t enqueue_taskid, dequeue_taskid;
 
-    pthread_create(&enqueue_taskid, NULL, enqueue_task, NULL);
+    int i =0;
+    test_msgs_t *test_msgs = malloc(sizeof(test_msgs_t)*TEST_NUM);
+    for(i=0;i<TEST_NUM;i++) {
+        test_msgs[i].magic = TEST_MSG_MAGIC + (i%10000==0?1:0); //有错误的消息
+        test_msgs[i].value = i+1;
+    }
+
+    pthread_create(&enqueue_taskid, NULL, enqueue_task, test_msgs);
     pthread_create(&dequeue_taskid, NULL, dequeue_task, NULL);
 
     pthread_join(enqueue_taskid, NULL);
     pthread_join(dequeue_taskid, NULL);
 
+    free(test_msgs);
+    
     return EXIT_SUCCESS;
 }
 
