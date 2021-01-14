@@ -4,6 +4,7 @@ ACCT(2)                                     Linux Programmer's Manual           
 
 NAME
        acct - switch process accounting on or off
+       			acct系统调用可用于启动/禁止进程信息记录功能。
 
 SYNOPSIS
        #include <unistd.h>

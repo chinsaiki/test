@@ -1,5 +1,7 @@
 #include <unistd.h>
 
+////acct系统调用可用于启动/禁止进程信息记录功能。
+////switch process accounting on or off
 int acct(const char *filename);
 
 
