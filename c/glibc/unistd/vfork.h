@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 //create a child process and block parent
+/* vfork会阻塞父进程 */
 pid_t vfork(void);
 
 
