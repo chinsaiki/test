@@ -6,6 +6,8 @@
  *  荣涛  2021年1月13日
  *  
  */
+#define _GNU_SOURCE
+#include <sched.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,15 +16,16 @@
 
 #include "cas-queue.h"
 #include "bitset.h"
+#include "log.h"
 
 #ifndef TEST_NUM
-#define TEST_NUM   (1UL<<22)
+#define TEST_NUM   (1UL<<20)
 #endif
 #ifndef MULTI_SEND
 #define MULTI_SEND  10
 #endif
 
-typedef struct {
+typedef struct cas_queue_s {
     unsigned long que_id;
     int bitmap_maxbits;
     bits_set bitmap_active;
@@ -33,11 +36,37 @@ cas_queue_t test_queue = {READY_TO_ENQUEUE, -1, BITS_SET_INITIALIZER, NULL};
 
 uint64_t latency;
 
+typedef struct test_msgs_s {
+#define TEST_MSG_MAGIC 0x123123ff    
+    int magic;
+    unsigned long value;
+}test_msgs_t;
+
+static inline int set_cpu_affinity(int i)
+{
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+ 
+    CPU_SET(i,&mask);
+ 
+    printf("setaffinity thread %u(tid %d) to CPU%d\n", pthread_self(), gettid(), i);
+    if(-1 == pthread_setaffinity_np(pthread_self() ,sizeof(mask),&mask)) {
+        printf("pthread_setaffinity_np error.\n");
+        return -1;
+    }
+    return 0;
+}
+
+
 void *enqueue_task(void*arg){
+
+    set_cpu_affinity(0);
+
     int i =0;
-    static unsigned long test_msgs[TEST_NUM] = {0UL};
+    test_msgs_t *test_msgs = malloc(sizeof(test_msgs_t)*TEST_NUM);
     for(i=0;i<TEST_NUM;i++) {
-        test_msgs[i] = i+1;
+        test_msgs[i].magic = TEST_MSG_MAGIC;
+        test_msgs[i].value = i+1;
     }
     i=0;
     while(1) {
@@ -60,18 +89,25 @@ void *enqueue_task(void*arg){
             }
             CAS(&test_queue.que_id, READY_TO_ENQUEUE, READY_TO_DEQUEUE);
             if(i >= TEST_NUM) break;
+            
+            if(i % 100000 == 0) {
+                log_enqueue("enqueue msgs %ld\n", i);
+            }
         }
     }
-    printf("enqueue exit.\n");
+    log_enqueue("enqueue exit.\n");
     pthread_exit(NULL);
 }
 
 void *dequeue_task(void*arg){
+    
+    set_cpu_affinity(1);
 
     int i =0, j = 0;
     uint64_t total_msgs = 0;
+    uint64_t error_msgs = 0;
     uint64_t latency_total = 0;
-    unsigned long *pmsg;
+    test_msgs_t *pmsg;
     while(1) {
         if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_DEQUEUE)) {
 
@@ -82,7 +118,10 @@ void *dequeue_task(void*arg){
             for(j=0;j<=test_queue.bitmap_maxbits;j++) {
                 if(BITS_ISSET(j, &test_queue.bitmap_active)) {
                     
-                    pmsg = (unsigned long*)test_queue.data[j];
+                    pmsg = (test_msgs_t*)test_queue.data[j];
+                    if(pmsg->magic != TEST_MSG_MAGIC) {
+                        error_msgs++;
+                    }
 //                    printf("Recv -> %ld, i = %d\n", *pmsg, i);
                     BITS_CLR(j, &test_queue.bitmap_active);
                     i++;
@@ -96,12 +135,17 @@ void *dequeue_task(void*arg){
             CAS(&test_queue.que_id, READY_TO_DEQUEUE, READY_TO_ENQUEUE);
 //            printf("recv ok i = %d.\n", i);
             if(i >= TEST_NUM) break;
+
+            if(i % 100000 == 0) {
+                log_dequeue("dequeue msgs %ld, err %ld\n", i, error_msgs);
+            }
         }
     }
-    printf("dequeue. latency (per ticks %lf, per msgs %lf ns) msgs %ld/%ld.\n", 
+    printf("dequeue. per ticks %lf, per msgs \033[1;31m%lf ns\033[m, msgs (recv %ld, err %ld, total %ld).\n", 
             latency_total*1.0/TEST_NUM/MULTI_SEND, 
             latency_total*1.0/TEST_NUM/MULTI_SEND/3000000000*1000000000,
-            total_msgs, TEST_NUM);
+            total_msgs, error_msgs, TEST_NUM);
+    log_dequeue("dequeue exit.\n");
 
     pthread_exit(NULL);
 }

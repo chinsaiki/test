@@ -1,0 +1,52 @@
+设置TOP命令的显示选项
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Tasks: 202 total,   1 running, 137 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.2 us,  0.1 sy,  0.0 ni, 99.6 id,  0.0 wa,  0.0 hi,  0.1 si,  0.0 st
+KiB Mem :  8091900 total,  3168412 free,   751540 used,  4171948 buff/cache
+KiB Swap:  4194300 total,  4192792 free,     1508 used.  6814960 avail Mem 
+
+   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                    
+144328 rongtao   20   0  650800  48668  32468 S   1.0  0.6   0:00.44 gedit                                                      
+  1379 root      20   0  746520  52228  25260 S   0.3  0.6  38:50.21 containerd                                                 
+ 82536 rongtao   20   0  555452   9296   8196 S   0.3  0.1   0:00.04 xdg-desktop-por                                            
+ 90871 rongtao   20   0  152800   4832   3388 S   0.3  0.1   0:01.91 sshd                                                       
+144336 rongtao   20   0  157920   4400   3680 R   0.3  0.1   0:00.03 top 
+
+按住 ‘f’ 后如下，选中要显示的选项后按 ‘空格’，按 ‘q’退出
+------------------------------------------------------------------------------------------------------------------------------------------
+Fields Management for window 1:Def, whose current sort field is %CPU
+   Navigate with Up/Dn, Right selects for move then <Enter> or Left commits,
+   'd' or <Space> toggles display, 's' sets sort.  Use 'q' or <Esc> to end!
+
+* PID     = Process Id             RUSER   = Real User Name         nMaj    = Major Page Faults      nsNET   = NET namespace Inode 
+* USER    = Effective User Name    SUID    = Saved User Id          nMin    = Minor Page Faults      nsPID   = PID namespace Inode 
+* PR      = Priority               SUSER   = Saved User Name        nDRT    = Dirty Pages Count      nsUSER  = USER namespace Inode
+* NI      = Nice Value             GID     = Group Id               WCHAN   = Sleeping in Function   nsUTS   = UTS namespace Inode 
+* VIRT    = Virtual Image (KiB)    GROUP   = Group Name             Flags   = Task Flags <sched.h>
+* RES     = Resident Size (KiB)    PGRP    = Process Group Id       CGROUPS = Control Groups      
+* SHR     = Shared Memory (KiB)    TTY     = Controlling Tty        SUPGIDS = Supp Groups IDs     
+* S       = Process Status         TPGID   = Tty Process Grp Id     SUPGRPS = Supp Groups Names   
+* %CPU    = CPU Usage              SID     = Session Id             TGID    = Thread Group Id     
+* %MEM    = Memory Usage (RES)     nTH     = Number of Threads      ENVIRON = Environment vars    
+* TIME+   = CPU Time, hundredths   P       = Last Used Cpu (SMP)    vMj     = Major Faults delta  
+* COMMAND = Command Name/Line      TIME    = CPU Time               vMn     = Minor Faults delta  
+  PPID    = Parent Process pid     SWAP    = Swapped Size (KiB)     USED    = Res+Swap Size (KiB) 
+  UID     = Effective User Id      CODE    = Code Size (KiB)        nsIPC   = IPC namespace Inode 
+  RUID    = Real User Id           DATA    = Data+Stack (KiB)       nsMNT   = MNT namespace Inode 
+  
+可见多了一列
+------------------------------------------------------------------------------------------------------------------------------------------
+Tasks: 202 total,   1 running, 137 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.1 us,  0.1 sy,  0.0 ni, 99.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  8091900 total,  3168320 free,   751592 used,  4171988 buff/cache
+KiB Swap:  4194300 total,  4192792 free,     1508 used.  6814908 avail Mem 
+
+   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                     P
+  1379 root      20   0  746520  52228  25260 S   0.7  0.6  38:50.44 containerd                                  0
+  2425 nova      20   0  543616  33168  10572 S   0.3  0.4   0:27.43 httpd                                       3
+     1 root      20   0  191488   5852   3832 S   0.0  0.1   0:32.46 systemd                                     1
+     2 root      20   0       0      0      0 S   0.0  0.0   0:00.22 kthreadd                                    2
+     3 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 rcu_gp                                      0
+     4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 rcu_par_gp                                  0
+     6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 kworker/0:0H-kb                             0
