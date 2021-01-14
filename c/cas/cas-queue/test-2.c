@@ -15,8 +15,12 @@
 #include "cas-queue.h"
 #include "bitset.h"
 
-#define TEST_NUM   (1UL<<6)
-#define MULTI_SEND  64
+#ifndef TEST_NUM
+#define TEST_NUM   (1UL<<22)
+#endif
+#ifndef MULTI_SEND
+#define MULTI_SEND  10
+#endif
 
 typedef struct {
     unsigned long que_id;
@@ -65,6 +69,7 @@ void *enqueue_task(void*arg){
 void *dequeue_task(void*arg){
 
     int i =0, j = 0;
+    uint64_t total_msgs = 0;
     uint64_t latency_total = 0;
     unsigned long *pmsg;
     while(1) {
@@ -81,6 +86,7 @@ void *dequeue_task(void*arg){
 //                    printf("Recv -> %ld, i = %d\n", *pmsg, i);
                     BITS_CLR(j, &test_queue.bitmap_active);
                     i++;
+                    total_msgs++;
                 }
             }
             test_queue.bitmap_maxbits = -1;
@@ -92,9 +98,10 @@ void *dequeue_task(void*arg){
             if(i >= TEST_NUM) break;
         }
     }
-    printf("dequeue. latency ticks = %lf(%lf ns)\n", 
+    printf("dequeue. latency (per ticks %lf, per msgs %lf ns) msgs %ld/%ld.\n", 
             latency_total*1.0/TEST_NUM/MULTI_SEND, 
-            latency_total*1.0/TEST_NUM/MULTI_SEND/3000000000*1000000000);
+            latency_total*1.0/TEST_NUM/MULTI_SEND/3000000000*1000000000,
+            total_msgs, TEST_NUM);
 
     pthread_exit(NULL);
 }
