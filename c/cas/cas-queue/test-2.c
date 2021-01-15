@@ -152,6 +152,10 @@ void *dequeue_task(void*arg){
     }
     
     printf("dequeue. per ticks %lf, per msgs \033[1;31m%lf ns\033[m, msgs (recv %ld, err %ld, total %ld).\n", 
+            latency_total*1.0/TEST_NUM, 
+            latency_total*1.0/TEST_NUM/3000000000*1000000000,
+            total_msgs, error_msgs, TEST_NUM);
+    printf("         per ticks %lf, per msgs \033[1;31m%lf ns\033[m, msgs (recv %ld, err %ld, total %ld).\n", 
             latency_total*1.0/TEST_NUM/MULTI_SEND, 
             latency_total*1.0/TEST_NUM/MULTI_SEND/3000000000*1000000000,
             total_msgs, error_msgs, TEST_NUM);

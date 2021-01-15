@@ -49,6 +49,7 @@ void *enqueue_task(void*arg){
             fast_queue_add_msgs(my_queue, i, &pmsgs[nmsg]);
         }
         fast_queue_add_msgs_done(my_queue);
+        
         fast_queue_send(my_queue);
         
         if(nmsg >= TEST_NUM) break;
@@ -86,8 +87,6 @@ void *dequeue_task(void*arg){
         
     while(1) {
         nr_msg += fast_queue_recv(my_queue, msg_handler);
-
-        
         if(nr_msg >= TEST_NUM) break;
     }
     
@@ -96,6 +95,31 @@ void *dequeue_task(void*arg){
     printf("dequeue. per ticks %lf, per msgs \033[1;31m%lf ns\033[m, msgs (recv %ld, err %ld, total %ld).\n", 
             latency_total*1.0/total_msgs, 
             latency_total*1.0/total_msgs/3000000000*1000000000,
+            total_msgs, error_msgs, total_msgs);
+
+/*
+    一次发送 n(MULTI_SEND)条消息，共发送 N(total_msgs)条消息，
+
+    N条消息总时延ticks = latency_total
+    每条消息ticks = latency_total*1.0/total_msgs
+             
+
+           msg0 msg2 msg3 msg4 msg5 msg6      msgn
+   Send    (*)  (*)  (*)  (*)  (*)  (*)  ...  (*)   __
+            |    |    |    |    |    |         |     
+            |    |    |    |    |    |         |
+            |    |    |    |    |    |         |    latency_total*1.0/total_msgs
+            |    |    |    |    |    |         |
+            |    |    |    |    |    |         |    __
+   Recv    (*)  (*)  (*)  (*)  (*)  (*)  ...  (*) 
+           msg0 msg2 msg3 msg4 msg5 msg6      msgn
+
+*/
+
+            
+    printf("         per ticks %lf, per msgs \033[1;31m%lf ns\033[m, msgs (recv %ld, err %ld, total %ld).\n", 
+            latency_total*1.0/total_msgs/MULTI_SEND, 
+            latency_total*1.0/total_msgs/MULTI_SEND/3000000000*1000000000,
             total_msgs, error_msgs, total_msgs);
     
     pthread_exit(NULL);
