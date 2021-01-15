@@ -274,6 +274,16 @@
 #define _val_compare_and_swap(ptr, oldval, newold) __sync_val_compare_and_swap(ptr, oldval, newold)
 #define CAS _val_compare_and_swap
 
+#ifndef VCAS
+#undef VCAS
+#define VCAS(ptr, oldval, newold) __sync_val_compare_and_swap(ptr, oldval, newold)
+#endif
+
+#ifndef CAS
+#undef CAS
+#define CAS(loc, old_value, new_value) __sync_bool_compare_and_swap((void **)loc, old_value, new_value)
+#endif
+
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
 #define min(a,b) ((a) <= (b) ? (a) : (b))
 #define max(a,b) ((a) >= (b) ? (a) : (b))
