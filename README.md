@@ -52,6 +52,7 @@
 * `dpdk`: 数据平面开发套件(DPDK,Data Plane Development Kit)
 * `driver`: 驱动
 * `elasticache`: 完全托管型内存中数据存储(与 `Redis` 或 `Memcached` 兼容)
+* `ethtool`: 查询和控制网络驱动核硬件设置
 * `ffmpeg`: 用来记录、转换数字音频、视频，并能将其转化为流的开源计算机程序
 * `fftw`: 快速傅里叶变换
 * `fio`: flexible I/O tester
