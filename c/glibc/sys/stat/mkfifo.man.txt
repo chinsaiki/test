@@ -1,0 +1,67 @@
+MKFIFO(3)                                   Linux Programmer's Manual                                  MKFIFO(3)
+
+
+
+NAME
+       mkfifo - make a FIFO special file (a named pipe)
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/stat.h>
+
+       int mkfifo(const char *pathname, mode_t mode);
+
+DESCRIPTION
+       mkfifo()  makes  a  FIFO  special file with name pathname.  mode specifies the FIFO's permissions.  It is
+       modified by the process's umask in the usual way: the  permissions  of  the  created  file  are  (mode  &
+       ~umask).
+
+       A FIFO special file is similar to a pipe, except that it is created in a different way.  Instead of being
+       an anonymous communications channel, a FIFO special file is entered  into  the  file  system  by  calling
+       mkfifo().
+
+       Once you have created a FIFO special file in this way, any process can open it for reading or writing, in
+       the same way as an ordinary file.  However, it has to be open at both ends simultaneously before you  can
+       proceed  to  do  any  input or output operations on it.  Opening a FIFO for reading normally blocks until
+       some other process opens the same FIFO for writing, and vice versa.  See fifo(7) for nonblocking handling
+       of FIFO special files.
+
+RETURN VALUE
+       On  success  mkfifo()  returns  0.   In the case of an error, -1 is returned (in which case, errno is set
+       appropriately).
+
+ERRORS
+       EACCES One of the directories in pathname did not allow search (execute) permission.
+
+       EDQUOT The user's quota of disk blocks or inodes on the file system has been exhausted.
+
+       EEXIST pathname already exists.  This includes the case where pathname is a symbolic  link,  dangling  or
+              not.
+
+       ENAMETOOLONG
+              Either  the total length of pathname is greater than PATH_MAX, or an individual filename component
+              has a length greater than NAME_MAX.  In the GNU system, there is no imposed limit on overall file‐
+              name length, but some file systems may place limits on the length of a component.
+
+       ENOENT A directory component in pathname does not exist or is a dangling symbolic link.
+
+       ENOSPC The directory or file system has no room for the new file.
+
+       ENOTDIR
+              A component used as a directory in pathname is not, in fact, a directory.
+
+       EROFS  pathname refers to a read-only file system.
+
+CONFORMING TO
+       POSIX.1-2001.
+
+SEE ALSO
+       mkfifo(1), close(2), open(2), read(2), stat(2), umask(2), write(2), mkfifoat(3), fifo(7)
+
+COLOPHON
+       This  page  is  part  of  release 3.53 of the Linux man-pages project.  A description of the project, and
+       information about reporting bugs, can be found at http://www.kernel.org/doc/man-pages/.
+
+
+
+GNU                                                2013-01-27                                          MKFIFO(3)
