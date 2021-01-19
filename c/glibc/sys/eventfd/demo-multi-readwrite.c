@@ -19,6 +19,19 @@ int main()
     printf("count = %d\n", count);
     eventfd_read(efd, &count);
     printf("count = %d\n", count);
+    eventfd_read(efd, &count);
+    printf("count = %d\n", count);
+    eventfd_write(efd, -4);
+    eventfd_write(efd, -4);
+    eventfd_write(efd, 4);
+    eventfd_read(efd, &count);
+    printf("count = %d\n", count);
+    eventfd_read(efd, &count);
+    printf("count = %d\n", count);
+    eventfd_read(efd, &count);
+    printf("count = %d\n", count);
+    eventfd_read(efd, &count);
+    printf("count = %d\n", count);
     
 //    [root@localhost eventfd]# gcc demo-multi-readwrite.c 
 //    [root@localhost eventfd]# ./a.out 

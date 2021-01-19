@@ -3,8 +3,8 @@
 /* Copyright (C) Rong Tao @Sylincom Beijing, 2019年 03月 19日 星期二 09:01:52 CST. */
 
 
-       #include <semaphore.h>
+#include <semaphore.h>
 
-       int sem_init(sem_t *sem, int pshared, unsigned int value);
+int sem_init(sem_t *sem, int pshared, unsigned int value);
 
 //       Link with -pthread.

@@ -1,0 +1,42 @@
+SEM_UNLINK(3)                                     Linux Programmer's Manual                                    SEM_UNLINK(3)
+
+
+
+NAME
+       sem_unlink - remove a named semaphore
+
+SYNOPSIS
+       #include <semaphore.h>
+
+       int sem_unlink(const char *name);
+
+       Link with -pthread.
+
+DESCRIPTION
+       sem_unlink()  removes the named semaphore referred to by name.  The semaphore name is removed immediately.  The sema‐
+       phore is destroyed once all other processes that have the semaphore open close it.
+
+RETURN VALUE
+       On success sem_unlink() returns 0; on error, -1 is returned, with errno set to indicate the error.
+
+ERRORS
+       EACCES The caller does not have permission to unlink this semaphore.
+
+       ENAMETOOLONG
+              name was too long.
+
+       ENOENT There is no semaphore with the given name.
+
+CONFORMING TO
+       POSIX.1-2001.
+
+SEE ALSO
+       sem_getvalue(3), sem_open(3), sem_post(3), sem_wait(3), sem_overview(7)
+
+COLOPHON
+       This page is part of release 3.53 of the Linux man-pages project.  A description  of  the  project,  and  information
+       about reporting bugs, can be found at http://www.kernel.org/doc/man-pages/.
+
+
+
+Linux                                                    2012-05-13                                            SEM_UNLINK(3)

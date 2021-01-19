@@ -51,6 +51,9 @@ void *dequeue_task(void*arg){
         if(CAS(&test_queue.que_id, READY_TO_DEQUEUE, DEQUEUING)) {
 
             pmsg = (unsigned long*)test_queue.data;
+
+//            sleep(1);
+        
 //            printf("%ld\n", *pmsg);
             latency_total += RDTSC() - latency;
             latency=0;
