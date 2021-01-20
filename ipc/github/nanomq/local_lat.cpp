@@ -49,6 +49,7 @@ int main(int argc, char* argv[]) {
   
   nmq::node_t node(context, 0);
   for (int i = 0; i != roundtrip_count; i++) {
+    printf("i = %d\n", i);
     node.recv(1, s, &message_size);
     node.send(1, s, message_size);
   }
