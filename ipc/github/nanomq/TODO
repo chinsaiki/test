@@ -1,0 +1,8 @@
+* Fair receiving when receiving from all nodes
+* Monitoring tool
+  * Monitor message throughput
+  * Ping nodes to check if they are running
+* Unit tests
+* Maybe allow zero length messages
+* Magic and version of mmap() file
+* Support context using mkstemp() for in process communication and testing
