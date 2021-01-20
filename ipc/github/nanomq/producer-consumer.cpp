@@ -27,13 +27,45 @@
 #include <stdint.h>
 #include <pthread.h>
 
+#ifndef TEST_NUM
+#define TEST_NUM   (1UL<<20)
+#endif
+
+/**
+ *  获取tick
+ */
+#ifndef RDTSC
+#define RDTSC() ({\
+    register uint32_t a,d; \
+    __asm__ __volatile__( "rdtsc" : "=a"(a), "=d"(d)); \
+    (((uint64_t)a)+(((uint64_t)d)<<32)); \
+    })
+#endif
+
+typedef struct  {
+#define TEST_MSG_MAGIC 0x123123ff    
+    int magic;
+    unsigned long value;
+    uint64_t latency;
+}__attribute__((aligned(64))) test_msgs_t;
+
+test_msgs_t *test_msgs;
+uint64_t latency_total = 0;
+uint64_t total_msgs = 0;
+uint64_t error_msgs = 0;
+
 
 void *enqueue_task(void*arg){
     nmq::node_t *node = (nmq::node_t *)arg;
     int i =0;
+    test_msgs_t *pmsg;
     while(1) {
-        node->send(1, "test", 5);
-        sleep(1);
+        pmsg = &test_msgs[i++%TEST_NUM];
+        pmsg->latency = RDTSC();
+        unsigned long addr = (unsigned long)pmsg;
+        node->send(1, &addr, sizeof(unsigned long));
+//        printf("send %p, %lx\n", pmsg, (unsigned long )addr);
+//        sleep(1);
     }
     pthread_exit(NULL);
 }
@@ -41,12 +73,27 @@ void *enqueue_task(void*arg){
 void *dequeue_task(void*arg){
     nmq::node_t *node = (nmq::node_t *)arg;
 
-    int i =0;
-    char buf[100];
-    size_t sz = 100;
+    size_t sz = sizeof(unsigned long);
+    test_msgs_t *pmsg;
+    unsigned long addr;
     while(1) {
-        node->recv(0, &buf, &sz);
-        printf("recv %s\n", buf);
+        node->recv(0, &addr, &sz);
+        pmsg = (test_msgs_t *)addr;
+//        printf("%p, %lx\n", pmsg, addr);
+    
+        latency_total += RDTSC() - pmsg->latency;
+        
+        if(pmsg->magic != TEST_MSG_MAGIC) {
+            error_msgs++;
+        }
+        
+        total_msgs++;
+
+        if(total_msgs % 1000000 == 0) {
+            printf("dequeue. per msgs \033[1;31m%lf ns\033[m, msgs (total %ld, err %ld).\n", 
+                    latency_total*1.0/total_msgs/3000000000*1000000000,
+                    total_msgs, error_msgs);
+        }
     }
     pthread_exit(NULL);
 }
@@ -64,6 +111,15 @@ int main()
     
     nmq::node_t node0(context, 0);
     nmq::node_t node1(context, 1);
+
+
+    unsigned int i =0;
+    test_msgs = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
+    for(i=0;i<TEST_NUM;i++) {
+        test_msgs[i].magic = TEST_MSG_MAGIC + (i%10000==0?1:0); //有错误的消息
+        test_msgs[i].value = i+1;
+    }
+
 
     pthread_create(&enqueue_taskid, NULL, enqueue_task, &node0);
     pthread_create(&dequeue_taskid, NULL, dequeue_task, &node1);
