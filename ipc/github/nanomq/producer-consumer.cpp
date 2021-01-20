@@ -82,7 +82,7 @@ void *dequeue_task(void*arg){
 //        printf("%p, %lx\n", pmsg, addr);
     
         latency_total += RDTSC() - pmsg->latency;
-        
+        pmsg->latency = 0;
         if(pmsg->magic != TEST_MSG_MAGIC) {
             error_msgs++;
         }
