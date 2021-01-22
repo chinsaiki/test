@@ -1,0 +1,3904 @@
+窥探调度器内部信息的接口
+
+Sched Debug Version: v0.11, 5.9.1 #1
+ktime                                   : 1311805639.332808
+sched_clk                               : 1311810267.051677
+cpu_clk                                 : 1311809765.646236
+jiffies                                 : 5606472811
+sched_clock_stable()                    : 1
+
+sysctl_sched
+  .sysctl_sched_latency                    : 18.000000
+  .sysctl_sched_min_granularity            : 10.000000
+  .sysctl_sched_wakeup_granularity         : 15.000000
+  .sysctl_sched_child_runs_first           : 0
+  .sysctl_sched_features                   : 4156219
+  .sysctl_sched_tunable_scaling            : 1 (logarithmic)
+
+cpu#0, 2700.006 MHz
+  .nr_running                    : 2
+  .nr_switches                   : 154957889
+  .nr_uninterruptible            : 537
+  .next_balance                  : 5606.472816
+  .curr->pid                     : 17557
+  .clock                         : 1311809766.641083
+  .clock_task                    : 1311735903.412723
+  .avg_idle                      : 1000000
+  .max_idle_balance_cost         : 500000
+
+cfs_rq[0]:/system.slice/containerd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 499436.095924
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11418882.294299
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311735868.247323
+  .se->vruntime                  : 5471770.271705
+  .se->sum_exec_runtime          : 1056568.253015
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[0]:/system.slice/rtkit-daemon.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 205.574686
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11918112.815537
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311735411.595671
+  .se->vruntime                  : 5471760.855067
+  .se->sum_exec_runtime          : 261.125875
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[0]:/system.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 5471770.271705
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -6446548.118518
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311735868.247323
+  .se->vruntime                  : 11918318.390223
+  .se->sum_exec_runtime          : 2449218.935194
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[0]:/user.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 3578191.682275
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -8340126.707948
+  .nr_spread_over                : 0
+  .nr_running                    : 1
+  .load                          : 1048576
+  .load_avg                      : 1024
+  .runnable_avg                  : 531
+  .util_avg                      : 531
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 1024
+  .tg_load_avg                   : 3056
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311735903.412723
+  .se->vruntime                  : 11918316.568695
+  .se->sum_exec_runtime          : 2626732.638049
+  .se->load.weight               : 351355
+  .se->avg.load_avg              : 343
+  .se->avg.util_avg              : 531
+  .se->avg.runnable_avg          : 531
+
+cfs_rq[0]:/
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 11918309.410488
+  .min_vruntime                  : 11918318.390223
+  .max_vruntime                  : 11918309.410488
+  .spread                        : 0.000000
+  .spread0                       : 0.000000
+  .nr_spread_over                : 0
+  .nr_running                    : 2
+  .load                          : 1399931
+  .load_avg                      : 344
+  .runnable_avg                  : 531
+  .util_avg                      : 531
+  .util_est_enqueued             : 12
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+
+rt_rq[0]:/system.slice/sys-kernel-tracing.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/run-user-1002-doc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/proc-sys-fs-binfmt_misc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/run-user-1002.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/sys-fs-fuse-connections.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/console-shell.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/pcscd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/colord.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/wpa_supplicant.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/packagekit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/run-user-42.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/upower.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/ipmi.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/docker.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/blk-availability.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-user-sessions.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/atd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/crond.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/gdm.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/iscsi-shutdown.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/httpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/libvirtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/network.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/tuned.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/containerd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/smb.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/postfix.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/xrdp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/xrdp-sesman.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/sshd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/vsftpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/cups.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/NetworkManager-wait-online.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/NetworkManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rhel-dmesg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/sysstat.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/firewalld.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/abrt-ccpp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-update-utmp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-logind.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/polkit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/abrt-xorg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-machined.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dbus.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rsyslog.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rngd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/ModemManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rtkit-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/alsa-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/libstoragemgmt.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/avahi-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/smartd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/abrt-oops.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/abrtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/qemu-guest-agent.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/accounts-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/chronyd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-tmpfiles-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/auditd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/var-lib-nfs-rpc_pipefs.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rhel-import-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-disk-by\x2did-dm\x2dname\x2dcentos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-dm\x2d1.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-centos-swap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-udev-settle.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-disk-by\x2duuid-09d551ae\x2d4765\x2d4a90\x2d9828\x2dd08ff9847ae2.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2d7ocvMvHVknTGMsOboM4dhJeb6FRVbVFTjJs3RDmvJr2bMDxFPDJUwa4RGC7B3DRm.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/lvm2-monitor.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/boot.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/work.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-mapper-centos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/system-lvm2\x2dpvscan.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rhel-loadmodules.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-tmpfiles-setup-dev.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-udevd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/rhel-readonly.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-udev-trigger.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-journal-flush.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-random-seed.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-sysctl.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-remount-fs.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/kmod-static-nodes.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/lvm2-lvmetad.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-fsck-root.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/sys-kernel-config.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/-.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-vconsole-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/system-getty.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/proc-fs-nfsd.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/system-selinux\x2dpolicy\x2dmigrate\x2dlocal\x2dchanges.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/machine.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/system-vncserver.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/user.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-hugepages.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/dev-mqueue.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/sys-kernel-debug.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice/systemd-journald.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/system.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[0]:/
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 950.000000
+
+dl_rq[0]:
+  .dl_nr_running                 : 0
+  .dl_nr_migratory               : 0
+  .dl_bw->bw                     : 996147
+  .dl_bw->total_bw               : 0
+
+runnable tasks:
+ S            task   PID         tree-key  switches  prio     wait-time             sum-exec        sum-sleep
+-------------------------------------------------------------------------------------------------------------
+ I          rcu_gp     3         7.951420         2   100         0.000000         0.000000         0.000000 0 0 /
+ I      rcu_par_gp     4         9.951419         2   100         0.000000         0.000000         0.000000 0 0 /
+ I    kworker/0:0H     6      1195.905596         7   100         0.000000         0.024516         0.000000 0 0 /
+ I    mm_percpu_wq     8        15.519072         2   100         0.000000         0.000000         0.000000 0 0 /
+ S     ksoftirqd/0     9  11917924.141665     32235   120         0.000000      1330.136139         0.000000 0 0 /
+ R       rcu_sched    10  11918309.410488  15048529   120         0.000000    208623.247051         0.000000 0 0 /
+ S     migration/0    11         0.000000    336767     0         0.000000      4542.139683         0.000000 0 0 /
+ S         cpuhp/0    13      3186.932803        13   120         0.000000         0.230247         0.000000 0 0 /
+ S       kdevtmpfs    33    774077.357774       163   120         0.000000         2.457802         0.000000 0 0 /
+ I        kthrotld   115       763.528392         2   100         0.000000         0.031360         0.000000 0 0 /
+ I          kaluad   118       769.540098         2   100         0.000000         0.012527         0.000000 0 0 /
+ I         ata_sff   350      1041.436009         2   100         0.000000         0.014332         0.000000 0 0 /
+ I      scsi_tmf_1   354      1057.269906         2   100         0.000000         0.013745         0.000000 0 0 /
+ I    kworker/0:1H   366  11918297.727630     77961   100         0.000000      1007.339246         0.000000 0 0 /
+ I        xfsalloc   454      1261.972707         2   100         0.000000         0.018330         0.000000 0 0 /
+ I   xfs-conv/dm-0   457      1270.980434         2   100         0.000000         0.008756         0.000000 0 0 /
+ I xfs-eofblocks/d   460      1279.987036         2   100         0.000000         0.007228         0.000000 0 0 /
+ I          rpciod   573      1504.288578         2   100         0.000000         0.011262         0.000000 0 0 /
+ I         xprtiod   574      1510.296443         2   100         0.000000         0.008461         0.000000 0 0 /
+ I xfs-reclaim/vda   817      2635.155688         2   100         0.000000         0.011594         0.000000 0 0 /
+ S    xfsaild/vda1   832   9866074.891694        20   120         0.000000         0.490529         0.000000 0 0 /
+ S      jbd2/vdb-8   920  11918297.813618    201683   120         0.000000      6129.853288         0.000000 0 0 /
+ S    rtkit-daemon   974       205.581598    181107   120         0.000000      5875.577278         0.000000 0 0 /system.slice/rtkit-daemon.service
+ S    rtkit-daemon   975       196.583010    181107   121         0.000000      1637.829650         0.000000 0 0 /system.slice/rtkit-daemon.service
+ S    JS GC Helper   993     87567.609142        18   120         0.000000        32.351907         0.000000 0 0 /system.slice/polkit.service
+ S  systemd-logind   982      5307.979602    326486   120         0.000000     22116.846208         0.000000 0 0 /system.slice/systemd-logind.service
+ S           cupsd  1321       103.309441      7245   120         0.000000       652.643747         0.000000 0 0 /system.slice/cups.service
+ S            sshd  1329       239.361632       127   120         0.000000        34.600032         0.000000 0 0 /system.slice/sshd.service
+ S     xrdp-sesman  1330         3.331981        37   120         0.000000         5.635613         0.000000 0 0 /system.slice/xrdp-sesman.service
+ S            xrdp  1335         3.115074        29   120         0.000000         5.913876         0.000000 0 0 /system.slice/xrdp.service
+ S        libvirtd  1450         5.376891         1   120         0.000000         0.018160         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1451        11.383050         1   120         0.000000         0.006165         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1452        17.389051         1   120         0.000000         0.006007         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1453        20.995248         1   120         0.000000         0.006202         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1454        24.600836         1   120         0.000000         0.005593         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1455        28.206934         1   120         0.000000         0.006103         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1456        31.814539         1   120         0.000000         0.007610         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1457        33.979654         1   120         0.000000         0.006804         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1458        36.145128         1   120         0.000000         0.007163         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1459        38.310761         1   120         0.000000         0.007322         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1523        59.692599         1   120         0.000000         0.011663         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1525        62.518800         1   120         0.000000         0.004142         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1526        65.352157         1   120         0.000000         0.008659         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1527        68.183316         1   120         0.000000         0.006461         0.000000 0 0 /system.slice/libvirtd.service
+ S           gmain  1387        29.248616         3   120         0.000000         0.085670         0.000000 0 0 /system.slice/gdm.service
+ S      containerd  1379        11.328857       369   120         0.000000        52.059683         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1483    499436.095924  68728558   120         0.000000    870248.712669         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1539    499336.909147  10826778   120         0.000000    334994.733151         0.000000 0 0 /system.slice/containerd.service
+ S         dockerd  1580     24367.500710     72742   120         0.000000     16190.504222         0.000000 0 0 /system.slice/docker.service
+ S         dockerd 62833     22530.415578     32157   120         0.000000      8234.681011         0.000000 0 0 /system.slice/docker.service
+ S      llvmpipe-1  1571         3.537307         3   120         0.000000         0.063765         0.000000 0 0 /system.slice/gdm.service
+ S      llvmpipe-2  1572         0.921943         4   120         0.000000         0.056702         0.000000 0 0 /system.slice/gdm.service
+ S      llvmpipe-3  1573         8.068308         3   120         0.000000         0.045591         0.000000 0 0 /system.slice/gdm.service
+ S            lpqd  1532   1102003.775078      6982   120         0.000000      3172.485401         0.000000 0 0 /system.slice/smb.service
+ S gdm-session-wor  1653   3578063.271059     21211   120         0.000000      5465.705583         0.000000 0 0 /user.slice
+ S           gmain  1788       548.141648         2   120         0.000000         0.098336         0.000000 0 0 /user.slice
+ S     gnome-shell  1796   3578164.525806    193050   120         0.000000    182415.380637         0.000000 0 0 /user.slice
+ S      llvmpipe-0  1826   3578158.539620    188572   120         0.000000     18974.565728         0.000000 0 0 /user.slice
+ S    dconf worker  1863      2250.346927       289   120         0.000000        15.969926         0.000000 0 0 /user.slice
+ S      llvmpipe-0  1909       455.210350         1   120         0.000000         0.049923         0.000000 0 0 /user.slice
+ S      llvmpipe-1  1910       464.245194         1   120         0.000000         0.034850         0.000000 0 0 /user.slice
+ S      llvmpipe-3  1913       474.255482         1   120         0.000000         0.010292         0.000000 0 0 /user.slice
+ S           gmain  1850         8.026641         1   120         0.000000         0.075226         0.000000 0 0 /system.slice/upower.service
+ S         dnsmasq  1954       209.875709         1   120         0.000000         2.550044         0.000000 0 0 /system.slice/libvirtd.service
+ S     ibus-daemon  2013       630.556172        52   120         0.000000        21.585400         0.000000 0 0 /user.slice
+ S      ibus-dconf  2017       513.096761        13   120         0.000000         4.602228         0.000000 0 0 /user.slice
+ S           gmain  2021       631.264934         6   120         0.000000         0.154687         0.000000 0 0 /user.slice
+ S        ibus-x11  2020      1289.074176       131   120         0.000000        25.351291         0.000000 0 0 /user.slice
+ S           gmain  2025       631.264376         4   120         0.000000         0.157594         0.000000 0 0 /user.slice
+ S           gdbus  2026       532.779511         2   120         0.000000         0.289502         0.000000 0 0 /user.slice
+ S xdg-permission-  2030       616.871439        20   120         0.000000         5.694794         0.000000 0 0 /user.slice
+ S     packagekitd  2038      2426.177863    171372   120         0.000000     12112.140790         0.000000 0 0 /system.slice/packagekit.service
+ S           gdbus  2044      2416.532402     32386   120         0.000000      3729.695573         0.000000 0 0 /system.slice/packagekit.service
+ S           gmain  2050   3126091.276387         7   120         0.000000         0.348176         0.000000 0 0 /user.slice
+ S           gdbus  2052   3578062.761108     17368   120         0.000000      2409.207616         0.000000 0 0 /user.slice
+ S          colord  2060        11.000520        36   120         0.000000        26.720661         0.000000 0 0 /system.slice/colord.service
+ S           gdbus  2087       638.884725         9   120         0.000000         0.565417         0.000000 0 0 /user.slice
+ S         sulogin  2122         0.340238         6   120         0.000000         5.476860         0.000000 0 0 /system.slice/console-shell.service
+ S           httpd  2423       816.814335         6   120         0.000000        18.908928         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2440     26632.931043      4383   120         0.000000       131.179429         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2449       873.929944         1   120         0.000000         0.011466         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2452       874.039619         1   120         0.000000         0.005692         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2456       874.185284         1   120         0.000000         0.004768         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2457       874.215883         1   120         0.000000         0.004566         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2458       874.252625         1   120         0.000000         0.004208         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2429     14355.702300        65   120         0.000000       192.258362         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2430     26633.627314    131082   120         0.000000      4246.946217         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2432     14355.654018        32   120         0.000000       140.998549         0.000000 0 0 /system.slice/httpd.service
+ S           httpd 170911     14364.587363        36   120         0.000000       156.475796         0.000000 0 0 /system.slice/httpd.service
+ S            smbd 207382   1102002.218479  19061555   120         0.000000   3816700.922571         0.000000 0 0 /system.slice/smb.service
+ S     dbus-launch 47377   2328424.125594         7   120         0.000000         1.141210         0.000000 0 0 /user.slice
+ S at-spi-bus-laun 47386   2328450.720291        38   120         0.000000         8.034147         0.000000 0 0 /user.slice
+ S           gdbus 47390   2328458.799524        26   120         0.000000         1.446674         0.000000 0 0 /user.slice
+ S xdg-desktop-por 47395   3216892.439349       184   120         0.000000        18.220043         0.000000 0 0 /user.slice
+ S           gmain 47396   2328561.562209         3   120         0.000000         0.125760         0.000000 0 0 /user.slice
+ S           gmain 47401   2328495.036903         1   120         0.000000         0.091252         0.000000 0 0 /user.slice
+ S   fuse mainloop 47414   2328525.315886         2   120         0.000000         0.107643         0.000000 0 0 /user.slice
+ S           gmain 47405   2328513.589272         1   120         0.000000         0.083380         0.000000 0 0 /user.slice
+ S            sshd 136333   2759026.942134        19   120         0.000000        60.943435         0.000000 0 0 /user.slice
+ S           duphy 171742   3578170.232135    159512   120         0.000000     11437.273915         0.000000 0 0 /user.slice
+ I     kworker/0:2 17130  11917610.973922     10628   120         0.000000      1466.808501         0.000000 0 0 /
+ I     kworker/0:1 17385  11918309.478413      5854   120         0.000000       722.222154         0.000000 0 0 /
+ I     kworker/0:0 17479  11917614.534580         5   120         0.000000         0.117034         0.000000 0 0 /
+ I     kworker/0:3 17484  11917619.959338         3   120         0.000000         0.028887         0.000000 0 0 /
+>R              cp 17557   3578191.682275         0   120         0.000000         1.847069         0.000000 0 0 /user.slice
+
+cpu#1, 2700.006 MHz
+  .nr_running                    : 0
+  .nr_switches                   : 210454832
+  .nr_uninterruptible            : 535
+  .next_balance                  : 5606.472816
+  .curr->pid                     : 0
+  .clock                         : 1311809766.665868
+  .clock_task                    : 1311701822.317442
+  .avg_idle                      : 875642
+  .max_idle_balance_cost         : 500000
+
+cfs_rq[1]:/system.slice/avahi-daemon.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 223897.472040
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11694420.918183
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701569.087492
+  .se->vruntime                  : 7832928.428006
+  .se->sum_exec_runtime          : 223913.725374
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/system.slice/containerd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 595756.453059
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11322561.937164
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701787.061908
+  .se->vruntime                  : 7832935.959977
+  .se->sum_exec_runtime          : 1343818.932904
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/system.slice/pcscd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 77765.110393
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11840553.279830
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701739.744803
+  .se->vruntime                  : 7832927.004430
+  .se->sum_exec_runtime          : 77707.193256
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/system.slice/tuned.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 39315.310599
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11879003.079624
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701401.863364
+  .se->vruntime                  : 7832926.980370
+  .se->sum_exec_runtime          : 39301.154670
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/system.slice/httpd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 114123.695685
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11804194.694538
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701694.791631
+  .se->vruntime                  : 7832926.951974
+  .se->sum_exec_runtime          : 172088.217093
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/system.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 7832935.959977
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -4085382.430246
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701787.061908
+  .se->vruntime                  : 24897931.992862
+  .se->sum_exec_runtime          : 4147760.438492
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/user.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 12250768.149284
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : 332449.759061
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 3056
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311701819.190545
+  .se->vruntime                  : 24897924.110833
+  .se->sum_exec_runtime          : 11507723.309114
+  .se->load.weight               : 261123
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[1]:/
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 24897931.992862
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : 12979613.602639
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+
+rt_rq[1]:/system.slice/sys-kernel-tracing.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/run-user-1002-doc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/proc-sys-fs-binfmt_misc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/run-user-1002.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/sys-fs-fuse-connections.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/console-shell.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/pcscd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/colord.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/wpa_supplicant.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/packagekit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/run-user-42.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/upower.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/ipmi.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/docker.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/blk-availability.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-user-sessions.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/atd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/crond.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/gdm.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/iscsi-shutdown.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/httpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/libvirtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/network.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/tuned.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/containerd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/smb.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/postfix.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/xrdp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/xrdp-sesman.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/sshd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/vsftpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/cups.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/NetworkManager-wait-online.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/NetworkManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rhel-dmesg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/sysstat.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/firewalld.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/abrt-ccpp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-update-utmp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-logind.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/polkit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/abrt-xorg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-machined.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dbus.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rsyslog.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rngd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/ModemManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rtkit-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/alsa-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/libstoragemgmt.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/avahi-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/smartd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/abrt-oops.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/abrtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/qemu-guest-agent.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/accounts-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/chronyd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-tmpfiles-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/auditd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/var-lib-nfs-rpc_pipefs.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rhel-import-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-disk-by\x2did-dm\x2dname\x2dcentos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-dm\x2d1.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-centos-swap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-udev-settle.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-disk-by\x2duuid-09d551ae\x2d4765\x2d4a90\x2d9828\x2dd08ff9847ae2.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2d7ocvMvHVknTGMsOboM4dhJeb6FRVbVFTjJs3RDmvJr2bMDxFPDJUwa4RGC7B3DRm.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/lvm2-monitor.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/boot.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/work.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-mapper-centos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/system-lvm2\x2dpvscan.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rhel-loadmodules.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-tmpfiles-setup-dev.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-udevd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/rhel-readonly.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-udev-trigger.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-journal-flush.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-random-seed.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-sysctl.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-remount-fs.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/kmod-static-nodes.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/lvm2-lvmetad.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-fsck-root.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/sys-kernel-config.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/-.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-vconsole-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/system-getty.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/proc-fs-nfsd.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/system-selinux\x2dpolicy\x2dmigrate\x2dlocal\x2dchanges.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/machine.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/system-vncserver.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/user.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-hugepages.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/dev-mqueue.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/sys-kernel-debug.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice/systemd-journald.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/system.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[1]:/
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 950.000000
+
+dl_rq[1]:
+  .dl_nr_running                 : 0
+  .dl_nr_migratory               : 0
+  .dl_bw->bw                     : 996147
+  .dl_bw->total_bw               : 0
+
+runnable tasks:
+ S            task   PID         tree-key  switches  prio     wait-time             sum-exec        sum-sleep
+-------------------------------------------------------------------------------------------------------------
+ S         systemd     1    310355.015006    452677   120         0.000000     93956.803904         0.000000 0 0 /autogroup-1
+ S        kthreadd     2  24897720.743970     12451   120         0.000000       485.281287         0.000000 0 0 /
+ S         cpuhp/1    14      3393.891216        12   120         0.000000         0.287009         0.000000 0 0 /
+ S     migration/1    15         0.000000    333407     0         0.000000      4539.813313         0.000000 0 0 /
+ S     ksoftirqd/1    16  24897165.740645     28603   120         0.000000      1339.919778         0.000000 0 0 /
+ I    kworker/1:0H    18       709.351952         8   100         0.000000         0.028136         0.000000 0 0 /
+ I           netns    34        13.962254         2   100         0.000000         0.000000         0.000000 0 0 /
+ S      kcompactd0    41  24897922.687907   2603028   120         0.000000     51743.268502         0.000000 0 0 /
+ I     kintegrityd    95       125.136594         2   100         0.000000         0.012745         0.000000 0 0 /
+ I              md    99       134.142295         2   100         0.000000         0.005706         0.000000 0 0 /
+ I      devfreq_wq   101       143.142290         2   100         0.000000         0.000000         0.000000 0 0 /
+ I    kworker/1:1H   388  24897730.838284     90264   100         0.000000      1316.425340         0.000000 0 0 /
+ I        kdmflush   442       756.695188         2   100         0.000000         0.018666         0.000000 0 0 /
+ I    xfs-buf/dm-0   456       894.130528         2   100         0.000000         0.013969         0.000000 0 0 /
+ I xfs-reclaim/dm-   459       903.138350         2   100         0.000000         0.008652         0.000000 0 0 /
+ I    xfs-log/dm-0   461       912.157040         2   100         0.000000         0.019631         0.000000 0 0 /
+ S   systemd-udevd   588       530.419838      1116   120         0.000000       298.549004         0.000000 0 0 /system.slice/systemd-udevd.service
+ I          cryptd   733      3186.055532         2   100         0.000000         0.009310         0.000000 0 0 /
+ I    xfs-buf/vda1   814      3447.187701         2   100         0.000000         0.030262         0.000000 0 0 /
+ I   xfs-conv/vda1   815      3459.144905         2   100         0.000000         0.007037         0.000000 0 0 /
+ I    xfs-cil/vda1   816      3466.628423         2   100         0.000000         0.012580         0.000000 0 0 /
+ I            nfit   834      4004.395616         2   100         0.000000         0.011076         0.000000 0 0 /
+ S accounts-daemon   916       866.366263     18609   120         0.000000      2160.277476         0.000000 0 0 /system.slice/accounts-daemon.service
+ S           gdbus   972       875.355531     18547   120         0.000000      1918.292876         0.000000 0 0 /system.slice/accounts-daemon.service
+ S         qemu-ga   917       894.699486    173764   120         0.000000      8831.776191         0.000000 0 0 /system.slice/qemu-guest-agent.service
+ S    avahi-daemon   936    223897.472040  10238095   120         0.000000    934620.731845         0.000000 0 0 /system.slice/avahi-daemon.service
+ S            lsmd   940      1364.672890     88200   120         0.000000      3296.503608         0.000000 0 0 /system.slice/libstoragemgmt.service
+ S    ModemManager   947       469.336624     17128   120         0.000000       394.746560         0.000000 0 0 /system.slice/ModemManager.service
+ S           gdbus   973       478.330058     17027   120         0.000000      1880.150906         0.000000 0 0 /system.slice/ModemManager.service
+ S        rsyslogd   950     15188.242740      2218   120         0.000000        69.322877         0.000000 0 0 /system.slice/rsyslog.service
+ S     dbus-daemon   951     26535.244492    352799   120         0.000000     90931.964116         0.000000 0 0 /system.slice/dbus.service
+ S  abrt-watch-log   977         1.611293        29   120         0.000000        10.397173         0.000000 0 0 /system.slice/abrt-xorg.service
+ S         polkitd   979     90353.782004    142688   120         0.000000     41932.796250         0.000000 0 0 /system.slice/polkit.service
+ S           gmain   988     90347.440424     18467   120         0.000000      1215.495223         0.000000 0 0 /system.slice/polkit.service
+ S           gdbus   989     90349.744305    105167   120         0.000000      9060.684360         0.000000 0 0 /system.slice/polkit.service
+ S JS Sour~ Thread   994     90347.381878     36942   120         0.000000       308.265548         0.000000 0 0 /system.slice/polkit.service
+ S       firewalld   998      1454.191029     26230   120         0.000000      4619.111877         0.000000 0 0 /system.slice/firewalld.service
+ S  NetworkManager  1000       836.841472     55943   120         0.000000      2643.133816         0.000000 0 0 /system.slice/NetworkManager.service
+ S           gdbus  1012       836.608851     17570   120         0.000000      2043.322080         0.000000 0 0 /system.slice/NetworkManager.service
+ S           tuned  1349     39166.618755       784   120         0.000000       176.046627         0.000000 0 0 /system.slice/tuned.service
+ S           gmain  1548        90.551196         1   120         0.000000         0.037988         0.000000 0 0 /system.slice/tuned.service
+ S           tuned  1549     39315.310599   1310471   120         0.000000    132247.691009         0.000000 0 0 /system.slice/tuned.service
+ S           tuned  1551      2962.812308        56   120         0.000000         2.461847         0.000000 0 0 /system.slice/tuned.service
+ S        libvirtd  1524        12.604847         1   120         0.000000         0.010153         0.000000 0 0 /system.slice/libvirtd.service
+ S      containerd  1484        -2.712614        12   120         0.000000         0.149152         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1540    591588.584472  12439709   120         0.000000    382319.807897         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1559    595753.934521  12145229   120         0.000000    376012.780452         0.000000 0 0 /system.slice/containerd.service
+ S      containerd 27847    595756.314491  10899375   120         0.000000    340933.158551         0.000000 0 0 /system.slice/containerd.service
+ S         dockerd  1385       110.140977       619   120         0.000000        69.666192         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1513        13.784751         7   120         0.000000         0.077027         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1597     26623.179746     71781   120         0.000000     14717.572973         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1680     26726.736224     93381   120         0.000000     20051.857633         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1701     26717.775984     75890   120         0.000000     14403.604415         0.000000 0 0 /system.slice/docker.service
+ S     InputThread  1641        41.313005         3   120         0.000000         0.151421         0.000000 0 0 /system.slice/gdm.service
+ S           gdbus  1658  11786199.249729       339   120         0.000000       206.371082         0.000000 0 0 /user.slice
+ S    dconf worker  1793       117.639042        14   120         0.000000         1.559047         0.000000 0 0 /user.slice
+ S     dbus-launch  1716        93.330900         9   120         0.000000         0.525426         0.000000 0 0 /user.slice
+ S     dbus-daemon  1718      1520.781168       338   120         0.000000        38.729214         0.000000 0 0 /user.slice
+ S           gmain  1774       106.956350         1   120         0.000000         0.045334         0.000000 0 0 /user.slice
+ S           gmain  1820  12250749.953156    328464   120         0.000000     19508.021444         0.000000 0 0 /user.slice
+ S      llvmpipe-1  1827  12250729.483293    185113   120         0.000000     18652.789886         0.000000 0 0 /user.slice
+ S      llvmpipe-2  1911       178.741578         1   120         0.000000         0.010414         0.000000 0 0 /user.slice
+ S         upowerd  1840       541.196464     17043   120         0.000000       383.731567         0.000000 0 0 /system.slice/upower.service
+ S           gdbus  2018       785.489196        39   120         0.000000         3.929921         0.000000 0 0 /user.slice
+ S           gmain  2035       545.486948         2   120         0.000000         0.089159         0.000000 0 0 /user.slice
+ S            pool  2072  12250752.020441  12092615   120         0.000000    366219.910803         0.000000 0 0 /user.slice
+ S            pool  2073       785.163525         3   120         0.000000         0.151882         0.000000 0 0 /user.slice
+ S           gdbus  2063         1.629429        47   120         0.000000         2.770032         0.000000 0 0 /system.slice/colord.service
+ S           pcscd  2067     76234.661107        50   120         0.000000         7.747898         0.000000 0 0 /system.slice/pcscd.service
+ S           pcscd  2069     77765.110393  10077199   120         0.000000    191270.751835         0.000000 0 0 /system.slice/pcscd.service
+ S ibus-engine-sim  2085       794.142856         9   120         0.000000         5.068817         0.000000 0 0 /user.slice
+ S           httpd  2418    114123.695685   1310742   120         0.000000     71170.899774         0.000000 0 0 /system.slice/httpd.service
+ S      nss_pcache  2420     59413.972601         2   120         0.000000        21.236166         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2435    114120.984278   1310332   120         0.000000     57700.909197         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2436     59451.337324         1   120         0.000000         0.050776         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2424     59442.410004         7   120         0.000000        19.437410         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2437    114108.519713      4383   120         0.000000       124.537917         0.000000 0 0 /system.slice/httpd.service
+ S           httpd 170907     89114.419853        19   120         0.000000       150.949349         0.000000 0 0 /system.slice/httpd.service
+ S           httpd 170964     89123.251776         6   120         0.000000       157.113268         0.000000 0 0 /system.slice/httpd.service
+ S            sshd 207635  12250728.757709    220022   120         0.000000     10585.676021         0.000000 0 0 /user.slice
+ S            sshd 133173   4942806.505463        17   120         0.000000        60.065436         0.000000 0 0 /user.slice
+ S            sshd 133203  12250709.162865     14361   120         0.000000      1300.034715         0.000000 0 0 /user.slice
+ S            sshd 213810  12250728.754424      7176   120         0.000000       535.442292         0.000000 0 0 /user.slice
+ S            sshd 239296  12250728.751714     18636   120         0.000000      1435.237827         0.000000 0 0 /user.slice
+ S            bash 239297  11703541.080101      3374   120         0.000000       935.263329         0.000000 0 0 /user.slice
+ S    dconf worker 47415  10691722.767667        15   120         0.000000         1.727647         0.000000 0 0 /user.slice
+ S              su 136416  11319171.881595        20   120         0.000000        46.764339         0.000000 0 0 /user.slice
+ S            bash 136422  11785892.267585      1651   120         0.000000       495.023725         0.000000 0 0 /user.slice
+ S            sshd 235540  11702556.217346        17   120         0.000000        60.793808         0.000000 0 0 /user.slice
+ S            bash 235545  11702969.004310       248   120         0.000000       124.993528         0.000000 0 0 /user.slice
+ S            sshd 256793  11786103.507402        17   120         0.000000        61.561237         0.000000 0 0 /user.slice
+ S            sshd 256797  12250693.553950      1702   120         0.000000       131.336691         0.000000 0 0 /user.slice
+ S            bash 256798  11786222.196373        97   120         0.000000        81.052005         0.000000 0 0 /user.slice
+ I     kworker/1:1 17279  24897923.000068       500   120         0.000000         7.491257         0.000000 0 0 /
+ I     kworker/1:3 17281  24891477.466247         4   120         0.000000         0.050915         0.000000 0 0 /
+
+cpu#2, 2700.006 MHz
+  .nr_running                    : 0
+  .nr_switches                   : 203980676
+  .nr_uninterruptible            : -1894
+  .next_balance                  : 5606.472816
+  .curr->pid                     : 0
+  .clock                         : 1311809767.552436
+  .clock_task                    : 1311638874.363995
+  .avg_idle                      : 1000000
+  .max_idle_balance_cost         : 500000
+
+cfs_rq[2]:/system.slice/containerd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 573614.658961
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11344703.731262
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 1
+  .runnable_avg                  : 1
+  .util_avg                      : 1
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 1
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311638838.161582
+  .se->vruntime                  : 8386014.753218
+  .se->sum_exec_runtime          : 1271786.693559
+  .se->load.weight               : 1048576
+  .se->avg.load_avg              : 1
+  .se->avg.util_avg              : 1
+  .se->avg.runnable_avg          : 1
+
+cfs_rq[2]:/system.slice/rsyslog.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 15361.567439
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11902956.822784
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311638732.310944
+  .se->vruntime                  : 8386005.556279
+  .se->sum_exec_runtime          : 15743.435858
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[2]:/system.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 8386014.753218
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -3532303.637005
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 1
+  .runnable_avg                  : 1
+  .util_avg                      : 1
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 1
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311638838.161582
+  .se->vruntime                  : 14185009.629246
+  .se->sum_exec_runtime          : 5048296.209091
+  .se->load.weight               : 1048576
+  .se->avg.load_avg              : 1
+  .se->avg.util_avg              : 1
+  .se->avg.runnable_avg          : 1
+
+cfs_rq[2]:/user.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 3027485.060071
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -8890833.330152
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 1040
+  .runnable_avg                  : 523
+  .util_avg                      : 522
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 1027
+  .removed.util_avg              : 509
+  .removed.runnable_avg          : 510
+  .tg_load_avg_contrib           : 1040
+  .tg_load_avg                   : 3056
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311638871.189786
+  .se->vruntime                  : 14185005.933184
+  .se->sum_exec_runtime          : 2218680.416165
+  .se->load.weight               : 356845
+  .se->avg.load_avg              : 348
+  .se->avg.util_avg              : 522
+  .se->avg.runnable_avg          : 523
+
+cfs_rq[2]:/
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 14185009.629246
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : 2266691.239023
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 350
+  .runnable_avg                  : 525
+  .util_avg                      : 524
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+
+rt_rq[2]:/system.slice/sys-kernel-tracing.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/run-user-1002-doc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/proc-sys-fs-binfmt_misc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/run-user-1002.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/sys-fs-fuse-connections.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/console-shell.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/pcscd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/colord.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/wpa_supplicant.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/packagekit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/run-user-42.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/upower.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/ipmi.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/docker.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/blk-availability.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-user-sessions.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/atd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/crond.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/gdm.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/iscsi-shutdown.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/httpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/libvirtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/network.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/tuned.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/containerd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/smb.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/postfix.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/xrdp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/xrdp-sesman.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/sshd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/vsftpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/cups.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/NetworkManager-wait-online.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/NetworkManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rhel-dmesg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/sysstat.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/firewalld.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/abrt-ccpp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-update-utmp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-logind.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/polkit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/abrt-xorg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-machined.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dbus.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rsyslog.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rngd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/ModemManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rtkit-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/alsa-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/libstoragemgmt.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/avahi-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/smartd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/abrt-oops.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/abrtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/qemu-guest-agent.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/accounts-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/chronyd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-tmpfiles-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/auditd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/var-lib-nfs-rpc_pipefs.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rhel-import-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-disk-by\x2did-dm\x2dname\x2dcentos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-dm\x2d1.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-centos-swap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-udev-settle.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-disk-by\x2duuid-09d551ae\x2d4765\x2d4a90\x2d9828\x2dd08ff9847ae2.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2d7ocvMvHVknTGMsOboM4dhJeb6FRVbVFTjJs3RDmvJr2bMDxFPDJUwa4RGC7B3DRm.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/lvm2-monitor.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/boot.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/work.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-mapper-centos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/system-lvm2\x2dpvscan.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rhel-loadmodules.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-tmpfiles-setup-dev.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-udevd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/rhel-readonly.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-udev-trigger.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-journal-flush.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-random-seed.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-sysctl.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-remount-fs.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/kmod-static-nodes.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/lvm2-lvmetad.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-fsck-root.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/sys-kernel-config.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/-.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-vconsole-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/system-getty.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/proc-fs-nfsd.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/system-selinux\x2dpolicy\x2dmigrate\x2dlocal\x2dchanges.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/machine.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/system-vncserver.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/user.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-hugepages.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/dev-mqueue.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/sys-kernel-debug.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice/systemd-journald.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/system.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[2]:/
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 950.000000
+
+dl_rq[2]:
+  .dl_nr_running                 : 0
+  .dl_nr_migratory               : 0
+  .dl_bw->bw                     : 996147
+  .dl_bw->total_bw               : 0
+
+runnable tasks:
+ S            task   PID         tree-key  switches  prio     wait-time             sum-exec        sum-sleep
+-------------------------------------------------------------------------------------------------------------
+ S         cpuhp/2    19      3539.326094        12   120         0.000000         0.277708         0.000000 0 0 /
+ S     migration/2    20        49.996712    334947     0         0.000000      3848.665473         0.000000 0 0 /
+ S     ksoftirqd/2    21  14184998.392788    467147   120         0.000000      9491.564655         0.000000 0 0 /
+ I    kworker/2:0H    23      2159.434816         8   100         0.000000         0.043776         0.000000 0 0 /
+ S         kauditd    36  14184377.730440     24306   120         0.000000       376.705520         0.000000 0 0 /
+ S         kswapd0   113  11768511.349100       502   120         0.000000      1766.935796         0.000000 0 0 /
+ I acpi_thermal_pm   116      1139.329560         2   100         0.000000         0.030714         0.000000 0 0 /
+ I   ipv6_addrconf   120      1149.889246         2   100         0.000000         0.020822         0.000000 0 0 /
+ I      scsi_tmf_0   352      1500.515792         2   100         0.000000         0.008831         0.000000 0 0 /
+ S       scsi_eh_1   353      2150.488504         4   120         0.000000         0.407083         0.000000 0 0 /
+ I    kworker/2:1H   362  14184992.842512    447409   100         0.000000      7459.884353         0.000000 0 0 /
+ S    xfsaild/dm-0   462  14185000.646185  10916483   120         0.000000    214530.166354         0.000000 0 0 /
+ S systemd-journal   541      2485.856882     39483   120         0.000000      9953.364037         0.000000 0 0 /system.slice/systemd-journald.service
+ I xfs-eofblocks/v   824      3598.729925         2   100         0.000000         0.007670         0.000000 0 0 /
+ S          auditd   886       262.784658     78818   116         0.000000      2053.269898         0.000000 0 0 /system.slice/auditd.service
+ S          auditd   887       253.780136      3094   116         0.000000        59.763193         0.000000 0 0 /system.slice/auditd.service
+ S         audispd   888       253.763142     33284   112         0.000000       461.324930         0.000000 0 0 /system.slice/auditd.service
+ S         audispd   893       253.805418     95059   112         0.000000      2588.155582         0.000000 0 0 /system.slice/auditd.service
+ S      sedispatch   892       253.787147     37040   116         0.000000      1048.675752         0.000000 0 0 /system.slice/auditd.service
+ S           gmain   939      1145.031832     28953   120         0.000000       847.542327         0.000000 0 0 /system.slice/accounts-daemon.service
+ S  abrt-watch-log   924       401.346298     22509   120         0.000000      1271.041497         0.000000 0 0 /system.slice/abrt-oops.service
+ S          smartd   930        40.971715       760   120         0.000000        43.469531         0.000000 0 0 /system.slice/smartd.service
+ S         alsactl   943      5261.144370      8759   139         0.000000       211.685727         0.000000 0 0 /system.slice/alsa-state.service
+ S           gmain   955         5.334306         3   120         0.000000         0.062434         0.000000 0 0 /system.slice/ModemManager.service
+ S            rngd   948        50.818431      3424   120         0.000000       171.067753         0.000000 0 0 /system.slice/rngd.service
+ S    in:imjournal   960     15361.567439   1337413   120         0.000000     59182.074972         0.000000 0 0 /system.slice/rsyslog.service
+ S   rs:main Q:Reg   962     15345.161247     30970   120         0.000000      1343.116774         0.000000 0 0 /system.slice/rsyslog.service
+ S systemd-machine   976      2746.081830    238412   120         0.000000     11238.705067         0.000000 0 0 /system.slice/systemd-machined.service
+ S         polkitd   996    104775.470051     22629   120         0.000000      2252.925570         0.000000 0 0 /system.slice/polkit.service
+ S          vsftpd  1325         4.624180         2   120         0.000000         0.843850         0.000000 0 0 /system.slice/vsftpd.service
+ S            smbd  1343   2978654.194162     31653   120         0.000000      3958.757213         0.000000 0 0 /system.slice/smb.service
+ S           crond  1369     12670.131173     26342   120         0.000000      3246.879666         0.000000 0 0 /system.slice/crond.service
+ S             atd  1376         6.780874       370   120         0.000000        18.506614         0.000000 0 0 /system.slice/atd.service
+ S      containerd  1485    571425.872798  12936474   120         0.000000    401317.196605         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1562    573614.666395  12149826   120         0.000000    373748.653448         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  2631    573612.429942  11905389   120         0.000000    367191.292135         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  2632    573608.266332   9974991   120         0.000000    308577.983074         0.000000 0 0 /system.slice/containerd.service
+ S         dockerd  1510     26116.474039    535961   120         0.000000      6083.761012         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1512     26123.654976     96544   120         0.000000     19490.131400         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1516         8.986976         1   120         0.000000         0.014828         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1619     26109.714490     40016   120         0.000000      7700.963869         0.000000 0 0 /system.slice/docker.service
+ S        cleanupd  1515   2978652.064841     43832   120         0.000000      1315.389252         0.000000 0 0 /system.slice/smb.service
+ S          master  1627      1984.089812     54021   120         0.000000      3307.621669         0.000000 0 0 /system.slice/postfix.service
+ S            qmgr  1633      1974.957329      8380   120         0.000000       806.525088         0.000000 0 0 /system.slice/postfix.service
+ S           gmain  1656         4.219190         5   120         0.000000         0.181785         0.000000 0 0 /user.slice
+ S     dbus-launch  1693        31.621509         8   120         0.000000         0.434404         0.000000 0 0 /user.slice
+ S     dbus-daemon  1704        32.929991         7   120         0.000000         1.585641         0.000000 0 0 /user.slice
+ S at-spi-bus-laun  1761       249.812875        57   120         0.000000         5.967003         0.000000 0 0 /user.slice
+ S    dconf worker  1763        71.688345        14   120         0.000000         1.733489         0.000000 0 0 /user.slice
+ S           gmain  1764        56.970474         1   120         0.000000         0.031816         0.000000 0 0 /user.slice
+ S           gdbus  1766       249.916031        33   120         0.000000         2.317167         0.000000 0 0 /user.slice
+ S     dbus-daemon  1767      1481.139449        44   120         0.000000         7.410375         0.000000 0 0 /user.slice
+ S at-spi2-registr  1771       266.342492        81   120         0.000000         9.766261         0.000000 0 0 /user.slice
+ S           gdbus  1776       250.007256        23   120         0.000000         1.779942         0.000000 0 0 /user.slice
+ S      llvmpipe-2  1828   3027454.757114    172557   120         0.000000     18892.391006         0.000000 0 0 /user.slice
+ S           gdbus  1837   3027322.224836     62591   120         0.000000      6657.047720         0.000000 0 0 /user.slice
+ S     threaded-ml  1898       266.326609         7   120         0.000000         0.575475         0.000000 0 0 /user.slice
+ S JS Sour~ Thread  1901       204.422652         1   120         0.000000         0.064809         0.000000 0 0 /user.slice
+ S      pulseaudio  1867   3027321.669634     21456   120         0.000000      1698.508960         0.000000 0 0 /user.slice
+ S       null-sink  1896       385.755863        13   120         0.000000         0.305061         0.000000 0 0 /user.slice
+ S         dnsmasq  1953        65.717925       166   120         0.000000         4.124796         0.000000 0 0 /system.slice/libvirtd.service
+ S           gmain  2015       209.432695         3   120         0.000000         0.118731         0.000000 0 0 /user.slice
+ S           gdbus  2023       234.509055        19   120         0.000000         0.918436         0.000000 0 0 /user.slice
+ S           gdbus  2037       266.379712         8   120         0.000000         0.609429         0.000000 0 0 /user.slice
+ S           gmain  2042      3523.018304       535   120         0.000000         8.459441         0.000000 0 0 /system.slice/packagekit.service
+ S  wpa_supplicant  2040      1524.825837    131075   120         0.000000      5348.236271         0.000000 0 0 /system.slice/wpa_supplicant.service
+ S           pcscd  2068         8.377055         1   120         0.000000         0.210445         0.000000 0 0 /system.slice/pcscd.service
+ S           httpd  2421     56507.147153    436807   120         0.000000     19224.839788         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2442      2734.239342         1   120         0.000000         0.013089         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2426      2738.098210         5   120         0.000000        27.711140         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2444     56516.099176   1310330   120         0.000000     61819.098450         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2445      2746.738653         1   120         0.000000         0.048798         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2446      2746.749551         1   120         0.000000         0.011102         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2447      2746.786374         1   120         0.000000         0.006400         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2450      2747.762604         1   120         0.000000         0.006684         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2451      2747.797322         1   120         0.000000         0.004572         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2453      2747.874152         1   120         0.000000         0.005409         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2454      2747.908921         1   120         0.000000         0.006303         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2455      2747.942024         1   120         0.000000         0.005527         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2459      2748.094696         1   120         0.000000         0.005701         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2427     31833.075842        20   120         0.000000       186.175876         0.000000 0 0 /system.slice/httpd.service
+ S           httpd 170912     31841.802615        26   120         0.000000       154.725181         0.000000 0 0 /system.slice/httpd.service
+ S            bash 207636   3026114.716692     10205   120         0.000000      3057.609308         0.000000 0 0 /user.slice
+ S            bash 133204   2559036.248310      1772   120         0.000000       577.366334         0.000000 0 0 /user.slice
+ S            sshd 213797   1636626.639563        21   120         0.000000        51.560188         0.000000 0 0 /user.slice
+ S            bash 213813   2037086.039768       592   120         0.000000       202.232303         0.000000 0 0 /user.slice
+ S            sshd 237400   1732817.221704        22   120         0.000000        58.264102         0.000000 0 0 /user.slice
+ S            bash 237418   3027474.622822     10476   120         0.000000      2994.550735         0.000000 0 0 /user.slice
+ S            sshd 239266   1739810.423557        21   120         0.000000        59.696652         0.000000 0 0 /user.slice
+ S           gmain 47388   1779864.417093         1   120         0.000000         0.071751         0.000000 0 0 /user.slice
+ S     dbus-daemon 47391   2580846.491885       106   120         0.000000        13.461670         0.000000 0 0 /user.slice
+ S at-spi2-registr 47393   2580716.610808       130   120         0.000000        13.526499         0.000000 0 0 /user.slice
+ S           gdbus 47419   1779943.630439        11   120         0.000000         0.837274         0.000000 0 0 /user.slice
+ S   fuse mainloop 47411   1779902.860264         1   120         0.000000         0.062584         0.000000 0 0 /user.slice
+ S   fuse mainloop 47412   1779912.950404         1   120         0.000000         0.115369         0.000000 0 0 /user.slice
+ S xdg-desktop-por 47417   2580716.575620        90   120         0.000000        24.158685         0.000000 0 0 /user.slice
+ S           gmain 47426   1779971.971758         1   120         0.000000         0.057588         0.000000 0 0 /user.slice
+ S            sshd 136340   3027456.626390     19822   120         0.000000      1539.920418         0.000000 0 0 /user.slice
+ S            sshd 235544   3027466.008344      2953   120         0.000000       215.928980         0.000000 0 0 /user.slice
+ S          pickup 16981      1980.600573        66   120         0.000000        10.673205         0.000000 0 0 /system.slice/postfix.service
+ I     kworker/2:0 17215  14185000.496791      4922   120         0.000000       233.023481         0.000000 0 0 /
+ I  kworker/u510:1 17400  14184805.566670       394   120         0.000000         7.706357         0.000000 0 0 /
+ I     kworker/2:2 17409  14184598.106056       166   120         0.000000         7.878890         0.000000 0 0 /
+ I     kworker/2:1 17501  14184997.807041        66   120         0.000000         2.801987         0.000000 0 0 /
+ I  kworker/u510:2 17530  14184986.692057       125   120         0.000000         2.004928         0.000000 0 0 /
+
+cpu#3, 2700.006 MHz
+  .nr_running                    : 0
+  .nr_switches                   : 192898939
+  .nr_uninterruptible            : 822
+  .next_balance                  : 5606.472815
+  .curr->pid                     : 0
+  .clock                         : 1311809767.552617
+  .clock_task                    : 1311667957.479821
+  .avg_idle                      : 871318
+  .max_idle_balance_cost         : 500000
+
+cfs_rq[3]:/system.slice/containerd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 590781.883492
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11327536.506731
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311667803.311884
+  .se->vruntime                  : 7703611.082265
+  .se->sum_exec_runtime          : 1322743.379021
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[3]:/system.slice/httpd.service
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 66641.695548
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -11851676.694675
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311667855.020593
+  .se->vruntime                  : 7703602.133620
+  .se->sum_exec_runtime          : 99095.237927
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[3]:/system.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 7703611.082265
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -4214707.307958
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 0
+  .runnable_avg                  : 0
+  .util_avg                      : 0
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 1
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311667855.020593
+  .se->vruntime                  : 22600279.719006
+  .se->sum_exec_runtime          : 3758651.652311
+  .se->load.weight               : 2
+  .se->avg.load_avg              : 0
+  .se->avg.util_avg              : 0
+  .se->avg.runnable_avg          : 0
+
+cfs_rq[3]:/user.slice
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 11180374.830791
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : -737943.559432
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 989
+  .runnable_avg                  : 514
+  .util_avg                      : 513
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 992
+  .tg_load_avg                   : 3056
+  .throttled                     : 0
+  .throttle_count                : 0
+  .se->exec_start                : 1311667954.916775
+  .se->vruntime                  : 22600273.385044
+  .se->sum_exec_runtime          : 10345905.701097
+  .se->load.weight               : 339679
+  .se->avg.load_avg              : 319
+  .se->avg.util_avg              : 513
+  .se->avg.runnable_avg          : 514
+
+cfs_rq[3]:/
+  .exec_clock                    : 0.000000
+  .MIN_vruntime                  : 0.000001
+  .min_vruntime                  : 22600279.719006
+  .max_vruntime                  : 0.000001
+  .spread                        : 0.000000
+  .spread0                       : 10681961.328783
+  .nr_spread_over                : 0
+  .nr_running                    : 0
+  .load                          : 0
+  .load_avg                      : 319
+  .runnable_avg                  : 513
+  .util_avg                      : 512
+  .util_est_enqueued             : 0
+  .removed.load_avg              : 0
+  .removed.util_avg              : 0
+  .removed.runnable_avg          : 0
+  .tg_load_avg_contrib           : 0
+  .tg_load_avg                   : 0
+  .throttled                     : 0
+  .throttle_count                : 0
+
+rt_rq[3]:/system.slice/sys-kernel-tracing.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/run-user-1002-doc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/proc-sys-fs-binfmt_misc.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/run-user-1002.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/sys-fs-fuse-connections.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/console-shell.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/pcscd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/colord.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/wpa_supplicant.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/packagekit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/run-user-42.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/upower.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/ipmi.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/docker.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/blk-availability.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-user-sessions.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/atd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/crond.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/gdm.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/iscsi-shutdown.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/httpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/libvirtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/network.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/tuned.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/containerd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/smb.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/postfix.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/xrdp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/xrdp-sesman.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/sshd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/vsftpd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/cups.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/NetworkManager-wait-online.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/NetworkManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rhel-dmesg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/sysstat.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/firewalld.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/abrt-ccpp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-update-utmp.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-logind.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/polkit.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/abrt-xorg.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-machined.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dbus.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rsyslog.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rngd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/ModemManager.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rtkit-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/alsa-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/libstoragemgmt.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/avahi-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/smartd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/abrt-oops.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/abrtd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/qemu-guest-agent.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/accounts-daemon.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/chronyd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-tmpfiles-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/auditd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/var-lib-nfs-rpc_pipefs.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rhel-import-state.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-disk-by\x2did-dm\x2dname\x2dcentos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-dm\x2d1.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-centos-swap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-udev-settle.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-disk-by\x2duuid-09d551ae\x2d4765\x2d4a90\x2d9828\x2dd08ff9847ae2.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2d7ocvMvHVknTGMsOboM4dhJeb6FRVbVFTjJs3RDmvJr2bMDxFPDJUwa4RGC7B3DRm.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/lvm2-monitor.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/boot.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/work.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-mapper-centos\x2dswap.swap
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/system-lvm2\x2dpvscan.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rhel-loadmodules.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-tmpfiles-setup-dev.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-udevd.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/rhel-readonly.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-udev-trigger.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-journal-flush.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-random-seed.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-sysctl.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-remount-fs.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/kmod-static-nodes.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/lvm2-lvmetad.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-fsck-root.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/sys-kernel-config.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/-.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-vconsole-setup.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/system-getty.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/proc-fs-nfsd.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/system-selinux\x2dpolicy\x2dmigrate\x2dlocal\x2dchanges.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/machine.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/system-vncserver.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/user.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-hugepages.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/dev-mqueue.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/sys-kernel-debug.mount
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice/systemd-journald.service
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/system.slice
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 0.000000
+
+rt_rq[3]:/
+  .rt_nr_running                 : 0
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 950.000000
+
+dl_rq[3]:
+  .dl_nr_running                 : 0
+  .dl_nr_migratory               : 0
+  .dl_bw->bw                     : 996147
+  .dl_bw->total_bw               : 0
+
+runnable tasks:
+ S            task   PID         tree-key  switches  prio     wait-time             sum-exec        sum-sleep
+-------------------------------------------------------------------------------------------------------------
+ S         cpuhp/3    24      2359.339963        12   120         0.000000         0.326351         0.000000 0 0 /
+ S     migration/3    25        78.002193    334302     0         0.000000      3356.369088         0.000000 0 0 /
+ S     ksoftirqd/3    26  22599685.831673    124693   120         0.000000      2056.055903         0.000000 0 0 /
+ I    kworker/3:0H    28       824.181004         8   100         0.000000         0.028311         0.000000 0 0 /
+ S rcu_tasks_rude_    35        29.493879         2   120         0.000000         0.004381         0.000000 0 0 /
+ S      khungtaskd    38  22596736.659158      2114   120         0.000000       176.873864         0.000000 0 0 /
+ S      oom_reaper    39        38.493874         2   120         0.000000         0.000000         0.000000 0 0 /
+ I       writeback    40        38.493874         2   100         0.000000         0.000000         0.000000 0 0 /
+ S            ksmd    42   1031447.561776      2104   125         0.000000       508.722357         0.000000 0 0 /
+ S      khugepaged    43  22600256.917132    144322   139         0.000000     25347.283409         0.000000 0 0 /
+ I         kblockd    96        94.634658         2   100         0.000000         0.002397         0.000000 0 0 /
+ I  blkcg_punt_bio    97       103.638451         2   100         0.000000         0.005369         0.000000 0 0 /
+ I      tpm_dev_wq    98       112.644813         2   100         0.000000         0.006367         0.000000 0 0 /
+ I     edac-poller   100       121.650098         2   100         0.000000         0.005290         0.000000 0 0 /
+ S       watchdogd   102         0.000000         2    49         0.000000         0.005031         0.000000 0 0 /
+ I    kmpath_rdacd   117       206.917076         2   100         0.000000         0.015751         0.000000 0 0 /
+ I    zswap-shrink   123       218.996936         2   100         0.000000         0.016288         0.000000 0 0 /
+ I  kworker/u511:0   128      1086.285669         3   100         0.000000         0.020832         0.000000 0 0 /
+ S       scsi_eh_0   351      2830.161327        39   120         0.000000         3.860319         0.000000 0 0 /
+ I    kworker/3:1H   389  22599358.916073     78174   100         0.000000      1257.852751         0.000000 0 0 /
+ I        kdmflush   431       844.516406         2   100         0.000000         0.023402         0.000000 0 0 /
+ I   xfs_mru_cache   455       878.407939         2   100         0.000000         0.027184         0.000000 0 0 /
+ I    xfs-cil/dm-0   458       887.444625         2   100         0.000000         0.037460         0.000000 0 0 /
+ S         lvmetad   561         1.101839         8   120         0.000000         3.627943         0.000000 0 0 /system.slice/lvm2-lvmetad.service
+ I    xfs-log/vda1   828      2424.495563         2   100         0.000000         0.007492         0.000000 0 0 /
+ I ext4-rsv-conver   921      2995.366588         2   100         0.000000         0.008196         0.000000 0 0 /
+ S           abrtd   922      4335.856701       652   120         0.000000      1453.491145         0.000000 0 0 /system.slice/abrtd.service
+ S         chronyd   923      3123.395984      1905   120         0.000000       121.209318         0.000000 0 0 /system.slice/chronyd.service
+ S    rtkit-daemon   945         7.848983        58   121         0.000000        12.658679         0.000000 0 0 /system.slice/rtkit-daemon.service
+ S    avahi-daemon   953         4.721538         3   120         0.000000         0.150644         0.000000 0 0 /system.slice/avahi-daemon.service
+ S           gmain  1127       265.323892         1   120         0.000000         0.073729         0.000000 0 0 /system.slice/firewalld.service
+ S           gmain  1009         8.034967         3   120         0.000000         0.083552         0.000000 0 0 /system.slice/NetworkManager.service
+ S           tuned  1579        76.353188         1   120         0.000000         0.764846         0.000000 0 0 /system.slice/tuned.service
+ S        libvirtd  1354        70.814200       633   120         0.000000        93.316135         0.000000 0 0 /system.slice/libvirtd.service
+ S        libvirtd  1892        68.521189       169   120         0.000000         9.560152         0.000000 0 0 /system.slice/libvirtd.service
+ S             gdm  1366      1277.933487       139   120         0.000000        17.232185         0.000000 0 0 /system.slice/gdm.service
+ S           gdbus  1388      1278.060413        95   120         0.000000         6.189992         0.000000 0 0 /system.slice/gdm.service
+ S             gdm  1412        30.881814         2   120         0.000000         0.080483         0.000000 0 0 /system.slice/gdm.service
+ S      containerd  1486         7.179306         1   120         0.000000         0.006759         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1529    585362.829124  13755426   120         0.000000    426781.290552         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1538        27.173555        18   120         0.000000         1.282681         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1560    590781.315764  13289117   120         0.000000    411439.484851         0.000000 0 0 /system.slice/containerd.service
+ S      containerd  1561    590756.783373  13084372   120         0.000000    401184.148924         0.000000 0 0 /system.slice/containerd.service
+ S         dockerd  1511     25386.458336     56386   120         0.000000     13966.462396         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1555     25389.578910     39221   120         0.000000      9362.741498         0.000000 0 0 /system.slice/docker.service
+ S         dockerd  1583     25380.647858     63754   120         0.000000     13608.480780         0.000000 0 0 /system.slice/docker.service
+ S               X  1414      1389.036916     35925   120         0.000000      4667.068267         0.000000 0 0 /system.slice/gdm.service
+ S      llvmpipe-0  1570        32.379536         3   120         0.000000         0.062461         0.000000 0 0 /system.slice/gdm.service
+ S    smbd-notifyd  1514   2037981.876017     63229   120         0.000000      2093.100376         0.000000 0 0 /system.slice/smb.service
+ S gnome-session-b  1682  11180129.470214     36562   120         0.000000      1983.318845         0.000000 0 0 /user.slice
+ S           gdbus  1789  11180129.515082     17112   120         0.000000      2105.444003         0.000000 0 0 /user.slice
+ S      llvmpipe-3  1829  11180342.810419    155624   120         0.000000     19589.136998         0.000000 0 0 /user.slice
+ S    JS GC Helper  1900  10774597.054639       130   120         0.000000       152.491084         0.000000 0 0 /user.slice
+ S           gdbus  1851       562.389316     17031   120         0.000000      2131.391463         0.000000 0 0 /system.slice/upower.service
+ S    dconf worker  2024       588.257980        11   120         0.000000         0.701265         0.000000 0 0 /user.slice
+ S gnome-settings-  2045  11180219.536112     39706   120         0.000000      3420.202984         0.000000 0 0 /user.slice
+ S    dconf worker  2053       762.905141       129   120         0.000000        10.534491         0.000000 0 0 /user.slice
+ S           gmain  2061         9.263236         2   120         0.000000         0.090445         0.000000 0 0 /system.slice/colord.service
+ S           gmain  2086       757.724372         2   120         0.000000         0.046834         0.000000 0 0 /user.slice
+ S           httpd  2434     66627.786719      4383   120         0.000000       119.849026         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2438     66641.695548   1310335   120         0.000000     56650.308901         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2439     21319.558683         1   120         0.000000         0.016367         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2425     21322.148942         9   120         0.000000        25.850272         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2441     66639.352874   1310337   120         0.000000     59743.492365         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2443     66627.974248      4383   120         0.000000       134.272268         0.000000 0 0 /system.slice/httpd.service
+ S           httpd  2448     21364.042815         1   120         0.000000         0.013620         0.000000 0 0 /system.slice/httpd.service
+ S           httpd 170910     46140.367440        38   120         0.000000       156.499163         0.000000 0 0 /system.slice/httpd.service
+ S           httpd 170913     46140.377318        21   120         0.000000       133.859251         0.000000 0 0 /system.slice/httpd.service
+ S            sshd 207629   1697399.894952        19   120         0.000000        53.538870         0.000000 0 0 /user.slice
+ S            sshd 237415  11180365.913520    103134   120         0.000000      7323.154685         0.000000 0 0 /user.slice
+ S     dbus-daemon 47378  10665210.731221       982   120         0.000000        82.479521         0.000000 0 0 /user.slice
+ S    dconf worker 47387   7146437.042452        10   120         0.000000         1.695293         0.000000 0 0 /user.slice
+ S           gmain 47418   7146485.814393         1   120         0.000000         0.086825         0.000000 0 0 /user.slice
+ S           gdbus 47397  10665209.108744       455   120         0.000000        27.053503         0.000000 0 0 /user.slice
+ S xdg-document-po 47400  10665208.356700        51   120         0.000000         8.581605         0.000000 0 0 /user.slice
+ S           gdbus 47402  10665208.627352        54   120         0.000000         6.031939         0.000000 0 0 /user.slice
+ S xdg-permission- 47404  10665208.122592        17   120         0.000000         6.841404         0.000000 0 0 /user.slice
+ S           gdbus 47407  10665208.179620        33   120         0.000000         2.485346         0.000000 0 0 /user.slice
+ S           gmain 47420   7146494.899309         1   120         0.000000         0.084922         0.000000 0 0 /user.slice
+ S           gdbus 47421  10665208.662458       113   120         0.000000        13.290499         0.000000 0 0 /user.slice
+ S   dconf-service 47425  10665209.503271       190   120         0.000000        49.413493         0.000000 0 0 /user.slice
+ S           gdbus 47427  10665208.587088       126   120         0.000000        10.352871         0.000000 0 0 /user.slice
+ S            bash 136341  10274271.711872        59   120         0.000000        58.855218         0.000000 0 0 /user.slice
+ I     kworker/3:1 17261  22596026.883662         9   120         0.000000         0.236966         0.000000 0 0 /
+ I     kworker/3:0 17387  22600257.598051       314   120         0.000000         4.734031         0.000000 0 0 /
+ I  kworker/u510:0 17411  22600270.745204       667   120         0.000000        12.463554         0.000000 0 0 /
+ S         copy.sh 17553  11180374.830791         4   120         0.000000         1.836626         0.000000 0 0 /user.slice
+
