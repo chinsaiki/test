@@ -12,7 +12,7 @@
  */
 typedef struct {
 	volatile int64_t cnt;  /**< Internal counter value. */
-} atomic64_t;
+}__attribute__((aligned(64))) atomic64_t;
 
 static inline int
 atomic64_cmpset(volatile uint64_t *dst, uint64_t exp, uint64_t src)

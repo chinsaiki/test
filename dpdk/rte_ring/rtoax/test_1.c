@@ -9,18 +9,6 @@
 #define log_enqueue(fmt...)  do{printf("\033[33m[%d]", getpid());printf(fmt);printf("\033[m");}while(0)
 #define log_dequeue(fmt...)  do{printf("\033[32m[%d]", getpid());printf(fmt);printf("\033[m");}while(0)
 
-
-
-struct test_data1 {
-    int msg_type;
-    int msg_code;
-    int msg_len;
-    char data[0];
-#define MSG_TYPE    0xafafafaf
-#define MSG_CODE    0xbfbfbfbf
-#define MSG_LEN     512
-};
-
 void sig_handler(int signum)
 {
     switch(signum) {
@@ -46,18 +34,15 @@ void *enqueue_ring(void *arg)
     int i=0;
     while(1) {
 //        usleep(10000);
-//enqueue:    
-//        i++;
-        if(RING_IS_OK == ring_enqueue((struct ring_struct *)arg, str)) {
-//            atomic64_inc(&enqueue_count);
+        if(RING_IS_OK == ring_force_enqueue((struct ring_struct *)arg, str)) {
+            atomic64_inc(&enqueue_count);
         } else {
-//            if(i<30) goto enqueue;
-//            atomic64_inc(&enqueue_count_err);
+            atomic64_inc(&enqueue_count_err);
         }
-//        printf("enqueue %ld, err %ld.\n", atomic64_read(&enqueue_count), atomic64_read(&enqueue_count_err));
-//        if(atomic64_read(&enqueue_count)+atomic64_read(&enqueue_count_err) == 1003) {
-//            break;
-//        }
+        printf("enqueue %ld, err %ld.\n", atomic64_read(&enqueue_count), atomic64_read(&enqueue_count_err));
+        if(atomic64_read(&enqueue_count)+atomic64_read(&enqueue_count_err) == 1003) {
+            break;
+        }
     }
     pthread_exit(NULL);
 }
@@ -68,16 +53,16 @@ void *dequeue_ring(void *arg)
     
     usleep(1000000);
     while(1) {
-        usleep(1000000);
-//        if(RING_IS_OK == ring_dequeue((struct ring_struct *)arg, &str)) {
-//            atomic64_inc(&dequeue_count);
-//        } else {
-//            atomic64_inc(&dequeue_count_err);
-//        }
-//        printf("dequeue %ld, err %ld.\n", atomic64_read(&dequeue_count), atomic64_read(&dequeue_count_err));
-//        if(atomic64_read(&dequeue_count)+atomic64_read(&dequeue_count_err) == 1000) {
-//            break;
-//        }
+//        usleep(1000000);
+        if(RING_IS_OK == ring_force_dequeue((struct ring_struct *)arg, &str)) {
+            atomic64_inc(&dequeue_count);
+        } else {
+            atomic64_inc(&dequeue_count_err);
+        }
+        printf("dequeue %ld, err %ld.\n", atomic64_read(&dequeue_count), atomic64_read(&dequeue_count_err));
+        if(atomic64_read(&dequeue_count)+atomic64_read(&dequeue_count_err) == 1000) {
+            break;
+        }
     }
     pthread_exit(NULL);
 }
@@ -99,7 +84,7 @@ int main(int argc,char *argv[])
         printf("usage: %s [nthread-enqueue] [nthread-dequeue] [ring-size].\n", argv[0]);
         exit(1);
     } 
-    struct ring_struct *ring = ring_create(ring_size);
+    struct ring_struct *ring = ring_create(NULL, ring_size);
     
     
     pthread_t enqueue_threads[nr_enqueue_thread];
@@ -121,6 +106,7 @@ int main(int argc,char *argv[])
     for(i=0;i<nr_dequeue_thread;i++) {
         pthread_join(dequeue_threads[i], NULL);
     }
+    ring_dump(stdout, ring);
     ring_destroy(ring);
     printf("threads join.\n");
     

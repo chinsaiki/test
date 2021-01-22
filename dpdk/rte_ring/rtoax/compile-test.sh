@@ -8,5 +8,5 @@ do
 	gcc $file  ring.c -pthread -I./ -o ${file%.*}.out -w $*
 done
 
-
+echo -e "\nCompile with <./compile-test.sh -DRING_DEBUG] to show ring debug log."
 

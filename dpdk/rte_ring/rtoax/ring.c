@@ -61,15 +61,16 @@ enum {
 #endif
  
 #ifdef RING_DEBUG
+
 #define debug_log_enqueue(fmt...)  do{                                  \
         printf("\033[33m[%d: %s-%d]", getpid(), __func__, __LINE__);    \
         printf(fmt);printf("\033[m");                                   \
     }while(0)
+    
 #define debug_log_dequeue(fmt...)  do{                                  \
         printf("\033[35m[%d: %s-%d]", getpid(), __func__, __LINE__);    \
         printf(fmt);printf("\033[m");                                   \
     }while(0)
-
 
 #define TAIL_CHECK(ring)  do{                                           \
         if(atomic64_read(&ring->tail) > ring->elem_nr) {                \
@@ -93,15 +94,22 @@ enum {
  #define debug_log_dequeue(fmt...) do{}while(0)
  #define TAIL_CHECK(ring) do{}while(0)
  #define HEAD_CHECK(ring) do{}while(0)
+ 
 #endif
 
-int ring_init(struct ring_struct *ring, size_t elem_num)
+int ring_init(struct ring_struct *ring, const char *name, size_t elem_num)
 {
-    if(unlikely(!ring)) {
+    if(unlikely(!ring) || unlikely(!elem_num)) {
         fprintf(stderr, "[%s:%d]null pointer error.\n", __func__, __LINE__);
         return RING_IS_ERR;
     }
     int i;
+
+    if(name) {
+        strncpy(ring->name, name, 64);
+    } else {
+        strncpy(ring->name, RING_DEFAULT_NAME, 64);
+    }
 
     atomic64_set(&ring->stat, RING_EMPTY);
     atomic64_init(&ring->head);
@@ -109,8 +117,8 @@ int ring_init(struct ring_struct *ring, size_t elem_num)
     atomic64_init(&ring->count_enqueue);
     atomic64_init(&ring->count_dequeue);
     
-    atomic64_set(&ring->head, elem_num/2);
-    atomic64_set(&ring->tail, elem_num/2);
+//    atomic64_set(&ring->head, elem_num/2);
+//    atomic64_set(&ring->tail, elem_num/2);
 
 //    atomic64_set(&ring->head, elem_num-1);
 //    atomic64_set(&ring->tail, elem_num-1);
@@ -125,16 +133,21 @@ int ring_init(struct ring_struct *ring, size_t elem_num)
 }
 
 
-struct ring_struct *ring_create(size_t elem_num)
+
+struct ring_struct *ring_create(const char *name, size_t elem_num)
 {
     if(unlikely(!elem_num)) {
-        fprintf(stderr, "[%s:%d]wrong parameter error.\n", __func__, __LINE__);
-        return NULL;
+        fprintf(stderr, "[%s:%d]wrong parameter error, use default %ld.\n", \
+                            __func__, __LINE__, RING_DEFAULT_SIZE);
+        elem_num = RING_DEFAULT_SIZE;
     }
-    struct ring_struct *ring = malloc(sizeof(struct ring_struct) + sizeof(struct ring_element)*elem_num);
+    const unsigned long read_size = sizeof(struct ring_struct) + sizeof(struct ring_element)*elem_num;
+    struct ring_struct *ring = malloc(read_size);
     assert(ring);
-
-    if(RING_IS_ERR == ring_init(ring, elem_num)) {
+    
+    memset(ring, 0x00, read_size);
+    
+    if(RING_IS_ERR == ring_init(ring, name, elem_num)) {
         free(ring);
         return NULL;
     }
@@ -149,14 +162,28 @@ int ring_destroy(struct ring_struct *ring)
         return RING_IS_ERR;
     }
     if(atomic64_read(&ring->count_enqueue) != atomic64_read(&ring->count_dequeue)) {
-        fprintf(stdout, "[%s:%d]still has msg to dequeue warning.\n", __func__, __LINE__);        
+        fprintf(stdout, "[%s:%d warning] ring still has msg(%ld) remain to dequeue .\n", __func__, __LINE__,
+            atomic64_read(&ring->count_enqueue)-atomic64_read(&ring->count_dequeue));        
     }
     free(ring);
     return RING_IS_OK;
 }
 
+int ring_dump(FILE *fp, struct ring_struct *ring)
+{
+    if(unlikely(!ring)) {
+        fprintf(stderr, "[%s:%d]null pointer error.\n", __func__, __LINE__);
+        return RING_IS_ERR;
+    }
+    fprintf(fp, "[%s]== ring size %ld\n", ring->name, ring->elem_nr);
+    fprintf(fp, "[%s]== enqueue %ld\n", ring->name, atomic64_read(&ring->count_enqueue));
+    fprintf(fp, "[%s]== dequeue %ld\n", ring->name, atomic64_read(&ring->count_dequeue));
+    
+    return RING_IS_OK;
+}
 
-int ring_enqueue(struct ring_struct *ring, void* addr)
+
+int ring_try_enqueue(struct ring_struct *ring, void* addr)
 {
     /* 已满 */
     //                           tail
@@ -335,7 +362,15 @@ int ring_enqueue(struct ring_struct *ring, void* addr)
     return RING_IS_ERR;
 }
 
-int ring_dequeue(struct ring_struct *ring, void **data)
+int ring_force_enqueue(struct ring_struct *ring, void* addr)
+{
+    int ret = RING_IS_ERR;
+    while(RING_IS_OK != (ret=ring_try_enqueue(ring, addr)));
+    return ret;
+}
+
+
+int ring_try_dequeue(struct ring_struct *ring, void **data)
 {
     /* 空 */
     //                           tail
@@ -498,5 +533,12 @@ int ring_dequeue(struct ring_struct *ring, void **data)
     }
     
     return RING_IS_ERR;
+}
+
+int ring_force_dequeue(struct ring_struct *ring, void **data)
+{
+    int ret = RING_IS_ERR;
+    while(RING_IS_OK != (ret=ring_try_dequeue(ring, data)));
+    return ret;
 }
 
