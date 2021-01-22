@@ -1,11 +1,14 @@
-/**
- *  ring.h
+/***********************************************************************************\
+ *  文件名   ：ring.h
+ *
+ *  描述：实现无锁多生产者多消费者 ring 队列
+ *  作者：荣涛
+ *  日期：2021年1月22日
  *  
- */
+\***********************************************************************************/
 
-
-#ifndef __RING_H 
-#define __RING_H 1
+#ifndef __RinG_H 
+#define __RinG_H 1
 
 #include <stdio.h>
 
@@ -24,6 +27,8 @@ struct ring_element {
     void *data;
 };
 #define cachelinealigned __attribute__((aligned(64)))
+#define always_inline inline __attribute__((always_inline))
+
 struct ring_struct {
     char name[64];
 #define RING_DEFAULT_NAME   "RING"    
@@ -41,18 +46,22 @@ struct ring_struct {
 }cachelinealigned;
 
 
-int ring_init(struct ring_struct *ring, const char *name, size_t elem_num);
+always_inline int ring_init(struct ring_struct *ring, const char *name, size_t elem_num);
 
-struct ring_struct *ring_create(const char *name, size_t elem_num);
-int ring_destroy(struct ring_struct *ring);
+always_inline struct ring_struct *ring_create(const char *name, size_t elem_num);
+always_inline int ring_destroy(struct ring_struct *ring);
 
-int ring_try_enqueue(struct ring_struct *ring, void* addr);
-int ring_force_enqueue(struct ring_struct *ring, void* addr);
+always_inline int ring_try_enqueue(struct ring_struct *ring, void* addr);
+always_inline int ring_force_enqueue(struct ring_struct *ring, void* addr);
 
-int ring_try_dequeue(struct ring_struct *ring, void **data);
-int ring_force_dequeue(struct ring_struct *ring, void **data);
+always_inline int ring_try_dequeue(struct ring_struct *ring, void **data);
+always_inline int ring_force_dequeue(struct ring_struct *ring, void **data);
 
-int ring_dump(FILE *fp, struct ring_struct *ring);
+always_inline int ring_is_empty(struct ring_struct *ring);
+
+always_inline int ring_is_full(struct ring_struct *ring);
+
+always_inline int ring_dump(FILE *fp, struct ring_struct *ring);
 
 
-#endif /*<__RING_H>*/
+#endif /*<__RinG_H>*/

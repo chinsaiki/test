@@ -1,8 +1,11 @@
-/**
- *  ring.c
+/***********************************************************************************\
+ *  文件名   ：ring.c
+ *
+ *  描述：实现无锁多生产者多消费者 ring 队列
+ *  作者：荣涛
+ *  日期：2021年1月22日
  *  
- */
-
+\***********************************************************************************/
 
 #ifndef __x86_64__
 # error "Not support Your Arch, just support x86-64"
@@ -97,7 +100,7 @@ enum {
  
 #endif
 
-int ring_init(struct ring_struct *ring, const char *name, size_t elem_num)
+always_inline int ring_init(struct ring_struct *ring, const char *name, size_t elem_num)
 {
     if(unlikely(!ring) || unlikely(!elem_num)) {
         fprintf(stderr, "[%s:%d]null pointer error.\n", __func__, __LINE__);
@@ -134,7 +137,7 @@ int ring_init(struct ring_struct *ring, const char *name, size_t elem_num)
 
 
 
-struct ring_struct *ring_create(const char *name, size_t elem_num)
+always_inline struct ring_struct *ring_create(const char *name, size_t elem_num)
 {
     if(unlikely(!elem_num)) {
         fprintf(stderr, "[%s:%d]wrong parameter error, use default %ld.\n", \
@@ -155,7 +158,7 @@ struct ring_struct *ring_create(const char *name, size_t elem_num)
     return ring;
 }
 
-int ring_destroy(struct ring_struct *ring)
+always_inline int ring_destroy(struct ring_struct *ring)
 {
     if(unlikely(!ring)) {
         fprintf(stderr, "[%s:%d]null pointer error.\n", __func__, __LINE__);
@@ -169,7 +172,16 @@ int ring_destroy(struct ring_struct *ring)
     return RING_IS_OK;
 }
 
-int ring_dump(FILE *fp, struct ring_struct *ring)
+always_inline int ring_is_full(struct ring_struct *ring)
+{
+    return atomic64_cmpset(&ring->stat, RING_FULL, RING_FULL);
+}
+always_inline int ring_is_empty(struct ring_struct *ring)
+{
+    return atomic64_cmpset(&ring->stat, RING_EMPTY, RING_EMPTY);
+}
+
+always_inline int ring_dump(FILE *fp, struct ring_struct *ring)
 {
     if(unlikely(!ring)) {
         fprintf(stderr, "[%s:%d]null pointer error.\n", __func__, __LINE__);
@@ -183,7 +195,7 @@ int ring_dump(FILE *fp, struct ring_struct *ring)
 }
 
 
-int ring_try_enqueue(struct ring_struct *ring, void* addr)
+always_inline int ring_try_enqueue(struct ring_struct *ring, void* addr)
 {
     /* 已满 */
     //                           tail
@@ -362,7 +374,7 @@ int ring_try_enqueue(struct ring_struct *ring, void* addr)
     return RING_IS_ERR;
 }
 
-int ring_force_enqueue(struct ring_struct *ring, void* addr)
+always_inline int ring_force_enqueue(struct ring_struct *ring, void* addr)
 {
     int ret = RING_IS_ERR;
     while(RING_IS_OK != (ret=ring_try_enqueue(ring, addr)));
@@ -370,7 +382,7 @@ int ring_force_enqueue(struct ring_struct *ring, void* addr)
 }
 
 
-int ring_try_dequeue(struct ring_struct *ring, void **data)
+always_inline int ring_try_dequeue(struct ring_struct *ring, void **data)
 {
     /* 空 */
     //                           tail
@@ -535,7 +547,7 @@ int ring_try_dequeue(struct ring_struct *ring, void **data)
     return RING_IS_ERR;
 }
 
-int ring_force_dequeue(struct ring_struct *ring, void **data)
+always_inline int ring_force_dequeue(struct ring_struct *ring, void **data)
 {
     int ret = RING_IS_ERR;
     while(RING_IS_OK != (ret=ring_try_dequeue(ring, data)));

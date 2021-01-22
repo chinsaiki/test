@@ -1,3 +1,12 @@
+/***********************************************************************************\
+ *  文件名   ：test_2-latency.c
+ *
+ *  描述：实现无锁多生产者多消费者 测试代码 时延测试
+ *  作者：荣涛
+ *  日期：2021年1月22日 性能不如 rte_ring ， 我很伤心
+ *  
+\***********************************************************************************/
+
 #include <assert.h>
 #include <pthread.h>
 #include <signal.h>
@@ -8,6 +17,16 @@
 
 #define log_enqueue(fmt...)  do{printf("\033[33m[%d]", getpid());printf(fmt);printf("\033[m");}while(0)
 #define log_dequeue(fmt...)  do{printf("\033[32m[%d]", getpid());printf(fmt);printf("\033[m");}while(0)
+/**
+ *  获取tick
+ */
+#ifndef RDTSC
+#define RDTSC() ({\
+    register uint32_t a,d; \
+    __asm__ __volatile__( "rdtsc" : "=a"(a), "=d"(d)); \
+    (((uint64_t)a)+(((uint64_t)d)<<32)); \
+    })
+#endif
 
 
 
@@ -16,6 +35,7 @@ struct test_data1 {
     int msg_type;
     int msg_code;
     int msg_len;
+    unsigned long latency;
     char data[0];
 #define MSG_TYPE    0xafafafaf
 #define MSG_CODE    0xbfbfbfbf
@@ -40,7 +60,7 @@ static atomic64_t enqueue_count_err = {0};
 static atomic64_t dequeue_count = {0};
 static atomic64_t dequeue_count_err = {0};
 
-static atomic64_t queue_tx_err = {0};
+static uint64_t latency_total = 0;
 
 static unsigned long test_date_num = 0;
 static struct test_data1 *test_data = NULL;
@@ -48,18 +68,23 @@ static struct test_data1 *test_data = NULL;
 void *enqueue_ring(void *arg) 
 {
     int i=0;
+    
+    struct test_data1 *data;
+    
     while(1) {
-        usleep(10000);
-        if(RING_IS_OK == ring_force_enqueue((struct ring_struct *)arg, \
-                                &test_data[atomic64_read(&enqueue_count)%test_date_num])) {
+//        usleep(10000);
+        data = &test_data[atomic64_read(&enqueue_count)%test_date_num];
+        data->latency = RDTSC();
+        
+        if(RING_IS_OK == ring_force_enqueue((struct ring_struct *)arg, data)) {
             atomic64_inc(&enqueue_count);
         } else {
             atomic64_inc(&enqueue_count_err);
         }
 //        printf("enqueue %ld, err %ld.\n", atomic64_read(&enqueue_count), atomic64_read(&enqueue_count_err));
-        if(atomic64_read(&enqueue_count)+atomic64_read(&enqueue_count_err) == 1003) {
-            break;
-        }
+//        if(atomic64_read(&enqueue_count)+atomic64_read(&enqueue_count_err) == 1003) {
+//            break;
+//        }
     }
     pthread_exit(NULL);
 }
@@ -70,16 +95,25 @@ void *dequeue_ring(void *arg)
     
 //    usleep(1000000);
     while(1) {
-        usleep(10000);
+//        usleep(10000);
         if(RING_IS_OK == ring_force_dequeue((struct ring_struct *)arg, &data)) {
             atomic64_inc(&dequeue_count);
+            latency_total += RDTSC() - data->latency;
+
+            if(atomic64_read(&dequeue_count) % 100000 == 0) {
+                
+                printf("dequeue. latency \033[1;31m%lf ns\033[m (recv %ld, err %ld).\n", 
+                        latency_total*1.0/atomic64_read(&dequeue_count)/3000000000*1000000000,
+                        atomic64_read(&dequeue_count), atomic64_read(&dequeue_count_err));
+
+            }
         } else {
             atomic64_inc(&dequeue_count_err);
         }
-        if(data->msg_type != MSG_TYPE|| data->msg_code != MSG_CODE) {
-            printf("dequeue msg err, TYPE %x(%x) msg_id=%d.\n", data->msg_type, MSG_TYPE, data->msg_id);
-
-        }
+//        if(data->msg_type != MSG_TYPE|| data->msg_code != MSG_CODE) {
+//            atomic64_inc(&dequeue_count_err);
+//            printf("dequeue msg err, TYPE %x(%x) msg_id=%d.\n", data->msg_type, MSG_TYPE, data->msg_id);
+//        }
 //        printf("dequeue %ld, err %ld.\n", atomic64_read(&dequeue_count), atomic64_read(&dequeue_count_err));
 //        if(atomic64_read(&dequeue_count)+atomic64_read(&dequeue_count_err) == 1000) {
 //            break;
