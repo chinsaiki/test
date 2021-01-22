@@ -38,6 +38,7 @@ struct ring_struct {
 int ring_init(struct ring_struct *ring, size_t elem_num);
 
 struct ring_struct *ring_create(size_t elem_num);
+int ring_destroy(struct ring_struct *ring);
 
 int ring_enqueue(struct ring_struct *ring, void* addr);
 int ring_dequeue(struct ring_struct *ring, void **data);

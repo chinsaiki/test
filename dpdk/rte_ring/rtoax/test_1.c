@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <signal.h>
+#include <malloc.h>
 #include <stdint.h>
 
 #include "ring.h"
@@ -10,7 +11,7 @@
 
 
 
-struct test_data_struct {
+struct test_data1 {
     int msg_type;
     int msg_code;
     int msg_len;
@@ -19,11 +20,6 @@ struct test_data_struct {
 #define MSG_CODE    0xbfbfbfbf
 #define MSG_LEN     512
 };
-
-
-volatile unsigned long int dequeue_count = 0;
-volatile unsigned long int dequeue_count_err = 0;
-
 
 void sig_handler(int signum)
 {
@@ -35,19 +31,33 @@ void sig_handler(int signum)
     printf("\033[m Catch Ctrl-C.\n");
     exit(1);
 }
+
 static atomic64_t enqueue_count = {0};
+static atomic64_t enqueue_count_err = {0};
+static atomic64_t dequeue_count = {0};
+static atomic64_t dequeue_count_err = {0};
+
+static atomic64_t queue_tx_err = {0};
+
 
 void *enqueue_ring(void *arg) 
 {
     char *str = "rtoax testing";
     int i=0;
     while(1) {
-        usleep(100000);
+//        usleep(10000);
+//enqueue:    
+//        i++;
         if(RING_IS_OK == ring_enqueue((struct ring_struct *)arg, str)) {
-            atomic64_inc(&enqueue_count);
+//            atomic64_inc(&enqueue_count);
         } else {
-            printf("enqueue_count = %ld\n", atomic64_read(&enqueue_count));
+//            if(i<30) goto enqueue;
+//            atomic64_inc(&enqueue_count_err);
         }
+//        printf("enqueue %ld, err %ld.\n", atomic64_read(&enqueue_count), atomic64_read(&enqueue_count_err));
+//        if(atomic64_read(&enqueue_count)+atomic64_read(&enqueue_count_err) == 1003) {
+//            break;
+//        }
     }
     pthread_exit(NULL);
 }
@@ -55,10 +65,18 @@ void *enqueue_ring(void *arg)
 void *dequeue_ring(void *arg)
 {
     char *str;
+    
+    usleep(1000000);
     while(1) {
-        usleep(10000);
-//        if(0 == ring_dequeue((struct ring_struct *)arg, &str)) {
-//            log_dequeue("str = %s\n", str);
+        usleep(1000000);
+//        if(RING_IS_OK == ring_dequeue((struct ring_struct *)arg, &str)) {
+//            atomic64_inc(&dequeue_count);
+//        } else {
+//            atomic64_inc(&dequeue_count_err);
+//        }
+//        printf("dequeue %ld, err %ld.\n", atomic64_read(&dequeue_count), atomic64_read(&dequeue_count_err));
+//        if(atomic64_read(&dequeue_count)+atomic64_read(&dequeue_count_err) == 1000) {
+//            break;
 //        }
     }
     pthread_exit(NULL);
@@ -103,6 +121,7 @@ int main(int argc,char *argv[])
     for(i=0;i<nr_dequeue_thread;i++) {
         pthread_join(dequeue_threads[i], NULL);
     }
+    ring_destroy(ring);
     printf("threads join.\n");
     
 }
