@@ -40,11 +40,16 @@
 #include <stdint.h>
 #include <assert.h>
 
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
+
 #include <bones/compiler.h>
 
+#ifdef __cplusplus
 namespace bones {
 namespace cpu {
-
+#endif
 // Functions that start with double underscore are processor specific
 
 // Cpu frequency in kilo-hertz
@@ -95,6 +100,8 @@ static inline uint64_t tsc(void)
 	return __tsc();
 }
 
+#ifdef __cplusplus
+
 /**
  * Sleep for @a nsec nanoseconds.
  * This is a busy sleep not a regular OS nanosleep().
@@ -111,6 +118,7 @@ static inline void usleep(unsigned long usec)
 {
 	nanosleep(usec * 1000);
 }
+#endif
 
 // Scaled math for converting tsc to nsec and usec.
 // Floating point version
@@ -264,7 +272,8 @@ static inline void usleep_locked(unsigned long usec)
    nanosleep_locked(usec * 1000);
 }
 
+#ifdef __cplusplus
 } // namespace cpu
 } // namespace bones
-
+#endif
 #endif // BONES2_CPU_H

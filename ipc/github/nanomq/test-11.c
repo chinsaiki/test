@@ -1,31 +1,10 @@
-/*
-    Copyright (C) 2010 Erik Rigtorp <erik@rigtorp.com>. 
-    All rights reserved.
-
-    This file is part of NanoMQ.
-
-    NanoMQ is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    
-    NanoMQ is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with NanoMQ.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include <gtest/gtest.h>
-#include <nmq.hpp>
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <pthread.h>
+
+#include <nmq2.h>
+
 
 #ifndef TEST_NUM
 #define TEST_NUM   (1UL<<20)
@@ -56,28 +35,29 @@ uint64_t error_msgs = 0;
 
 
 void *enqueue_task(void*arg){
-    nmq::node_t *node = (nmq::node_t *)arg;
+    node_t *node = (node_t *)arg;
     int i =0;
     test_msgs_t *pmsg;
     while(1) {
+//        usleep(1000);
         pmsg = &test_msgs[i++%TEST_NUM];
         pmsg->latency = RDTSC();
         unsigned long addr = (unsigned long)pmsg;
-        node->send(1, &addr, sizeof(unsigned long));
-//        printf("send %p, %lx\n", pmsg, (unsigned long )addr);
-//        sleep(1);
+//        node_send(node, 1, &addr, sizeof(unsigned long));
+        ctx_sendto(node->context_, node->node_, 1, &addr, sizeof(unsigned long));
     }
     pthread_exit(NULL);
 }
 
 void *dequeue_task(void*arg){
-    nmq::node_t *node = (nmq::node_t *)arg;
+    node_t *node = (node_t *)arg;
 
     size_t sz = sizeof(unsigned long);
     test_msgs_t *pmsg;
     unsigned long addr;
     while(1) {
-        node->recv(0, &addr, &sz);
+//        node_recv(node, 0, &addr, &sz);
+        ctx_recvfrom(node->context_, 0, node->node_, &addr, &sz);
         pmsg = (test_msgs_t *)addr;
 //        printf("%p, %lx\n", pmsg, addr);
     
@@ -103,14 +83,18 @@ void *dequeue_task(void*arg){
 int main()
 {
     pthread_t enqueue_taskid, dequeue_taskid;
+
+    context_t ctx1;
+    char *fname = tempnam(NULL, "rtoax-nmq-"); // UGLY
+    printf("fname = %s\n", fname);
     
-    // Open context
-    char *fname = tempnam(NULL, "nmq"); // UGLY
-    nmq::context_t context(fname);
-    context.create(4, 10, 1024);
-    
-    nmq::node_t node0(context, 0);
-    nmq::node_t node1(context, 1);
+    ctx_init(&ctx1, fname);
+    ctx_create(&ctx1, 4, 10, 1024);
+
+    node_t node0, node1;
+
+    node_init(&node0, &ctx1, 0);
+    node_init(&node1, &ctx1, 1);
 
 
     unsigned int i =0;
@@ -127,8 +111,9 @@ int main()
 
     pthread_join(enqueue_taskid, NULL);
     pthread_join(dequeue_taskid, NULL);
-    remove(fname);
 
     return EXIT_SUCCESS;
 }
+
+
 

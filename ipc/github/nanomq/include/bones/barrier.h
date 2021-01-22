@@ -38,8 +38,10 @@
 
 #include <bones/compiler.h>
 
+#ifdef __cplusplus
 namespace bones {
 namespace barrier {
+#endif
 
 // We're using inline function here instead of #defines to avoid 
 // name space clashes.
@@ -55,7 +57,8 @@ static inline void force_inline comp() { asm volatile("": : :"memory"); }
 #error Unsupported CPU
 #endif
 
+#ifdef __cplusplus
 } // namespace barrier
 } // namespace bones
-
+#endif
 #endif // BONES2_BARRIER_H

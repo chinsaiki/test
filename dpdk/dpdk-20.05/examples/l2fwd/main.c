@@ -124,13 +124,13 @@ rtoax_l2fwd_print_stats(void)
 	total_packets_tx = 0;
 	total_packets_rx = 0;
 
-//#ifdef __rtoax_debug
-//	const char clr[] = { 27, '[', '2', 'J', '\0' };
-//	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
-//
-//		/* Clear screen and move to top left */
-//	printf("%s%s", clr, topLeft);
-//#endif
+#ifdef __rtoax_debug
+	const char clr[] = { 27, '[', '2', 'J', '\0' };
+	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
+
+		/* Clear screen and move to top left */
+	printf("%s%s", clr, topLeft);
+#endif
 
 	printf("\nPort statistics ====================================");
 
