@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <stdint.h>
 #include <pthread.h>
 
@@ -9,6 +10,10 @@
 #ifndef TEST_NUM
 #define TEST_NUM   (1UL<<20)
 #endif
+
+#define MODULE_1 1
+#define MODULE_2 2
+
 
 /**
  *  获取tick
@@ -28,38 +33,38 @@ typedef struct  {
     uint64_t latency;
 }__attribute__((aligned(64))) test_msgs_t;
 
+
+
 test_msgs_t *test_msgs;
 uint64_t latency_total = 0;
 uint64_t total_msgs = 0;
 uint64_t error_msgs = 0;
 
+char *nmq_name = "rtoax-nmq.out";
+
 
 void *enqueue_task(void*arg){
-    struct nmq_node *node = (struct nmq_node *)arg;
+    struct nmq_context *ctx = (struct nmq_context *)arg;
     int i =0;
     test_msgs_t *pmsg;
     while(1) {
-//        usleep(1000);
         pmsg = &test_msgs[i++%TEST_NUM];
         pmsg->latency = RDTSC();
         unsigned long addr = (unsigned long)pmsg;
-//        node_send(node, 1, &addr, sizeof(unsigned long));
-        ctx_sendto(node->context_, node->node_, 1, &addr, sizeof(unsigned long));
+        ctx_sendto(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
     }
     pthread_exit(NULL);
 }
 
 void *dequeue_task(void*arg){
-    struct nmq_node *node = (struct nmq_node *)arg;
+    struct nmq_context *ctx = (struct nmq_context *)arg;
 
     size_t sz = sizeof(unsigned long);
     test_msgs_t *pmsg;
     unsigned long addr;
     while(1) {
-//        node_recv(node, 0, &addr, &sz);
-        ctx_recvfrom(node->context_, 0, node->node_, &addr, &sz);
+        ctx_recvfrom(ctx, MODULE_1, MODULE_2, &addr, &sz);
         pmsg = (test_msgs_t *)addr;
-//        printf("%p, %lx\n", pmsg, addr);
     
         latency_total += RDTSC() - pmsg->latency;
         pmsg->latency = 0;
@@ -80,26 +85,28 @@ void *dequeue_task(void*arg){
 
 
 
+int sig_handler(int signum) {
+
+    remove(nmq_name);
+
+    exit(1);
+}
+
 int main()
 {
     pthread_t enqueue_taskid, dequeue_taskid;
 
     struct nmq_context ctx1;
     
-//    char fname[256] = {"/tmp/nmqXXXX.out"};
-//	int ret = mkstemp(fname);
-    char *fname = tempnam(NULL, "rtoax-nmq-"); // UGLY
-    printf("fname = %s\n", fname);
+    printf("fname = %s\n", nmq_name);
+
+    signal(SIGINT, sig_handler);
     
-    ctx_init(&ctx1, fname);
+#ifndef ANONYMOUS
+    ctx_create(&ctx1, nmq_name, 4, 8, 1024);
+#else
     ctx_create(&ctx1, 4, 8, 1024);
-
-    struct nmq_node node0, node1;
-
-    node_init(&node0, &ctx1, 0);
-    node_init(&node1, &ctx1, 1);
-
-
+#endif
     unsigned int i =0;
     test_msgs = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
     for(i=0;i<TEST_NUM;i++) {
@@ -109,8 +116,8 @@ int main()
     }
 
 
-    pthread_create(&enqueue_taskid, NULL, enqueue_task, &node0);
-    pthread_create(&dequeue_taskid, NULL, dequeue_task, &node1);
+    pthread_create(&enqueue_taskid, NULL, enqueue_task, &ctx1);
+    pthread_create(&dequeue_taskid, NULL, dequeue_task, &ctx1);
 
     pthread_join(enqueue_taskid, NULL);
     pthread_join(dequeue_taskid, NULL);

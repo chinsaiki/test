@@ -30,7 +30,9 @@ struct nmq_ring;
 typedef struct nmq_context {
 #define CTX_FNAME_LEN   512
 
+#ifndef ANONYMOUS
     char fname_[CTX_FNAME_LEN];
+#endif
     void *p_;
     struct nmq_header *header_;
     struct nmq_ring *ring_;
@@ -38,28 +40,26 @@ typedef struct nmq_context {
   
 };
 
-typedef struct nmq_node {
-    struct nmq_context *context_;
-    unsigned int node_;
-};
 
-force_inline void ctx_init(struct nmq_context *self, const char *fname);
-force_inline bool ctx_create(struct nmq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size);
-force_inline bool ctx_open(struct nmq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size);
+
+
+
+
+
+force_inline  bool ctx_create(struct nmq_context *self, 
+#ifndef ANONYMOUS
+                                const char *fname, 
+#endif
+                                unsigned int nodes, unsigned int size, unsigned int msg_size);
+#ifndef ANONYMOUS
+force_inline bool ctx_open(struct nmq_context *self, const char *fname, unsigned int nodes, unsigned int size, unsigned int msg_size);
+#endif
+
 force_inline void ctx_print(struct nmq_context *self);
 force_inline bool ctx_sendto(struct nmq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size);
 force_inline bool ctx_sendnb(struct nmq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size);
 force_inline bool ctx_recvfrom(struct nmq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size);
 force_inline bool ctx_recvnb(struct nmq_context *self, unsigned int from, unsigned int to, void *s, size_t *size);
-
-force_inline void node_init(struct nmq_node *self, struct nmq_context *context, unsigned int node);
-force_inline bool node_send(struct nmq_node *self, unsigned int to, const void *msg, size_t size);
-force_inline bool node_sendnb(struct nmq_node *self, unsigned int to, const void *msg, size_t size);
-force_inline  bool node_recv(struct nmq_node *self, unsigned int from, void *msg, size_t *size);
-force_inline  bool node_recvnb(struct nmq_node *self, unsigned int from, void *msg, size_t *size);
-
-
-
 
 
 

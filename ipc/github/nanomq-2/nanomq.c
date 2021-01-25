@@ -113,26 +113,36 @@ force_inline static unsigned int power_of_2(unsigned int size) {
 }
 
 
-force_inline  void ctx_init(struct nmq_context *self, const char *fname)
-{
+force_inline  bool ctx_create(struct nmq_context *self, 
+#ifndef ANONYMOUS
+                                const char *fname, 
+#endif
+                                unsigned int nodes, unsigned int size, unsigned int msg_size) {
+
+    int fd = 0;
+
+#ifndef ANONYMOUS
     strncpy(self->fname_, fname, CTX_FNAME_LEN);
-}
 
-
-force_inline  bool ctx_create(struct nmq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) {
-    int fd = open(self->fname_, O_RDWR|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR);
+    fd = open(self->fname_, O_RDWR|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR);
     if (fd == -1) 
         return false;
-    
+#endif
+
     unsigned int i;
     unsigned int real_size = power_of_2(size);
     unsigned int n_rings = 2*(nodes * (nodes - 1)) / 2;
     unsigned int file_size = sizeof(struct nmq_header) + sizeof(struct nmq_ring)*n_rings + n_rings*real_size*msg_size;
-
+    int flags = MAP_SHARED|MAP_ANONYMOUS;
+    
+#ifndef ANONYMOUS
     if (ftruncate(fd, file_size) == -1) 
         return false;
+    
+    flags &= ~MAP_ANONYMOUS;
+#endif
 
-    self->p_ = mmap(NULL, file_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+    self->p_ = mmap(NULL, file_size, PROT_READ|PROT_WRITE, flags, fd, 0);
     if (self->p_ == NULL) 
         return false;
 
@@ -156,10 +166,12 @@ force_inline  bool ctx_create(struct nmq_context *self, unsigned int nodes, unsi
     return true;
 }
 
-force_inline  bool ctx_open(struct nmq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) {
+#ifndef ANONYMOUS
+force_inline  bool ctx_open(struct nmq_context *self, const char *fname, unsigned int nodes, unsigned int size, unsigned int msg_size) {
+
     int fd = open(self->fname_, O_RDWR);
     if (fd == -1)
-      return ctx_create(self, nodes, size, msg_size);
+      return ctx_create(self, fname, nodes, size, msg_size);
     
     struct stat buf;
     if (fstat(fd, &buf) == -1) 
@@ -179,6 +191,7 @@ force_inline  bool ctx_open(struct nmq_context *self, unsigned int nodes, unsign
     
     return true;
 }
+#endif
 
 // Node pair to nmq_ring
 force_inline static unsigned int ctx_np2r(struct nmq_context *self, unsigned int from, unsigned int to) {
@@ -290,37 +303,5 @@ force_inline static ssize_t ctx_recvnb2(struct nmq_context *self, unsigned int t
             return true;
     }
     return false;
-}
-
-
-force_inline void node_init(struct nmq_node *self, struct nmq_context *context, unsigned int node)
-{
-    self->node_ = node;
-    self->context_ = context;
-}
-
-
-force_inline bool node_send(struct nmq_node *self, unsigned int to, const void *msg, size_t size) {
-    return ctx_sendto(self->context_, self->node_, to, msg, size);
-}
-
-force_inline  bool node_sendnb(struct nmq_node *self, unsigned int to, const void *msg, size_t size) {
-    return ctx_sendnb(self->context_, self->node_, to, msg, size);
-}
-
-force_inline  bool node_recv(struct nmq_node *self, unsigned int from, void *msg, size_t *size) {
-    return ctx_recvfrom(self->context_, from, self->node_, msg, size);
-}
-
-force_inline  bool node_recvnb(struct nmq_node *self, unsigned int from, void *msg, size_t *size) {
-    return ctx_recvnb(self->context_, from, self->node_, msg, size);
-}
-
-force_inline static bool node_recv2(struct nmq_node *self, void *msg, size_t *size) {
-  return ctx_recv2(self->context_, self->node_, msg, size);
-}
-
-force_inline static bool node_recvnb2(struct nmq_node *self, void *msg, size_t *size) {
-    return ctx_recvnb2(self->context_, self->node_, msg, size);
 }
 
