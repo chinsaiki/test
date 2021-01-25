@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <pthread.h>
 
-#include <nanomq.h>
+#include <fastq.h>
 
 
 #ifndef TEST_NUM
@@ -38,30 +38,30 @@ test_msgs_t *test_msgs;
 uint64_t latency_total = 0;
 uint64_t total_msgs = 0;
 uint64_t error_msgs = 0;
-struct nmq_context ctx1;
+struct fastq_context ctx1;
 
 void *enqueue_task(void*arg){
-    struct nmq_context *ctx = (struct nmq_context *)arg;
+    struct fastq_context *ctx = (struct fastq_context *)arg;
     int i =0;
     test_msgs_t *pmsg;
     while(1) {
         pmsg = &test_msgs[i++%TEST_NUM];
         pmsg->latency = RDTSC();
         unsigned long addr = (unsigned long)pmsg;
-        nmq_ctx_sendto(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
+        fastq_ctx_sendto(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
     }
     pthread_exit(NULL);
 }
 
 void *dequeue_task(void*arg){
-    struct nmq_context *ctx = (struct nmq_context *)arg;
+    struct fastq_context *ctx = (struct fastq_context *)arg;
 
     size_t sz = sizeof(unsigned long);
     test_msgs_t *pmsg;
     unsigned long addr;
     while(1) {
 //        usleep(1000);
-        nmq_ctx_recvfrom(ctx, MODULE_1, MODULE_2, &addr, &sz);
+        fastq_ctx_recvfrom(ctx, MODULE_1, MODULE_2, &addr, &sz);
         pmsg = (test_msgs_t *)addr;
     
         latency_total += RDTSC() - pmsg->latency;
@@ -85,7 +85,7 @@ void *dequeue_task(void*arg){
 
 int sig_handler(int signum) {
 
-    nmq_ctx_print(&ctx1);
+    fastq_ctx_print(&ctx1);
 
     exit(1);
 }
@@ -97,7 +97,7 @@ int main()
     
     signal(SIGINT, sig_handler);
     
-    nmq_ctx_create(&ctx1, 4, 8, 1024);
+    fastq_ctx_create(&ctx1, 4, 8, 1024);
     unsigned int i =0;
     test_msgs = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
     for(i=0;i<TEST_NUM;i++) {

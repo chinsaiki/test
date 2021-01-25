@@ -1,5 +1,5 @@
 /********************************************************************\
-*  文件： nanomq.c
+*  文件： fastq.c
 *  介绍： 低时延队列
 *  作者： 荣涛
 *  日期：
@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "nanomq.h"
+#include "fastq.h"
 
 
 #if (!defined(__i386__) && !defined(__x86_64__))
@@ -38,15 +38,15 @@
 
 
 // POD for header data
-struct nmq_header {
+struct fastq_header {
     unsigned int nodes;
     unsigned int rings;
     unsigned int size;
     size_t msg_size;
 };
 
-// POD for nmq_ring
-struct nmq_ring {
+// POD for fastq_ring
+struct fastq_ring {
     unsigned int _size;
     size_t _msg_size;
     size_t _offset;
@@ -109,7 +109,7 @@ force_inline static unsigned int power_of_2(unsigned int size) {
 }
 
 
-force_inline  bool nmq_ctx_create(struct nmq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
+force_inline  bool fastq_ctx_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
 {
 
     int fd = 0;
@@ -117,7 +117,7 @@ force_inline  bool nmq_ctx_create(struct nmq_context *self, unsigned int nodes, 
     unsigned int i;
     unsigned int real_size = power_of_2(size);
     unsigned int n_rings = 2*(nodes * (nodes - 1)) / 2;
-    unsigned int file_size = sizeof(struct nmq_header) + sizeof(struct nmq_ring)*n_rings + n_rings*real_size*msg_size;
+    unsigned int file_size = sizeof(struct fastq_header) + sizeof(struct fastq_ring)*n_rings + n_rings*real_size*msg_size;
 
     self->p_ = mmap(NULL, file_size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, fd, 0);
     if (self->p_ == NULL) 
@@ -125,8 +125,8 @@ force_inline  bool nmq_ctx_create(struct nmq_context *self, unsigned int nodes, 
 
     memset(self->p_, 0, file_size);
 
-    self->header_ = (struct nmq_header*)self->p_;
-    self->ring_ = (struct nmq_ring*)(self->header_ + 1);
+    self->header_ = (struct fastq_header*)self->p_;
+    self->ring_ = (struct fastq_ring*)(self->header_ + 1);
     self->data_ = (char*)(self->ring_ + n_rings);
 
     self->header_->nodes = nodes;
@@ -144,8 +144,8 @@ force_inline  bool nmq_ctx_create(struct nmq_context *self, unsigned int nodes, 
 }
 
 
-// Node pair to nmq_ring
-force_inline static unsigned int nmq_ctx_np2r(struct nmq_context *self, unsigned int from, unsigned int to) {
+// Node pair to fastq_ring
+force_inline static unsigned int fastq_ctx_np2r(struct fastq_context *self, unsigned int from, unsigned int to) {
     assert(from != to);
     assert(from < self->header_->nodes);
     assert(to < self->header_->nodes);
@@ -156,20 +156,20 @@ force_inline static unsigned int nmq_ctx_np2r(struct nmq_context *self, unsigned
     }
 }
 
-force_inline  void nmq_ctx_print(struct nmq_context *self) {
+force_inline  void fastq_ctx_print(struct fastq_context *self) {
     printf("nodes: %u, size: %u, msgsz: %lu\n", self->header_->nodes, self->header_->size, self->header_->msg_size);
     unsigned int i;
     for (i = 0; i < self->header_->rings; i++) {
         printf("%3i: %10u %10u\n", i, self->ring_[i]._head, self->ring_[i]._tail);
     }
 }
-force_inline static struct nmq_ring* nmq_ctx_get_ring(struct nmq_context *self, unsigned int from, unsigned int to) {
+force_inline static struct fastq_ring* fastq_ctx_get_ring(struct fastq_context *self, unsigned int from, unsigned int to) {
     // TODO set errno and return error condition
     assert(self->p_ != NULL);
-    return &self->ring_[nmq_ctx_np2r(self, from, to)];
+    return &self->ring_[fastq_ctx_np2r(self, from, to)];
 }
 
-force_inline static bool nmq_ctx_send(struct nmq_context *self, struct nmq_ring *ring, const void *msg, size_t size) {
+force_inline static bool fastq_ctx_send(struct fastq_context *self, struct fastq_ring *ring, const void *msg, size_t size) {
     assert(size <= (ring->_msg_size - sizeof(size_t)));
 
     unsigned int h = (ring->_head - 1) & ring->_size;
@@ -190,18 +190,18 @@ force_inline static bool nmq_ctx_send(struct nmq_context *self, struct nmq_ring 
     return true;
 }
 
-force_inline  bool nmq_ctx_sendto(struct nmq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct nmq_ring *ring = nmq_ctx_get_ring(self, from, to);
-    while (!nmq_ctx_send(self, ring, msg, size)) {__relax();}
+force_inline  bool fastq_ctx_sendto(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
+    while (!fastq_ctx_send(self, ring, msg, size)) {__relax();}
     return true;
 }
 
-force_inline  bool nmq_ctx_sendnb(struct nmq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct nmq_ring *ring = nmq_ctx_get_ring(self, from, to);
-    return nmq_ctx_send(self, ring, msg, size);
+force_inline  bool fastq_ctx_sendnb(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
+    return fastq_ctx_send(self, ring, msg, size);
 }
 
-force_inline static bool nmq_ctx_recv(struct nmq_context *self, struct nmq_ring *ring, void *msg, size_t *size) {
+force_inline static bool fastq_ctx_recv(struct fastq_context *self, struct fastq_ring *ring, void *msg, size_t *size) {
     unsigned int t = ring->_tail;
     unsigned int h = ring->_head;
     if (h == t)
@@ -223,34 +223,34 @@ force_inline static bool nmq_ctx_recv(struct nmq_context *self, struct nmq_ring 
     return true;
 }
 
-force_inline  bool nmq_ctx_recvfrom(struct nmq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
-    struct nmq_ring *ring = nmq_ctx_get_ring(self, from, to);
-    while (!nmq_ctx_recv(self, ring, msg, size)) {__relax();}
+force_inline  bool fastq_ctx_recvfrom(struct fastq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
+    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
+    while (!fastq_ctx_recv(self, ring, msg, size)) {__relax();}
     return true;
 }
 
-force_inline  bool nmq_ctx_recvnb(struct nmq_context *self, unsigned int from, unsigned int to, void *s, size_t *size) {
-    return nmq_ctx_recv(self, nmq_ctx_get_ring(self, from, to), s, size);
+force_inline  bool fastq_ctx_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size) {
+    return fastq_ctx_recv(self, fastq_ctx_get_ring(self, from, to), s, size);
 }
 
 
-force_inline static bool nmq_ctx_recv2(struct nmq_context *self, unsigned int to, void *msg, size_t *size) {
+force_inline static bool fastq_ctx_recv2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
     // TODO "fair" receiving
     unsigned int i;
     while (true) {
         for (i = 0; i < self->header_->nodes; i++) {
-            if (to != i && nmq_ctx_recvnb(self, i, to, msg, size)) 
+            if (to != i && fastq_ctx_recvnb(self, i, to, msg, size)) 
                 return true;
         }
         __relax();
     }
     return false;
 }
-force_inline static ssize_t nmq_ctx_recvnb2(struct nmq_context *self, unsigned int to, void *msg, size_t *size) {
+force_inline static ssize_t fastq_ctx_recvnb2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
     // TODO "fair" receiving
     unsigned int i;
     for (i = 0; i < self->header_->nodes; i++) {
-        if (to != i && nmq_ctx_recvnb(self, i, to, msg, size)) 
+        if (to != i && fastq_ctx_recvnb(self, i, to, msg, size)) 
             return true;
     }
     return false;
