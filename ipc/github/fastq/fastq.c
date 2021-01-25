@@ -64,6 +64,13 @@ struct fastq_ring {
 
 
 /**
+ *  提供一种接收方和发送方 CPU利用率 负载均衡 的策略
+ *  倘若一直轮询，当没有消息传递时，CPU利用率也会占满 100%。
+ *  为了解决上述问题，提供一种解决方案。
+ */
+
+
+/**
  * Compiler barrier
  */
 static inline void force_inline comp() { asm volatile("": : :"memory"); }
@@ -109,7 +116,7 @@ force_inline static unsigned int power_of_2(unsigned int size) {
 }
 
 
-force_inline  bool fastq_ctx_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
+force_inline  bool fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
 {
 
     int fd = 0;
@@ -156,11 +163,11 @@ force_inline static unsigned int fastq_ctx_np2r(struct fastq_context *self, unsi
     }
 }
 
-force_inline  void fastq_ctx_print(struct fastq_context *self) {
-    printf("nodes: %u, size: %u, msgsz: %lu\n", self->header_->nodes, self->header_->size, self->header_->msg_size);
+force_inline  void fastq_ctx_print(FILE*fp, struct fastq_context *self) {
+    fprintf(fp, "nodes: %u, size: %u, msgsz: %lu\n", self->header_->nodes, self->header_->size, self->header_->msg_size);
     unsigned int i;
     for (i = 0; i < self->header_->rings; i++) {
-        printf("%3i: %10u %10u\n", i, self->ring_[i]._head, self->ring_[i]._tail);
+        fprintf(fp, "%3i: %10u %10u\n", i, self->ring_[i]._head, self->ring_[i]._tail);
     }
 }
 force_inline static struct fastq_ring* fastq_ctx_get_ring(struct fastq_context *self, unsigned int from, unsigned int to) {
@@ -190,13 +197,13 @@ force_inline static bool fastq_ctx_send(struct fastq_context *self, struct fastq
     return true;
 }
 
-force_inline  bool fastq_ctx_sendto(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+force_inline  bool fastq_sendto(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
     while (!fastq_ctx_send(self, ring, msg, size)) {__relax();}
     return true;
 }
 
-force_inline  bool fastq_ctx_sendnb(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+force_inline  bool fastq_sendnb(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
     return fastq_ctx_send(self, ring, msg, size);
 }
@@ -223,13 +230,17 @@ force_inline static bool fastq_ctx_recv(struct fastq_context *self, struct fastq
     return true;
 }
 
-force_inline  bool fastq_ctx_recvfrom(struct fastq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
+force_inline  bool fastq_recvfrom(struct fastq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
     struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
-    while (!fastq_ctx_recv(self, ring, msg, size)) {__relax();}
+    while (!fastq_ctx_recv(self, ring, msg, size)) {
+        __relax();
+//        int i;
+//        if(i++>100) {}
+    }
     return true;
 }
 
-force_inline  bool fastq_ctx_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size) {
+force_inline  bool fastq_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size) {
     return fastq_ctx_recv(self, fastq_ctx_get_ring(self, from, to), s, size);
 }
 
@@ -239,18 +250,18 @@ force_inline static bool fastq_ctx_recv2(struct fastq_context *self, unsigned in
     unsigned int i;
     while (true) {
         for (i = 0; i < self->header_->nodes; i++) {
-            if (to != i && fastq_ctx_recvnb(self, i, to, msg, size)) 
+            if (to != i && fastq_recvnb(self, i, to, msg, size)) 
                 return true;
         }
         __relax();
     }
     return false;
 }
-force_inline static ssize_t fastq_ctx_recvnb2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
+force_inline static ssize_t fastq_recvnb2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
     // TODO "fair" receiving
     unsigned int i;
     for (i = 0; i < self->header_->nodes; i++) {
-        if (to != i && fastq_ctx_recvnb(self, i, to, msg, size)) 
+        if (to != i && fastq_recvnb(self, i, to, msg, size)) 
             return true;
     }
     return false;

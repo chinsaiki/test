@@ -41,13 +41,13 @@ typedef struct fastq_context {
 
 
 
-always_inline bool fastq_ctx_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size);
-always_inline void fastq_ctx_print(struct fastq_context *self);
+always_inline bool fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size);
+always_inline void fastq_ctx_print(FILE*fp, struct fastq_context *self);
 
-always_inline bool fastq_ctx_sendto(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size);
-always_inline bool fastq_ctx_sendnb(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size);
-always_inline bool fastq_ctx_recvfrom(struct fastq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size);
-always_inline bool fastq_ctx_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size);
+always_inline bool fastq_sendto(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size);
+always_inline bool fastq_sendnb(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size);
+always_inline bool fastq_recvfrom(struct fastq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size);
+always_inline bool fastq_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size);
 
 
 

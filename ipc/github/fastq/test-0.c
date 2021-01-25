@@ -45,15 +45,24 @@ void *enqueue_task(void*arg){
     int i =0;
     test_msgs_t *pmsg;
     while(1) {
+//        usleep(1);
         pmsg = &test_msgs[i++%TEST_NUM];
         pmsg->latency = RDTSC();
         unsigned long addr = (unsigned long)pmsg;
-        fastq_ctx_sendto(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
+        fastq_sendto(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
     }
     pthread_exit(NULL);
 }
 
-void *dequeue_task(void*arg){
+void handler_test_msg(test_msgs_t*msg)
+{
+//    usleep(1);
+    
+//    static uint64_t cnt = 0;
+//    cnt += 1;
+}
+
+void *dequeue_task(void*arg) {
     struct fastq_context *ctx = (struct fastq_context *)arg;
 
     size_t sz = sizeof(unsigned long);
@@ -61,9 +70,9 @@ void *dequeue_task(void*arg){
     unsigned long addr;
     while(1) {
 //        usleep(1000);
-        fastq_ctx_recvfrom(ctx, MODULE_1, MODULE_2, &addr, &sz);
+        fastq_recvfrom(ctx, MODULE_1, MODULE_2, &addr, &sz);
         pmsg = (test_msgs_t *)addr;
-    
+        
         latency_total += RDTSC() - pmsg->latency;
         pmsg->latency = 0;
         if(pmsg->magic != TEST_MSG_MAGIC) {
@@ -71,6 +80,11 @@ void *dequeue_task(void*arg){
         }
         
         total_msgs++;
+        handler_test_msg(pmsg);
+//        printf("dequeue. msgs \033[1;31m%lf ns\033[m, msgs (total %ld, err %ld).\n", 
+//                latency_total*1.0/total_msgs/3000000000*1000000000,
+//                total_msgs, error_msgs);
+            
 
         if(total_msgs % 1000000 == 0) {
             printf("dequeue. per msgs \033[1;31m%lf ns\033[m, msgs (total %ld, err %ld).\n", 
@@ -85,7 +99,7 @@ void *dequeue_task(void*arg){
 
 int sig_handler(int signum) {
 
-    fastq_ctx_print(&ctx1);
+    fastq_ctx_print(stderr, &ctx1);
 
     exit(1);
 }
@@ -97,12 +111,12 @@ int main()
     
     signal(SIGINT, sig_handler);
     
-    fastq_ctx_create(&ctx1, 4, 8, 1024);
+    fastq_create(&ctx1, 4, 8, 1024);
     unsigned int i =0;
     test_msgs = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
     for(i=0;i<TEST_NUM;i++) {
-//        test_msgs[i].magic = TEST_MSG_MAGIC + (i%10000==0?1:0); //有错误的消息
-        test_msgs[i].magic = TEST_MSG_MAGIC; //有错误的消息
+        test_msgs[i].magic = TEST_MSG_MAGIC + (i%10000==0?1:0); //有错误的消息
+//        test_msgs[i].magic = TEST_MSG_MAGIC; //有错误的消息
         test_msgs[i].value = i+1;
     }
 
