@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <pthread.h>
 
-#include <nmq2.h>
+#include <nanomq.h>
 
 
 #ifndef TEST_NUM
@@ -35,7 +35,7 @@ uint64_t error_msgs = 0;
 
 
 void *enqueue_task(void*arg){
-    node_t *node = (node_t *)arg;
+    struct nmq_node *node = (struct nmq_node *)arg;
     int i =0;
     test_msgs_t *pmsg;
     while(1) {
@@ -50,7 +50,7 @@ void *enqueue_task(void*arg){
 }
 
 void *dequeue_task(void*arg){
-    node_t *node = (node_t *)arg;
+    struct nmq_node *node = (struct nmq_node *)arg;
 
     size_t sz = sizeof(unsigned long);
     test_msgs_t *pmsg;
@@ -84,14 +84,17 @@ int main()
 {
     pthread_t enqueue_taskid, dequeue_taskid;
 
-    context_t ctx1;
+    struct nmq_context ctx1;
+    
+//    char fname[256] = {"/tmp/nmqXXXX.out"};
+//	int ret = mkstemp(fname);
     char *fname = tempnam(NULL, "rtoax-nmq-"); // UGLY
     printf("fname = %s\n", fname);
     
     ctx_init(&ctx1, fname);
     ctx_create(&ctx1, 4, 8, 1024);
 
-    node_t node0, node1;
+    struct nmq_node node0, node1;
 
     node_init(&node0, &ctx1, 0);
     node_init(&node1, &ctx1, 1);
