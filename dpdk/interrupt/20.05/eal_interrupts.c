@@ -38,7 +38,7 @@ static RTE_DEFINE_PER_LCORE(int, _epfd) = -1; /**< epoll fd per thread */
 #define rte_spinlock_lock pthread_spin_lock
 #define rte_spinlock_unlock pthread_spin_unlock
 
-#define RTE_SPINLOCK_INITIALIZER 0
+#define RTE_SPINLOCK_INITIALIZER 1
 
 
 
@@ -516,6 +516,7 @@ rte_intr_callback_register(const struct rte_intr_handle *intr_handle,
 			ret = 0;
 			break;
 		}
+        RTE_LOG(ERR, EAL, "callback register.\n");
 	}
 
 	/* no existing callbacks for this - add new source */
@@ -544,7 +545,8 @@ rte_intr_callback_register(const struct rte_intr_handle *intr_handle,
 	if (wake_thread)
 		if (write(intr_pipe.writefd, "1", 1) < 0)
 			ret = -EPIPE;
-
+        
+    RTE_LOG(ERR, EAL, "callback register.\n");
 //	rte_eal_trace_intr_callback_register(intr_handle, cb, cb_arg, ret);
 	return ret;
 }
@@ -1279,6 +1281,7 @@ rte_eal_intr_init(void)
 		RTE_LOG(ERR, EAL,
 			"Failed to create thread for interrupt handling\n");
 	}
+    RTE_LOG(ERR, EAL, "create eal-intr-thread.\n");
 
 	return ret;
 }

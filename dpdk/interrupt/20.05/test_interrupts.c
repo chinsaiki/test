@@ -122,6 +122,7 @@ test_interrupt_deinit(void)
 static int
 test_interrupt_trigger_interrupt(void)
 {
+    printf("trigger irq.\n");
 	if (write(pfds.writefd, "1", 1) < 0)
 		return -1;
 
@@ -151,7 +152,7 @@ test_interrupt_handle_compare(struct rte_intr_handle *intr_handle_l,
 static void
 test_interrupt_callback(void *arg)
 {
-    printf("IRQ: %s\n", __func__);
+//    printf("IRQ: %s\n", __func__);
     
 	struct rte_intr_handle *intr_handle = arg;
 	if (test_intr_type >= TEST_INTERRUPT_HANDLE_MAX) {
@@ -327,6 +328,7 @@ test_interrupt_disable(void)
 static int
 test_interrupt_full_path_check(enum test_interrupt_handle_type intr_type)
 {
+//    printf("test_interrupt_full_path_check start\n");
 	int count;
 	struct rte_intr_handle test_intr_handle;
 
@@ -341,7 +343,9 @@ test_interrupt_full_path_check(enum test_interrupt_handle_type intr_type)
 
 	if (test_interrupt_trigger_interrupt() < 0)
 		return -1;
-
+    
+//    printf("test_interrupt_trigger_interrupt done\n");
+    
 	/* check flag */
 	for (count = 0; flag == 0 && count < 3; count++)
 		rte_delay_ms(TEST_INTERRUPT_CHECK_INTERVAL);
@@ -351,6 +355,8 @@ test_interrupt_full_path_check(enum test_interrupt_handle_type intr_type)
 		rte_intr_callback_unregister(&test_intr_handle,
 					     test_interrupt_callback,
 					     &test_intr_handle)) < 0) {
+//        printf("rte_intr_callback_unregister error\n");
+        
 		if (count != -EAGAIN)
 			return -1;
 	}
@@ -381,6 +387,7 @@ test_interrupt(void)
 	}
 
 	printf("Check unknown valid interrupt full path\n");
+    
 	if (test_interrupt_full_path_check(TEST_INTERRUPT_HANDLE_VALID) < 0) {
 		printf("failure occurred during checking unknown valid "
 						"interrupt full path\n");
