@@ -45,10 +45,11 @@ void *enqueue_task(void*arg){
     int i =0;
     test_msgs_t *pmsg;
     while(1) {
-//        usleep(1);
+//        usleep(100000);
         pmsg = &test_msgs[i++%TEST_NUM];
         pmsg->latency = RDTSC();
         unsigned long addr = (unsigned long)pmsg;
+//        printf("send addr = %lx(%p)\n", pmsg, pmsg);
         fastq_sendto(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
     }
     pthread_exit(NULL);
@@ -69,10 +70,11 @@ void *dequeue_task(void*arg) {
     test_msgs_t *pmsg;
     unsigned long addr;
     while(1) {
-//        usleep(1000);
+//        usleep(100000);
         fastq_recvfrom(ctx, MODULE_1, MODULE_2, &addr, &sz);
         pmsg = (test_msgs_t *)addr;
         
+//        printf("recv addr = %lx(%p) %ld\n", pmsg, pmsg, pmsg->value);
         latency_total += RDTSC() - pmsg->latency;
         pmsg->latency = 0;
         if(pmsg->magic != TEST_MSG_MAGIC) {

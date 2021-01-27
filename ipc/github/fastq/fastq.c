@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/eventfd.h>
 
 #include "fastq.h"
 
@@ -146,7 +147,11 @@ force_inline  bool fastq_create(struct fastq_context *self, unsigned int nodes, 
         self->ring_[i]._msg_size = self->header_->msg_size;
         self->ring_[i]._offset = &self->data_[i*real_size*msg_size] - self->data_;
     }
-
+    self->irq = eventfd(0, EFD_CLOEXEC);
+    if(self->irq <= 0) {
+        munmap(self->p_, file_size);
+        return false;
+    }
     return true;
 }
 
@@ -208,6 +213,17 @@ force_inline  bool fastq_sendnb(struct fastq_context *self, unsigned int from, u
     return fastq_ctx_send(self, ring, msg, size);
 }
 
+always_inline bool 
+fastq_send_main(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
+    while (!fastq_ctx_send(self, ring, msg, size)) {__relax();}
+    eventfd_write(self->irq, 1);
+    
+    return true;
+}
+
+
+
 force_inline static bool fastq_ctx_recv(struct fastq_context *self, struct fastq_ring *ring, void *msg, size_t *size) {
     unsigned int t = ring->_tail;
     unsigned int h = ring->_head;
@@ -234,8 +250,36 @@ force_inline  bool fastq_recvfrom(struct fastq_context *self, unsigned int from,
     struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
     while (!fastq_ctx_recv(self, ring, msg, size)) {
         __relax();
-//        int i;
-//        if(i++>100) {}
+    }
+    return true;
+}
+
+force_inline  bool 
+fastq_recv_main(struct fastq_context *self, unsigned int from, unsigned int to, msg_handler_t handler) {
+
+    eventfd_t cnt;
+//    char msg[4096] /*__attibute__((aligned(64))) */ = {0};
+    
+    unsigned long addr;
+    size_t size = sizeof(unsigned long);
+    
+    while(1) {
+        
+        eventfd_read(self->irq, &cnt);
+        
+//        printf("recv cnt = %ld\n", cnt);
+        struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
+        for(; cnt--;) {
+//            printf("recv cnt = %ld\n", cnt);
+            while (!fastq_ctx_recv(self, ring, &addr, &size)) {
+                __relax();
+            }
+            
+//            printf("recv addr = %lx\n", msg);
+            handler(addr, size);
+            addr = 0;
+            size = sizeof(unsigned long);
+        }
     }
     return true;
 }
