@@ -1,11 +1,11 @@
-/********************************************************************\
+/**********************************************************************************************************************\
 *  文件： fastq.c
 *  介绍： 低时延队列
 *  作者： 荣涛
 *  日期：
-*       2021年1月25日    
-\********************************************************************/
-
+*       2021年1月25日    创建与开发轮询功能
+*       2021年1月27日 添加 通知+轮询 功能接口，消除零消息时的 CPU100% 问题
+\**********************************************************************************************************************/
 #include <stdint.h>
 #include <assert.h>
     
@@ -68,6 +68,15 @@ struct fastq_ring {
  *  提供一种接收方和发送方 CPU利用率 负载均衡 的策略
  *  倘若一直轮询，当没有消息传递时，CPU利用率也会占满 100%。
  *  为了解决上述问题，提供一种解决方案。
+ *  
+ *  2021年1月27日 荣涛 rongtao@sylincom.com
+ *>>
+ *  上述问题得到了初步的解决，参考 NAPI 并不能解决，因为用户
+ *  态模拟“中断”的CPU开销是巨大的，同时，引入中断势必要增加大量
+ *  代码指令，这对“低时延”是一种较大的打击，所以，最终封装了
+ *  两个接口 fastq_sendto_main 和 fastq_recv_main 底层实现 “通知”
+ *  后“轮询”的机制解决空闲状态下CPU利用率居高不下的问题。
+ *
  */
 
 
@@ -81,10 +90,6 @@ static inline void force_inline comp() { asm volatile("": : :"memory"); }
 static inline void force_inline memrw() { asm volatile("mfence":::"memory"); }
 static inline void force_inline memr()  { asm volatile("lfence":::"memory"); }
 static inline void force_inline memw()  { asm volatile("sfence":::"memory"); }
-
-// mfence ensures that tsc reads are properly serialized
-// On Intel chips it's actually enough to just do lfence but
-// that would require some conditional logic. 
 
 #if defined __x86_64__
 static inline uint64_t __tsc(void)
@@ -119,6 +124,10 @@ force_inline static unsigned int power_of_2(unsigned int size) {
 
 force_inline  bool fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
 {
+    if(unlikely(!self) || unlikely(nodes>FASTQ_MAX_NODE) || unlikely(!size) || unlikely(!msg_size)) {
+        fprintf(stderr, "[%s %d] invalid parameters.\n", __func__, __LINE__);
+        return false;
+    }
 
     int fd = 0;
 
@@ -147,10 +156,14 @@ force_inline  bool fastq_create(struct fastq_context *self, unsigned int nodes, 
         self->ring_[i]._msg_size = self->header_->msg_size;
         self->ring_[i]._offset = &self->data_[i*real_size*msg_size] - self->data_;
     }
-    self->irq = eventfd(0, EFD_CLOEXEC);
-    if(self->irq <= 0) {
-        munmap(self->p_, file_size);
-        return false;
+
+    
+    for (i = 0; i < FASTQ_MAX_NODE; i++) {
+        self->irq[i] = eventfd(0, EFD_CLOEXEC);
+        if(self->irq[i] <= 0) {
+            munmap(self->p_, file_size);
+            return false;
+        }
     }
     return true;
 }
@@ -169,12 +182,20 @@ force_inline static unsigned int fastq_ctx_np2r(struct fastq_context *self, unsi
 }
 
 force_inline  void fastq_ctx_print(FILE*fp, struct fastq_context *self) {
-    fprintf(fp, "nodes: %u, size: %u, msgsz: %lu\n", self->header_->nodes, self->header_->size, self->header_->msg_size);
+    if(unlikely(!self) || unlikely(!fp)) {
+        fprintf(stderr, "[%s %d] invalid parameters.\n", __func__, __LINE__);
+        return ;
+    }
+    
+    fprintf(fp, "nodes: %u, size: %u, msgsz: %lu\n", \
+                self->header_->nodes, self->header_->size, self->header_->msg_size);
+    
     unsigned int i;
     for (i = 0; i < self->header_->rings; i++) {
         fprintf(fp, "%3i: %10u %10u\n", i, self->ring_[i]._head, self->ring_[i]._tail);
     }
 }
+
 force_inline static struct fastq_ring* fastq_ctx_get_ring(struct fastq_context *self, unsigned int from, unsigned int to) {
     // TODO set errno and return error condition
     assert(self->p_ != NULL);
@@ -213,13 +234,24 @@ force_inline  bool fastq_sendnb(struct fastq_context *self, unsigned int from, u
     return fastq_ctx_send(self, ring, msg, size);
 }
 
-always_inline bool 
-fastq_send_main(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+force_inline bool 
+fastq_sendto_main(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
     while (!fastq_ctx_send(self, ring, msg, size)) {__relax();}
-    eventfd_write(self->irq, 1);
+    eventfd_write(self->irq[to], 1);
     
     return true;
+}
+
+force_inline bool 
+fastq_sendtry_main(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
+    bool ret = fastq_ctx_send(self, ring, msg, size);
+    
+    if(ret) {
+        eventfd_write(self->irq[to], 1);
+    }
+    return ret;
 }
 
 
@@ -258,24 +290,22 @@ force_inline  bool
 fastq_recv_main(struct fastq_context *self, unsigned int from, unsigned int to, msg_handler_t handler) {
 
     eventfd_t cnt;
-//    char msg[4096] /*__attibute__((aligned(64))) */ = {0};
     
     unsigned long addr;
     size_t size = sizeof(unsigned long);
     
     while(1) {
         
-        eventfd_read(self->irq, &cnt);
-        
-//        printf("recv cnt = %ld\n", cnt);
+        eventfd_read(self->irq[to], &cnt);
+//        if(cnt>1) {
+//            printf("cnt = =%ld\n", cnt);
+//        }
         struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
         for(; cnt--;) {
-//            printf("recv cnt = %ld\n", cnt);
             while (!fastq_ctx_recv(self, ring, &addr, &size)) {
                 __relax();
             }
             
-//            printf("recv addr = %lx\n", msg);
             handler(addr, size);
             addr = 0;
             size = sizeof(unsigned long);
@@ -283,6 +313,7 @@ fastq_recv_main(struct fastq_context *self, unsigned int from, unsigned int to, 
     }
     return true;
 }
+
 
 force_inline  bool fastq_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size) {
     return fastq_ctx_recv(self, fastq_ctx_get_ring(self, from, to), s, size);

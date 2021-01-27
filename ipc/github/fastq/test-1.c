@@ -1,3 +1,11 @@
+/**********************************************************************************************************************\
+*  文件： test-1.c
+*  介绍： 低时延队列 通知+轮询接口测试例
+*  作者： 荣涛
+*  日期：
+*       2021年1月27日    
+\**********************************************************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -6,18 +14,20 @@
 
 #include <fastq.h>
 
+/* 
+    test-1.c 和 test-0.c 基本一致，只是对接口进行了替换
+    
+*/
 
+
+/* 测试的消息总数 */
 #ifndef TEST_NUM
 #define TEST_NUM   (1UL<<20)
 #endif
 
-#define MODULE_1 1
-#define MODULE_2 2
+#define NODE_1 0
+#define NODE_2 1
 
-
-/**
- *  获取tick
- */
 #ifndef RDTSC
 #define RDTSC() ({\
     register uint32_t a,d; \
@@ -38,6 +48,7 @@ test_msgs_t *test_msgs;
 uint64_t latency_total = 0;
 uint64_t total_msgs = 0;
 uint64_t error_msgs = 0;
+
 struct fastq_context ctx1;
 
 void *enqueue_task(void*arg){
@@ -47,32 +58,28 @@ void *enqueue_task(void*arg){
     unsigned long send_cnt = 0;
     
     while(1) {
-//        usleep(1000000);
         pmsg = &test_msgs[i++%TEST_NUM];
         pmsg->latency = RDTSC();
         unsigned long addr = (unsigned long)pmsg;
-//        printf("send addr = %lx(%p)\n", pmsg, pmsg);
-        fastq_send_main(ctx, MODULE_1, MODULE_2, &addr, sizeof(unsigned long));
+        fastq_sendto_main(ctx, NODE_1, NODE_2, &addr, sizeof(unsigned long));
 
         send_cnt++;
 
+        /* 这里我发送这么多以后，停一会，
+         看看程序会不会占用 CPU 100%，验证结果是不会 */
         if(send_cnt % 17109000 == 0) {
             sleep(3);
         }
-
     }
     pthread_exit(NULL);
 }
 
-void handler_test_msg(void* msg)
+void handler_test_msg(void* msg, size_t size)
 {
-//    usleep(1000000);
-    size_t sz = sizeof(unsigned long);
     test_msgs_t *pmsg;
     
     pmsg = (test_msgs_t *)msg;
-//    printf("recv addr = %lx(%p) %ld\n", pmsg, pmsg, pmsg->value);
-
+    
     latency_total += RDTSC() - pmsg->latency;
     pmsg->latency = 0;
     if(pmsg->magic != TEST_MSG_MAGIC) {
@@ -92,12 +99,10 @@ void handler_test_msg(void* msg)
 void *dequeue_task(void*arg) {
     struct fastq_context *ctx = (struct fastq_context *)arg;
 
-    fastq_recv_main(ctx, MODULE_1, MODULE_2, handler_test_msg);
+    fastq_recv_main(ctx, NODE_1, NODE_2, handler_test_msg);
     
     pthread_exit(NULL);
 }
-
-
 
 int sig_handler(int signum) {
 
@@ -113,12 +118,12 @@ int main()
     
     signal(SIGINT, sig_handler);
     
-    fastq_create(&ctx1, 4, 8, sizeof(unsigned long));
+    fastq_create(&ctx1, 2, 8, sizeof(unsigned long));
     unsigned int i =0;
     test_msgs = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
     for(i=0;i<TEST_NUM;i++) {
         test_msgs[i].magic = TEST_MSG_MAGIC + (i%10000==0?1:0); //有错误的消息
-//        test_msgs[i].magic = TEST_MSG_MAGIC; //有错误的消息
+//        test_msgs[i].magic = TEST_MSG_MAGIC;
         test_msgs[i].value = i+1;
     }
 
