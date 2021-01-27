@@ -53,11 +53,11 @@ struct fastq_ring;
  *  param[*]    irq 接收接口的中断描述符， 对 fastq_recv_main 生效
  */
 typedef struct fastq_context {
+    struct fastq_header *hdr;
+    struct fastq_ring *ring;
+    void *ptr;   
+    char *data;
 #define FASTQ_MAX_NODE  4
-    void *p_;   
-    struct fastq_header *header_;
-    struct fastq_ring *ring_;
-    char *data_;
     int irq[FASTQ_MAX_NODE];
 };
 

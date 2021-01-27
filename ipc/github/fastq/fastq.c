@@ -52,14 +52,16 @@ struct fastq_ring {
     size_t _msg_size;
     size_t _offset;
 
-    char _pad1[128];
-    // R/W access by the reader
-    // R/O access by the writer
+    char _pad1[128]; //强制对齐，省的 cacheline 64 字节 的限制，下同
+    
+    // 读方权限为 读写
+    // 写方权限为 只读
     volatile unsigned int _head;
 
     char _pad2[128];    
-    // R/W access by the writer
-    // R/O access by the reader
+    
+    // 写方权限为 读写
+    // 读方权限为 只读
     volatile unsigned int _tail;
 };
 
@@ -136,32 +138,32 @@ force_inline  bool fastq_create(struct fastq_context *self, unsigned int nodes, 
     unsigned int n_rings = 2*(nodes * (nodes - 1)) / 2;
     unsigned int file_size = sizeof(struct fastq_header) + sizeof(struct fastq_ring)*n_rings + n_rings*real_size*msg_size;
 
-    self->p_ = mmap(NULL, file_size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, fd, 0);
-    if (self->p_ == NULL) 
+    self->ptr = mmap(NULL, file_size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, fd, 0);
+    if (self->ptr == NULL) 
         return false;
 
-    memset(self->p_, 0, file_size);
+    memset(self->ptr, 0, file_size);
 
-    self->header_ = (struct fastq_header*)self->p_;
-    self->ring_ = (struct fastq_ring*)(self->header_ + 1);
-    self->data_ = (char*)(self->ring_ + n_rings);
+    self->hdr = (struct fastq_header*)self->ptr;
+    self->ring = (struct fastq_ring*)(self->hdr + 1);
+    self->data = (char*)(self->ring + n_rings);
 
-    self->header_->nodes = nodes;
-    self->header_->rings = n_rings;
-    self->header_->size = real_size - 1;
-    self->header_->msg_size = msg_size + sizeof(size_t);
+    self->hdr->nodes = nodes;
+    self->hdr->rings = n_rings;
+    self->hdr->size = real_size - 1;
+    self->hdr->msg_size = msg_size + sizeof(size_t);
 
-    for (i = 0; i < self->header_->rings; i++) {
-        self->ring_[i]._size = real_size - 1;
-        self->ring_[i]._msg_size = self->header_->msg_size;
-        self->ring_[i]._offset = &self->data_[i*real_size*msg_size] - self->data_;
+    for (i = 0; i < self->hdr->rings; i++) {
+        self->ring[i]._size = real_size - 1;
+        self->ring[i]._msg_size = self->hdr->msg_size;
+        self->ring[i]._offset = &self->data[i*real_size*msg_size] - self->data;
     }
 
     
     for (i = 0; i < FASTQ_MAX_NODE; i++) {
         self->irq[i] = eventfd(0, EFD_CLOEXEC);
         if(self->irq[i] <= 0) {
-            munmap(self->p_, file_size);
+            munmap(self->ptr, file_size);
             return false;
         }
     }
@@ -172,12 +174,12 @@ force_inline  bool fastq_create(struct fastq_context *self, unsigned int nodes, 
 // Node pair to fastq_ring
 force_inline static unsigned int fastq_ctx_np2r(struct fastq_context *self, unsigned int from, unsigned int to) {
     assert(from != to);
-    assert(from < self->header_->nodes);
-    assert(to < self->header_->nodes);
+    assert(from < self->hdr->nodes);
+    assert(to < self->hdr->nodes);
     if (from > to) {
-        return to * (self->header_->nodes - 1) + from - 1;
+        return to * (self->hdr->nodes - 1) + from - 1;
     } else {
-        return to * (self->header_->nodes - 1) + from;
+        return to * (self->hdr->nodes - 1) + from;
     }
 }
 
@@ -188,18 +190,18 @@ force_inline  void fastq_ctx_print(FILE*fp, struct fastq_context *self) {
     }
     
     fprintf(fp, "nodes: %u, size: %u, msgsz: %lu\n", \
-                self->header_->nodes, self->header_->size, self->header_->msg_size);
+                self->hdr->nodes, self->hdr->size, self->hdr->msg_size);
     
     unsigned int i;
-    for (i = 0; i < self->header_->rings; i++) {
-        fprintf(fp, "%3i: %10u %10u\n", i, self->ring_[i]._head, self->ring_[i]._tail);
+    for (i = 0; i < self->hdr->rings; i++) {
+        fprintf(fp, "%3i: %10u %10u\n", i, self->ring[i]._head, self->ring[i]._tail);
     }
 }
 
 force_inline static struct fastq_ring* fastq_ctx_get_ring(struct fastq_context *self, unsigned int from, unsigned int to) {
     // TODO set errno and return error condition
-    assert(self->p_ != NULL);
-    return &self->ring_[fastq_ctx_np2r(self, from, to)];
+    assert(self->ptr != NULL);
+    return &self->ring[fastq_ctx_np2r(self, from, to)];
 }
 
 force_inline static bool fastq_ctx_send(struct fastq_context *self, struct fastq_ring *ring, const void *msg, size_t size) {
@@ -210,7 +212,7 @@ force_inline static bool fastq_ctx_send(struct fastq_context *self, struct fastq
     if (t == h)
         return false;
 
-    char *d = &self->data_[self->ring_->_offset + t*ring->_msg_size];
+    char *d = &self->data[self->ring->_offset + t*ring->_msg_size];
     
     memcpy(d, &size, sizeof(size));
     memcpy(d + sizeof(size), msg, size);
@@ -262,7 +264,7 @@ force_inline static bool fastq_ctx_recv(struct fastq_context *self, struct fastq
     if (h == t)
         return false;
 
-    char *d = &self->data_[self->ring_->_offset + h*ring->_msg_size];
+    char *d = &self->data[self->ring->_offset + h*ring->_msg_size];
 
     size_t recv_size;
     memcpy(&recv_size, d, sizeof(size_t));
@@ -274,7 +276,7 @@ force_inline static bool fastq_ctx_recv(struct fastq_context *self, struct fastq
     // before moving the head
     comp();
 
-    ring->_head = (h + 1) & self->ring_->_size;
+    ring->_head = (h + 1) & self->ring->_size;
     return true;
 }
 
@@ -324,7 +326,7 @@ force_inline static bool fastq_ctx_recv2(struct fastq_context *self, unsigned in
     // TODO "fair" receiving
     unsigned int i;
     while (true) {
-        for (i = 0; i < self->header_->nodes; i++) {
+        for (i = 0; i < self->hdr->nodes; i++) {
             if (to != i && fastq_recvnb(self, i, to, msg, size)) 
                 return true;
         }
@@ -335,7 +337,7 @@ force_inline static bool fastq_ctx_recv2(struct fastq_context *self, unsigned in
 force_inline static ssize_t fastq_recvnb2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
     // TODO "fair" receiving
     unsigned int i;
-    for (i = 0; i < self->header_->nodes; i++) {
+    for (i = 0; i < self->hdr->nodes; i++) {
         if (to != i && fastq_recvnb(self, i, to, msg, size)) 
             return true;
     }
