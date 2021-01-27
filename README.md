@@ -98,6 +98,7 @@
 * `libumem`: 对应用程序进行内存管理(替换程序中的malloc接口)
 * `libunwind`: 栈回溯
 * `liburing`: 异步IO库
+* `libu`: [LibU](https://github.com/koanlogic/libu) : C语言写的多平台工具库
 * `libuv`: 异步 TCP 和 UDP sockets
 * `libvirt`: Linux虚拟机
 * `libxml2`: XML库
