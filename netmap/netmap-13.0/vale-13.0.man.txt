@@ -1,0 +1,66 @@
+VALE(4)                                   BSD Kernel Interfaces Manual                                   VALE(4)
+
+NAME
+     vale — a very fast Virtual Local Ethernet using the netmap API
+
+SYNOPSIS
+     device netmap
+
+DESCRIPTION
+     vale is a feature of the netmap(4) module that implements multiple Virtual switches that can be used to
+     interconnect netmap clients, including traffic sources and sinks, packet forwarders, userspace firewalls,
+     and so on.
+
+     vale is implemented completely in software, and is extremely fast.  On a modern machine it can move almost
+     20 Million packets per second (Mpps) per core with small frames, and about 70 Gbit/s with 1500 byte frames.
+
+OPERATION
+     vale dynamically creates switches and ports as clients connect to it using the netmap(4) API.
+
+     vale ports are named valeSSS:PPP where vale is the prefix indicating a VALE switch rather than a standard
+     interface, SSS indicates a specific switch (the colon is a separator), and PPP indicates a port within the
+     switch.  Both SSS and PPP have the form [0-9a-zA-Z_]+ , the string cannot exceed IFNAMSIZ characters, and
+     PPP cannot be the name of any existing OS network interface.
+
+     See netmap(4) for details on the API.
+
+   LIMITS
+     vale currently supports up to 4 switches, 16 ports per switch, with 1024 buffers per port.  These hard lim‐
+     its will be changed to sysctl variables in future releases.
+
+SYSCTL VARIABLES
+     vale uses the following sysctl variables to control operation:
+
+     dev.netmap.bridge_batch
+                         The maximum number of packets processed internally in each iteration.  Defaults to
+                         1024, use lower values to trade latency with throughput.
+
+     dev.netmap.verbose  Set to non-zero values to enable in-kernel diagnostics.
+
+EXAMPLES
+     Create one switch, with a traffic generator connected to one port, and a netmap-enabled tcpdump instance on
+     another port:
+
+           tcpdump -ni valea:1 &
+           pkt-gen  -i valea:0 -f tx &
+
+     Create two switches, each connected to two qemu machines on different ports.
+
+           qemu -net nic -net netmap,ifname=vale1:a ... &
+           qemu -net nic -net netmap,ifname=vale1:b ... &
+           qemu -net nic -net netmap,ifname=vale2:c ... &
+           qemu -net nic -net netmap,ifname=vale2:d ... &
+
+SEE ALSO
+     netmap(4)
+
+     Luigi Rizzo, Giuseppe Lettieri: VALE, a switched ethernet for virtual machines, June 2012,
+     http://info.iet.unipi.it/~luigi/vale/
+
+AUTHORS
+     The vale switch was designed and implemented in 2012 by Luigi Rizzo and Giuseppe Lettieri at the Univer‐
+     sita` di Pisa.
+
+     vale was funded by the European Commission within FP7 Projects CHANGE (257422) and OPENLAB (287581).
+
+BSD                                                Jan 9, 2019                                               BSD
