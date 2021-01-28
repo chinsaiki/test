@@ -1,0 +1,42 @@
+BZERO(3)                                    Linux Programmer's Manual                                   BZERO(3)
+
+
+
+NAME
+       bzero - 向字符串写入零
+
+
+总
+       #include <string.h>
+
+       void bzero(void *s, size_t n);
+
+
+描
+       bzero() 函数 把 字符串 s 的 前 n 个 字节 置成 零.
+
+
+返
+       bzero() 函数 无 返回值.
+
+
+遵
+       4.3BSD.  建议 不要 用 这个 函数 -- 请 在 新的 程序中 用 memset 函数.
+
+
+参
+       memset(3), swab(3)
+
+
+[中
+       唐
+
+[中
+       2002/1/28
+
+[中
+       http://cmpp.linuxforum.net
+
+
+
+GNU                                                1993-04-09                                           BZERO(3)
