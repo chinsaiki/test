@@ -5,6 +5,7 @@
 *  日期：
 *       2021年1月25日    创建与开发轮询功能
 *       2021年1月27日 添加 通知+轮询 功能接口，消除零消息时的 CPU100% 问题
+*       2021年1月28日 调整代码格式，添加必要的注释
 \**********************************************************************************************************************/
 
 #ifndef __fAStMQ_H
@@ -12,7 +13,8 @@
 
 #include <stdbool.h>
 
-// Forced inlining 
+/* 强制inline，尽可能减少执行的指令数
+    若需要调试，请编译时 定义 */
 #ifndef always_inline
 #define always_inline __attribute__ ((__always_inline__))
 #endif
@@ -52,7 +54,7 @@ struct fastq_ring;
  *  param[*]    data_ ring结构数据地址
  *  param[*]    irq 接收接口的中断描述符， 对 fastq_recv_main 生效
  */
-typedef struct fastq_context {
+struct fastq_context {
     struct fastq_header *hdr;
     struct fastq_ring *ring;
     void *ptr;   

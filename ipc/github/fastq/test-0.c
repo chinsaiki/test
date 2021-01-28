@@ -143,6 +143,11 @@ int main()
     pthread_create(&enqueue_taskid, NULL, enqueue_task, &ctx1);
     pthread_create(&dequeue_taskid, NULL, dequeue_task, &ctx1);
 
+	pthread_setname_np(enqueue_taskid, "enqueue");
+	pthread_setname_np(dequeue_taskid, "dequeue");
+
+	pthread_setname_np(pthread_self(), "test-0");
+
     pthread_join(enqueue_taskid, NULL);
     pthread_join(dequeue_taskid, NULL);
 
