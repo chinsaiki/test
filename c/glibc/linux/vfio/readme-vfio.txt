@@ -8,6 +8,7 @@ Remapping 特性，在保证直通设备的 DMA 安全性同时可以达到接�
 用户态驱动方案，因为它可以安全地把设备IO、中断、DMA等能力呈现给用户空间。
 
 -----------------------------------
+*** test/vfio
 *** test/linux/vfio
 *** test/c/glibc/linux/vfio
 *** test/dpdk/vfio
