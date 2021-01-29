@@ -1,0 +1,19 @@
+Make sure linux generic is up to date.
+
+1. sudo -i (change to super user)
+
+2. make
+
+3. ls -l (you should see "myproc.ko")
+ 
+3. insmod myproc.ko (myproc is ran and should create myproc in /proc)
+
+4. dmesg (comment should say proc was create)
+
+5. lsmod (you should see myproc at top of list)
+
+6. ls /proc (you should see "myproc" listed)
+
+7. echo "this is Jia" > /proc/myproc (this will write to myproc file)
+
+8. cat /proc/myproc (this will read myproc file)

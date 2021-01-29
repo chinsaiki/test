@@ -1,0 +1,19 @@
+Assignment 1
+1. cd New_module (Change directory to folder)
+
+2. Make (enter in make to run makefile)
+
+3.ls -l (should see new_module.ko)
+
+4. sudo insmod new_module.ko (insert into kernel)
+
+5. Dmesg | tail -1 (hello, world! Should display)
+
+6. lsmod (scroll up to top and you should see "new_module" listed in kernel)
+
+7. rmmod new_module (remove module from kernel)
+
+8. dmesg (good bye, world should display)
+
+
+The purpose of this assignment is to get familiar with running a module program in kernel space. When we compile a C++ or a Java program we compile it in the user space.  

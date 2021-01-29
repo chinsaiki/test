@@ -1,0 +1,11 @@
+write:
+echo "this is Jia" > /proc/myproc
+
+read:
+cat /proc/myproc
+
+
+
+
+
+
