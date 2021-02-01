@@ -63,15 +63,15 @@ typedef struct {
 } atomic64_t;
 
 // header
-struct fastq_header {
+struct FastQHeader {
     unsigned int nodes;
     unsigned int rings;
     unsigned int size;
     size_t msg_size;
 };
 
-// fastq_ring
-struct fastq_ring {
+// FastQRing
+struct FastQRing {
     unsigned int _size;
     size_t _msg_size;
     size_t _offset;
@@ -101,7 +101,7 @@ struct fastq_stats {
 };
 
 /*
-    fastq_context 数据结构，详情请见 fastq_create();
+    FastQContext 数据结构，详情请见 FastQCreate();
     2021年1月27日      荣涛  
     
                 |           |           n_rings               |               n_rings               |
@@ -141,7 +141,7 @@ struct fastq_stats {
                                                               +---------+---------+-------+---------+
                                                               |         real_size*msg_size          |    
 */
-struct fastq_context;
+struct FastQContext;
 
 
 /**
@@ -154,7 +154,7 @@ struct fastq_context;
  *  上述问题得到了初步的解决，参考 NAPI 并不能解决，因为用户
  *  态模拟“中断”的CPU开销是巨大的，同时，引入中断势必要增加大量
  *  代码指令，这对“低时延”是一种较大的打击，所以，最终封装了
- *  两个接口 fastq_sendto_main 和 fastq_recv_main 底层实现 “通知”
+ *  两个接口 FastQSendMain 和 FastQRecvMain 底层实现 “通知”
  *  后“轮询”的机制解决空闲状态下CPU利用率居高不下的问题。
  *
  */
@@ -162,13 +162,13 @@ struct fastq_context;
 
 // 从 event fd 查找 ring 的最快方法
 static  struct {
-    struct fastq_ring *_ring;
+    struct FastQRing *_ring;
 } _evtfd_to_ring[FD_SETSIZE] = {NULL};
 
 
 // 从 id 查找 context 最快的方法
 static struct {
-    struct fastq_context *context;
+    struct FastQContext *context;
 } _id_to_fastq[FASTQ_ID_MAX] = {NULL};
 
 
@@ -344,23 +344,23 @@ atomic64_clear(atomic64_t *v)
 
 
 always_inline static unsigned int 
-power_of_2(unsigned int size) {
+__power_of_2(unsigned int size) {
     unsigned int i;
     for (i=0; (1U << i) < size; i++);
     return 1U << i;
 }
 
-// Node pair to fastq_ring
+// Node pair to FastQRing
 always_inline static unsigned int 
-fastq_ctx_n2epfd(struct fastq_context *self, unsigned int node) {
+__fastq_ctx_n2epfd(struct FastQContext *self, unsigned int node) {
     assert(node < self->hdr->nodes);
     return self->pepfd[node];
 }
 
 
-// Node pair to fastq_ring
+// Node pair to FastQRing
 always_inline static unsigned int 
-fastq_ctx_np2r(struct fastq_context *self, unsigned int from, unsigned int to) {
+__fastq_ctx_np2r(struct FastQContext *self, unsigned int from, unsigned int to) {
     assert(from != to);
     assert(from < self->hdr->nodes);
     assert(to < self->hdr->nodes);
@@ -373,7 +373,7 @@ fastq_ctx_np2r(struct fastq_context *self, unsigned int from, unsigned int to) {
 
 
 always_inline  bool 
-fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
+FastQCreate(struct FastQContext *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
 {
     if(unlikely(!self) || unlikely(!size) || unlikely(!msg_size)) {
         fprintf(stderr, "[%s %d] invalid parameters.\n", __func__, __LINE__);
@@ -385,15 +385,15 @@ fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, 
     unsigned int from, to;
 
     /* Ring中的节点数为 2的幂次 */
-    unsigned int real_size = power_of_2(size);
+    unsigned int real_size = __power_of_2(size);
 
     /**
     两节点 A B ，包含 A->B, B->A, n_rings = 2
     三节点 A B C ， 包含 A->B, A->C, B->A, B->C, C->A, C->B, n_rings = 6
      */
     unsigned int n_rings = 2*(nodes * (nodes - 1)) / 2;
-    unsigned int file_size = sizeof(struct fastq_header) + sizeof(int)*nodes \
-                                + sizeof(struct fastq_ring)*n_rings + n_rings*real_size*msg_size;
+    unsigned int file_size = sizeof(struct FastQHeader) + sizeof(int)*nodes \
+                                + sizeof(struct FastQRing)*n_rings + n_rings*real_size*msg_size;
 
     /* 进程间通信的优化在此进行 */
     self->ptr = mmap(NULL, file_size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, fd, 0);
@@ -402,9 +402,9 @@ fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, 
 
     memset(self->ptr, 0, file_size);
 
-    self->hdr = (struct fastq_header*)self->ptr;
+    self->hdr = (struct FastQHeader*)self->ptr;
     self->pepfd = (int*)(self->hdr + 1);
-    self->ring = (struct fastq_ring*)(self->pepfd + nodes);
+    self->ring = (struct FastQRing*)(self->pepfd + nodes);
     self->data = (char*)(self->ring + n_rings);
 
     self->hdr->nodes = nodes;
@@ -435,7 +435,7 @@ fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, 
             if(from == to) continue;
             
             LOG_DEBUG("add %d to %d.\n", from, to);
-            struct fastq_ring *__ring = &self->ring[fastq_ctx_np2r(self, from, to)];
+            struct FastQRing *__ring = &self->ring[__fastq_ctx_np2r(self, from, to)];
             assert(__ring);
             LOG_DEBUG("add %d to %d, event fd = %d.\n", from, to, __ring->_evt_fd);
             
@@ -452,7 +452,7 @@ fastq_create(struct fastq_context *self, unsigned int nodes, unsigned int size, 
 
 
 always_inline void 
-fastq_ctx_print(FILE*fp, struct fastq_context *self) {
+FastQCtxPrint(FILE*fp, struct FastQContext *self) {
     if(unlikely(!self) || unlikely(!fp)) {
         fprintf(stderr, "[%s %d] invalid parameters.\n", __func__, __LINE__);
         return ;
@@ -467,15 +467,15 @@ fastq_ctx_print(FILE*fp, struct fastq_context *self) {
     }
 }
 
-always_inline static struct fastq_ring* 
-fastq_ctx_get_ring(struct fastq_context *self, unsigned int from, unsigned int to) {
+always_inline static struct FastQRing* 
+__fastq_ctx_get_ring(struct FastQContext *self, unsigned int from, unsigned int to) {
     // TODO set errno and return error condition
     assert(self->ptr != NULL);
-    return &self->ring[fastq_ctx_np2r(self, from, to)];
+    return &self->ring[__fastq_ctx_np2r(self, from, to)];
 }
 
 always_inline static bool 
-fastq_ctx_send(struct fastq_context *self, struct fastq_ring *ring, const void *msg, size_t size) {
+__fastq_ctx_send(struct FastQContext *self, struct FastQRing *ring, const void *msg, size_t size) {
     assert(size <= (ring->_msg_size - sizeof(size_t)));
 
     unsigned int h = (ring->_head - 1) & ring->_size;
@@ -497,22 +497,22 @@ fastq_ctx_send(struct fastq_context *self, struct fastq_ring *ring, const void *
 }
 
 always_inline  bool 
-fastq_sendto(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
-    while (!fastq_ctx_send(self, ring, msg, size)) {__relax();}
+FastQSendto(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
+    while (!__fastq_ctx_send(self, ring, msg, size)) {__relax();}
     return true;
 }
 
 always_inline  bool 
-fastq_sendnb(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
-    return fastq_ctx_send(self, ring, msg, size);
+FastQSendNonblk(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
+    return __fastq_ctx_send(self, ring, msg, size);
 }
 
 always_inline bool 
-fastq_sendto_main(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
-    while (!fastq_ctx_send(self, ring, msg, size)) {__relax();}
+FastQSendMain(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
+    while (!__fastq_ctx_send(self, ring, msg, size)) {__relax();}
     
     eventfd_write(ring->_evt_fd, 1);
     
@@ -520,9 +520,9 @@ fastq_sendto_main(struct fastq_context *self, unsigned int from, unsigned int to
 }
 
 always_inline bool 
-fastq_sendtry_main(struct fastq_context *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
-    bool ret = fastq_ctx_send(self, ring, msg, size);
+FastQTrySendMain(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
+    bool ret = __fastq_ctx_send(self, ring, msg, size);
     if(ret) {
         eventfd_write(ring->_evt_fd, 1);
     }
@@ -532,7 +532,7 @@ fastq_sendtry_main(struct fastq_context *self, unsigned int from, unsigned int t
 
 
 always_inline static bool 
-fastq_ctx_recv(struct fastq_context *self, struct fastq_ring *ring, void *msg, size_t *size) {
+__fastq_ctx_recv(struct FastQContext *self, struct FastQRing *ring, void *msg, size_t *size) {
     unsigned int t = ring->_tail;
     unsigned int h = ring->_head;
     if (h == t)
@@ -555,16 +555,16 @@ fastq_ctx_recv(struct fastq_context *self, struct fastq_ring *ring, void *msg, s
 }
 
 always_inline  bool 
-fastq_recvfrom(struct fastq_context *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
-    struct fastq_ring *ring = fastq_ctx_get_ring(self, from, to);
-    while (!fastq_ctx_recv(self, ring, msg, size)) {
+FastQRecvrom(struct FastQContext *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
+    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
+    while (!__fastq_ctx_recv(self, ring, msg, size)) {
         __relax();
     }
     return true;
 }
 
 always_inline  bool 
-fastq_recv_main(struct fastq_context *self, unsigned int node, msg_handler_t handler) {
+FastQRecvMain(struct FastQContext *self, unsigned int node, msg_handler_t handler) {
 
     eventfd_t cnt;
     int nfds;
@@ -572,7 +572,7 @@ fastq_recv_main(struct fastq_context *self, unsigned int node, msg_handler_t han
     
     unsigned long addr;
     size_t size = sizeof(unsigned long);
-    struct fastq_ring *ring = NULL;
+    struct FastQRing *ring = NULL;
 
     while(1) {
         nfds = epoll_wait(self->pepfd[node], events, 8, -1);
@@ -583,7 +583,7 @@ fastq_recv_main(struct fastq_context *self, unsigned int node, msg_handler_t han
 //                printf("cnt = =%ld\n", cnt);
 //            }
             for(; cnt--;) {
-                while (!fastq_ctx_recv(self, ring, &addr, &size)) {
+                while (!__fastq_ctx_recv(self, ring, &addr, &size)) {
                     __relax();
                 }
                 
@@ -599,30 +599,16 @@ fastq_recv_main(struct fastq_context *self, unsigned int node, msg_handler_t han
 
 
 always_inline  bool 
-fastq_recvnb(struct fastq_context *self, unsigned int from, unsigned int to, void *s, size_t *size) {
-    return fastq_ctx_recv(self, fastq_ctx_get_ring(self, from, to), s, size);
+FastQRecvNonblk(struct FastQContext *self, unsigned int from, unsigned int to, void *s, size_t *size) {
+    return __fastq_ctx_recv(self, __fastq_ctx_get_ring(self, from, to), s, size);
 }
 
-
-always_inline static bool 
-fastq_ctx_recv2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
-    // TODO "fair" receiving
-    unsigned int i;
-    while (true) {
-        for (i = 0; i < self->hdr->nodes; i++) {
-            if (to != i && fastq_recvnb(self, i, to, msg, size)) 
-                return true;
-        }
-        __relax();
-    }
-    return false;
-}
 always_inline static ssize_t 
-fastq_recvnb2(struct fastq_context *self, unsigned int to, void *msg, size_t *size) {
+FastQRecvNonblk2(struct FastQContext *self, unsigned int to, void *msg, size_t *size) {
     // TODO "fair" receiving
     unsigned int i;
     for (i = 0; i < self->hdr->nodes; i++) {
-        if (to != i && fastq_recvnb(self, i, to, msg, size)) 
+        if (to != i && FastQRecvNonblk(self, i, to, msg, size)) 
             return true;
     }
     return false;

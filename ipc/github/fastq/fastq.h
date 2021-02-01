@@ -49,11 +49,11 @@ struct fastq_ring;
  *  
  *  fastq_context 结构中的字段不允许用户修改
  *  
- *  param[*]    p_  根据 fastq_create 参数申请的内存空间
- *  param[*]    header_ 保存参数信息
- *  param[*]    ring_ 轮询ring
- *  param[*]    data_ ring结构数据地址
- *  param[*]    irq 接收接口的中断描述符， 对 fastq_recv_main 生效
+ *  param[*]    p  根据 fastq_create 参数申请的内存空间
+ *  param[*]    header 保存参数信息
+ *  param[*]    ring 轮询ring
+ *  param[*]    pepfd 监听所有接收队列的epoll fd
+ *  param[*]    data ring结构数据地址
  */
 struct fastq_context {
     struct fastq_header *hdr;
