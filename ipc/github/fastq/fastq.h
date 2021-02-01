@@ -6,6 +6,7 @@
 *       2021年1月25日    创建与开发轮询功能
 *       2021年1月27日 添加 通知+轮询 功能接口，消除零消息时的 CPU100% 问题
 *       2021年1月28日 调整代码格式，添加必要的注释
+*       2021年2月1日 添加多入单出队列功能 ： 采用 epoll 实现
 \**********************************************************************************************************************/
 
 #ifndef __fAStMQ_H
@@ -57,10 +58,9 @@ struct fastq_ring;
 struct fastq_context {
     struct fastq_header *hdr;
     struct fastq_ring *ring;
+    int *pepfd;
     void *ptr;   
     char *data;
-#define FASTQ_MAX_NODE  4
-    int irq[FASTQ_MAX_NODE];
 };
 
 /**
@@ -223,145 +223,15 @@ fastq_sendtry_main(struct fastq_context *self, unsigned int from, unsigned int t
  *  注意： *** 推荐使用该接口 *** 必须使用 fastq_sendto_main 接口 发送
  *  
  *  param[in]   self 见 fastq_context
- *  param[in]   from 发送使用 的 ring， 参见 fastq_create 的 nodes 参数
- *  param[in]   to 向 to ring 发送， 参见 fastq_create 的 nodes 参数
+ *  param[in]   node 接收该 node 上 所有环形队列的消息， 参见 fastq_create 的 nodes 参数
  *  param[in]   msg 消息体指针
  *  param[in]   size ring队列中的节点大小，若传递指针，填写 sizeof(unsigned long)
  *
  *  return 成功 返回 true ， 失败 返回 false
  */
 always_inline  bool 
-fastq_recv_main(struct fastq_context *self, unsigned int from, unsigned int to, msg_handler_t handler);
+fastq_recv_main(struct fastq_context *self, unsigned int node, msg_handler_t handler);
 
 
 #endif /*<__fAStMQ_H>*/
-
-
-/**********************************************************************************************************************\
- *
- *
- *  以下为示例程序, 该部分代码不允许被编译
- *
- *
-\**********************************************************************************************************************/
-
-#ifdef __do_not_define_this_FastQ_TEST
-# error You gotta be kidding me, do not define __do_not_define_this_FastQ_TEST
-#endif
-#ifdef __do_not_define_this_FastQ_TEST
-
-/**********************************************************************************************************************\
- *
- *  示例1： 传递一个 无符号长整形/地址（unsigned long）的轮询示例程序
- *  
-\**********************************************************************************************************************/
-#define TEST_NUM   (1UL<<20)
-
-#define NODE_0 0
-#define NODE_1 1
-#define NODE_NR 2
-
-typedef struct  {
-#define TEST_MSG_MAGIC 0x123123ff    
-    int magic;
-    unsigned long value;
-}__attribute__((aligned(64))) test_msgs_t;
-
-test_msgs_t *test_msgs;
-struct fastq_context fastq_ctx;
-
-
-void *test_1_enqueue_task(void*arg){
-    struct fastq_context *ctx = (struct fastq_context *)arg;
-    int i =0;
-    test_msgs_t *pmsg;
-    while(1) {
-        pmsg = &test_msgs[i++%TEST_NUM];
-        pmsg->latency = RDTSC();
-        unsigned long addr = (unsigned long)pmsg;
-        fastq_sendto(ctx, NODE_0, NODE_1, &addr, sizeof(unsigned long));
-    }
-    pthread_exit(NULL);
-}
-
-void *test_1_dequeue_task(void*arg) {
-    struct fastq_context *ctx = (struct fastq_context *)arg;
-
-    size_t sz = sizeof(unsigned long);
-    test_msgs_t *pmsg;
-    unsigned long addr;
-    while(1) {
-        fastq_recvfrom(ctx, NODE_0, NODE_1, &addr, &sz);
-        pmsg = (test_msgs_t *)addr;
-        
-        /* 处理流程 */
-    }
-    pthread_exit(NULL);
-}
-
-int main()
-{
-    ...
-        
-    fastq_create(&fastq_ctx, NODE_NR, 8, sizeof(unsigned long));
-    
-    unsigned int i =0;
-    test_msgs = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
-    for(i=0;i<TEST_NUM;i++) {
-        test_msgs[i].magic = TEST_MSG_MAGIC; //检查错误传输的消息
-        test_msgs[i].value = i+1;
-    }
-
-
-    pthread_create(..., test_1_enqueue_task, &fastq_ctx);
-    pthread_create(..., test_1_dequeue_task, &fastq_ctx);
-
-    ...
-}
-
-
-/**********************************************************************************************************************\
- *
- *  示例2： 传递一个 无符号长整形/地址（unsigned long）的通知+轮询示例程序
- *
- *  这里和上面冗余部分的代码不在给出，只给出关键的 发送 和 接收 线程的回调函数
- *  
-\**********************************************************************************************************************/
-
-void *test_2_enqueue_task(void*arg){
-    struct fastq_context *ctx = (struct fastq_context *)arg;
-    int i =0;
-    test_msgs_t *pmsg = NULL;
-    
-    while(1) {
-        pmsg = &test_msgs[i++%TEST_NUM];
-        pmsg->latency = RDTSC();
-        unsigned long addr = (unsigned long)pmsg;
-        fastq_sendto_main(ctx, NODE_0, NODE_1, &addr, sizeof(unsigned long));
-    }
-    pthread_exit(NULL);
-}
-
-void handle_test_msg(void* msg, size_t size)
-{
-    test_msgs_t *pmsg = (test_msgs_t *)msg;
-
-    /* 处理流程 */
-}
-
-void *test_2_dequeue_task(void*arg) {
-    struct fastq_context *ctx = (struct fastq_context *)arg;
-
-    fastq_recv_main(ctx, MODULE_1, MODULE_2, handle_test_msg);
-    
-    pthread_exit(NULL);
-}
-
-/**********************************************************************************************************************\
- *
- *  示例程序结束
- *
-\**********************************************************************************************************************/
-#endif /*<测试代码结束>*/
-
 

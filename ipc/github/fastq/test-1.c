@@ -99,7 +99,7 @@ void handler_test_msg(void* msg, size_t size)
 void *dequeue_task(void*arg) {
     struct fastq_context *ctx = (struct fastq_context *)arg;
 
-    fastq_recv_main(ctx, NODE_1, NODE_2, handler_test_msg);
+    fastq_recv_main(ctx, NODE_2, handler_test_msg);
     
     pthread_exit(NULL);
 }
