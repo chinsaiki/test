@@ -23,14 +23,18 @@
 #include <sys/eventfd.h> //eventfd
 #include <sys/select.h> //FD_SETSIZE
 #include <sys/epoll.h>
+#include <pthread.h>
+
+#include <stdbool.h>
+//#define NDEBUG // (Optional, see assert(3).)
+//#include <assert.h>
+//#define RB_COMPACT // (Optional, embed color bits in right-child pointers.)
+//#include "rb.h"
 
 #include "fastq.h"
+#include "atomic.h"
+//#include "list.h"
 
-#ifdef MODULE_ID_MAX //VOS moduleID
-#define FASTQ_ID_MAX    MODULE_ID_MAX
-#else
-#define FASTQ_ID_MAX    256
-#endif
 
 
 #if (!defined(__i386__) && !defined(__x86_64__))
@@ -45,119 +49,32 @@
 #define unlikely(x)  __builtin_expect(!!(x), 0)
 #endif
 
-#define DEBUG
-#ifdef DEBUG
+#ifndef cachelinealigned
+#define cachelinealigned __attribute__((aligned(64)))
+#endif
 
-#define gettid() syscall(__NR_gettid)
-#define LOG_DEBUG(fmt...)  do{printf("\033[33m[%d]", gettid());printf(fmt);printf("\033[m");}while(0)
+//#define FASTQ_DEBUG
+#ifdef FASTQ_DEBUG
+#define LOG_DEBUG(fmt...)  do{printf("\033[33m[%s:%d]", __func__, __LINE__);printf(fmt);printf("\033[m");}while(0)
 #else
 #define LOG_DEBUG(fmt...) 
 #endif
 
-
-/**
- * The atomic counter structure.
- */
-typedef struct {
-	volatile int64_t cnt;  /**< Internal counter value. */
-} atomic64_t;
-
-// header
-struct FastQHeader {
-    unsigned int nodes;
-    unsigned int rings;
-    unsigned int size;
-    size_t msg_size;
-};
-
 // FastQRing
 struct FastQRing {
+    unsigned long src;  //是 1- FASTQ_ID_MAX 的任意值
+    unsigned long dst;  //是 1- FASTQ_ID_MAX 的任意值 二者不能重复
+    
     unsigned int _size;
     size_t _msg_size;
-    size_t _offset;
-
-    char _pad1[128]; //强制对齐，省的 cacheline 64 字节 的限制，下同
-    
-    // 读方权限为 读写
-    // 写方权限为 只读
+    char _pad1[64]; //强制对齐，省的 cacheline 64 字节 的限制，下同
     volatile unsigned int _head;
-
-    char _pad2[128];    
-    
-    // 写方权限为 读写
-    // 读方权限为 只读
+    char _pad2[64];    
     volatile unsigned int _tail;
-
-    char _pad3[128];    
-
+    char _pad3[64];    
     int _evt_fd; //队列eventfd通知
+    char _ring_data[]; //保存实际对象
 };
-
-// fastq 统计功能
-struct fastq_stats {
-    unsigned long fastq_id; //用于标识模块或其他任意ID
-    atomic64_t rx_npkgs;    //接收总数
-    atomic64_t tx_npkgs;    //发送总数
-};
-
-/*
-    FastQContext 数据结构，详情请见 FastQCreate();
-    2021年1月27日      荣涛  
-    
-                |           |           n_rings               |               n_rings               |
-                +-----------+--------+--------+-----+---------+----------+----------+-----+---------+
-    self->ptr-->|  header   | ring0  |  ring1 | ... |  ringN  |  entity0 |  entity1 | ... | entityN |
-                +-----------+--------+--------+-----+---------+----------+----------+-----+---------+
-                |           |                                 |                          /          |
-    self->hdr---+           |                                 |                         /           |
-                            |                                 |                        /            |
-                            |                                 |                       /             |
-    self->ring--------------+                                 |                      /              |
-                                                              |                     /               |
-                                                              |                    /                |
-    self->data------------------------------------------------+                   /                 |
-                                                                                 /                  |
-                                                                                /                   |
-                                                                               /                    |
-                                                                              /                     |
-                                                                             /                      |
-                                                                            /                       |
-                                                                           /                        |
-                                                                          /                         |
-                                                                         /                          |
-                                                                        /                           |
-                                                                       /                            |
-                                                                      /                             |
-                                                                     /                              |
-                                                                    /                               |
-                                                                   /                                |
-                                                                  /                                 |
-                                                                 /                                  |
-                                                                /                                   |
-                                                               /                                    |
-                                                              | msg_size|                           |
-                                                              +---------+---------+-------+---------+
-                                                      entity  |  msg0   |  msg1   |  ...  |  msgM   |
-                                                              +---------+---------+-------+---------+
-                                                              |         real_size*msg_size          |    
-*/
-struct FastQContext;
-
-
-/**
- *  提供一种接收方和发送方 CPU利用率 负载均衡 的策略
- *  倘若一直轮询，当没有消息传递时，CPU利用率也会占满 100%。
- *  为了解决上述问题，提供一种解决方案。
- *  
- *  2021年1月27日 荣涛 rongtao@sylincom.com
- *>>
- *  上述问题得到了初步的解决，参考 NAPI 并不能解决，因为用户
- *  态模拟“中断”的CPU开销是巨大的，同时，引入中断势必要增加大量
- *  代码指令，这对“低时延”是一种较大的打击，所以，最终封装了
- *  两个接口 FastQSendMain 和 FastQRecvMain 底层实现 “通知”
- *  后“轮询”的机制解决空闲状态下CPU利用率居高不下的问题。
- *
- */
 
 
 // 从 event fd 查找 ring 的最快方法
@@ -166,10 +83,35 @@ static  struct {
 } _evtfd_to_ring[FD_SETSIZE] = {NULL};
 
 
-// 从 id 查找 context 最快的方法
-static struct {
-    struct FastQContext *context;
-} _id_to_fastq[FASTQ_ID_MAX] = {NULL};
+//从 源module ID 和 目的module ID 到 _ring 最快的方法
+struct FastQModule {
+    bool already_register;
+    int epfd; //epoll fd
+    unsigned long module_id; //是 1- FASTQ_ID_MAX 的任意值
+    unsigned int ring_size; //队列大小，ring 节点数
+    unsigned int msg_size; //消息大小， ring 节点大小
+    struct FastQRing **_ring;
+};
+static struct FastQModule *_AllModulesRings = NULL;
+
+static  __attribute__((constructor(101))) __FastQInitCtor () {
+    int i, j;
+    
+    LOG_DEBUG("Init _module_src_dst_to_ring.\n");
+    _AllModulesRings = FastQMalloc(sizeof(struct FastQModule)*(FASTQ_ID_MAX+1));
+    for(i=0; i<=FASTQ_ID_MAX; i++) {
+        _AllModulesRings[i].already_register = false;
+        _AllModulesRings[i].module_id = i;
+        _AllModulesRings[i].epfd = -1;
+        _AllModulesRings[i].ring_size = 0;
+        _AllModulesRings[i].msg_size = 0;
+        
+        _AllModulesRings[i]._ring = FastQMalloc(sizeof(struct FastQRing*)*(FASTQ_ID_MAX+1));
+        for(j=0; j<=FASTQ_ID_MAX; j++) { 
+            _AllModulesRings[i]._ring[j] = NULL;
+        }
+    }
+}
 
 
 // 内存屏障
@@ -183,166 +125,6 @@ static inline void always_inline __lock()   { asm volatile ("cli" ::: "memory");
 static inline void always_inline __unlock() { asm volatile ("sti" ::: "memory"); }
 
 
-static inline int always_inline
-atomic64_cmpset(volatile uint64_t *dst, uint64_t exp, uint64_t src)
-{
-	uint8_t res;
-
-	asm volatile(
-			"lock ; "
-			"cmpxchgq %[src], %[dst];"
-			"sete %[res];"
-			: [res] "=a" (res),     /* output */
-			  [dst] "=m" (*dst)
-			: [src] "r" (src),      /* input */
-			  "a" (exp),
-			  "m" (*dst)
-			: "memory");            /* no-clobber list */
-
-	return res;
-}
-
-static inline uint64_t always_inline
-atomic64_exchange(volatile uint64_t *dst, uint64_t val)
-{
-	asm volatile(
-			"lock ; "
-			"xchgq %0, %1;"
-			: "=r" (val), "=m" (*dst)
-			: "0" (val),  "m" (*dst)
-			: "memory");         /* no-clobber list */
-	return val;
-}
-
-static inline void always_inline
-atomic64_init(atomic64_t *v)
-{
-	atomic64_cmpset((volatile uint64_t *)&v->cnt, v->cnt, 0);
-}
-
-static inline int64_t always_inline
-atomic64_read(atomic64_t *v)
-{
-    return v->cnt;
-}
-
-static inline void always_inline
-atomic64_set(atomic64_t *v, int64_t new_value)
-{
-    atomic64_cmpset((volatile uint64_t *)&v->cnt, v->cnt, new_value);
-}
-
-static inline void always_inline
-atomic64_add(atomic64_t *v, int64_t inc)
-{
-	asm volatile(
-			"lock ; "
-			"addq %[inc], %[cnt]"
-			: [cnt] "=m" (v->cnt)   /* output */
-			: [inc] "ir" (inc),     /* input */
-			  "m" (v->cnt)
-			);
-}
-
-static inline void always_inline
-atomic64_sub(atomic64_t *v, int64_t dec)
-{
-	asm volatile(
-			"lock ; "
-			"subq %[dec], %[cnt]"
-			: [cnt] "=m" (v->cnt)   /* output */
-			: [dec] "ir" (dec),     /* input */
-			  "m" (v->cnt)
-			);
-}
-
-static inline void always_inline
-atomic64_inc(atomic64_t *v)
-{
-	asm volatile(
-			"lock ; "
-			"incq %[cnt]"
-			: [cnt] "=m" (v->cnt)   /* output */
-			: "m" (v->cnt)          /* input */
-			);
-}
-
-static inline void always_inline
-atomic64_dec(atomic64_t *v)
-{
-	asm volatile(
-			"lock ; "
-			"decq %[cnt]"
-			: [cnt] "=m" (v->cnt)   /* output */
-			: "m" (v->cnt)          /* input */
-			);
-}
-
-static inline int64_t always_inline
-atomic64_add_return(atomic64_t *v, int64_t inc)
-{
-	int64_t prev = inc;
-
-	asm volatile(
-			"lock ; "
-			"xaddq %[prev], %[cnt]"
-			: [prev] "+r" (prev),   /* output */
-			  [cnt] "=m" (v->cnt)
-			: "m" (v->cnt)          /* input */
-			);
-	return prev + inc;
-}
-
-static inline int64_t always_inline
-atomic64_sub_return(atomic64_t *v, int64_t dec)
-{
-	return atomic64_add_return(v, -dec);
-}
-
-static inline int always_inline
-atomic64_inc_and_test(atomic64_t *v)
-{
-	uint8_t ret;
-
-	asm volatile(
-			"lock ; "
-			"incq %[cnt] ; "
-			"sete %[ret]"
-			: [cnt] "+m" (v->cnt), /* output */
-			  [ret] "=qm" (ret)
-			);
-
-	return ret != 0;
-}
-
-static inline int always_inline
-atomic64_dec_and_test(atomic64_t *v)
-{
-	uint8_t ret;
-
-	asm volatile(
-			"lock ; "
-			"decq %[cnt] ; "
-			"sete %[ret]"
-			: [cnt] "+m" (v->cnt),  /* output */
-			  [ret] "=qm" (ret)
-			);
-	return ret != 0;
-}
-
-static inline int always_inline
-atomic64_test_and_set(atomic64_t *v)
-{
-	return atomic64_cmpset((volatile uint64_t *)&v->cnt, 0, 1);
-}
-
-static inline void always_inline
-atomic64_clear(atomic64_t *v)
-{
-	atomic64_set(v, 0);
-}
-
-
 always_inline static unsigned int 
 __power_of_2(unsigned int size) {
     unsigned int i;
@@ -350,143 +132,89 @@ __power_of_2(unsigned int size) {
     return 1U << i;
 }
 
-// Node pair to FastQRing
-always_inline static unsigned int 
-__fastq_ctx_n2epfd(struct FastQContext *self, unsigned int node) {
-    assert(node < self->hdr->nodes);
-    return self->pepfd[node];
-}
-
-
-// Node pair to FastQRing
-always_inline static unsigned int 
-__fastq_ctx_np2r(struct FastQContext *self, unsigned int from, unsigned int to) {
-    assert(from != to);
-    assert(from < self->hdr->nodes);
-    assert(to < self->hdr->nodes);
-    if (from > to) {
-        return to * (self->hdr->nodes - 1) + from - 1;
-    } else {
-        return to * (self->hdr->nodes - 1) + from;
-    }
-}
-
-
-always_inline  bool 
-FastQCreate(struct FastQContext *self, unsigned int nodes, unsigned int size, unsigned int msg_size) 
-{
-    if(unlikely(!self) || unlikely(!size) || unlikely(!msg_size)) {
-        fprintf(stderr, "[%s %d] invalid parameters.\n", __func__, __LINE__);
-        return false;
-    }
-    int fd = 0;
-
-    unsigned int i;
-    unsigned int from, to;
-
-    /* Ring中的节点数为 2的幂次 */
-    unsigned int real_size = __power_of_2(size);
-
-    /**
-    两节点 A B ，包含 A->B, B->A, n_rings = 2
-    三节点 A B C ， 包含 A->B, A->C, B->A, B->C, C->A, C->B, n_rings = 6
-     */
-    unsigned int n_rings = 2*(nodes * (nodes - 1)) / 2;
-    unsigned int file_size = sizeof(struct FastQHeader) + sizeof(int)*nodes \
-                                + sizeof(struct FastQRing)*n_rings + n_rings*real_size*msg_size;
-
-    /* 进程间通信的优化在此进行 */
-    self->ptr = mmap(NULL, file_size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, fd, 0);
-    if (self->ptr == NULL) 
-        return false;
-
-    memset(self->ptr, 0, file_size);
-
-    self->hdr = (struct FastQHeader*)self->ptr;
-    self->pepfd = (int*)(self->hdr + 1);
-    self->ring = (struct FastQRing*)(self->pepfd + nodes);
-    self->data = (char*)(self->ring + n_rings);
-
-    self->hdr->nodes = nodes;
-    self->hdr->rings = n_rings;
-    self->hdr->size = real_size - 1;
-    self->hdr->msg_size = msg_size + sizeof(size_t);
-
-    for (i = 0; i < self->hdr->rings; i++) {
-        self->ring[i]._size = real_size - 1;
-        self->ring[i]._msg_size = self->hdr->msg_size;
-        self->ring[i]._offset = &self->data[i*real_size*msg_size] - self->data;
-        self->ring[i]._evt_fd = eventfd(0, EFD_CLOEXEC);
-        assert(self->ring[i]._evt_fd); //都TMD没有fd了，你也是厉害
-        
-        _evtfd_to_ring[self->ring[i]._evt_fd]._ring = &self->ring[i];
-    }
-
-    LOG_DEBUG("create epoll.\n");
+always_inline  static struct FastQRing *
+__fastq_create_ring(const int epfd, const unsigned long src, const unsigned long dst, 
+                      const unsigned int ring_size, const unsigned int msg_size) {
+    struct FastQRing *new_ring = FastQMalloc(sizeof(struct FastQRing) + ring_size*(msg_size+sizeof(size_t)));
+    assert(new_ring);
+    assert(epfd);
     
-    for (to = 0; to < self->hdr->nodes; to++) {
-        self->pepfd[to] = epoll_create(1);
-        assert(self->pepfd[to]);
-    }
+    LOG_DEBUG("Create ring %ld->%ld.\n", src, dst);
+    new_ring->src = src;
+    new_ring->dst = dst;
+    new_ring->_size = ring_size - 1;
     
-    LOG_DEBUG("add eventfd to epoll.\n");
-    for (from = 0; from < self->hdr->nodes; from++) {
-        for (to = 0; to < self->hdr->nodes; to++) {
-            if(from == to) continue;
-            
-            LOG_DEBUG("add %d to %d.\n", from, to);
-            struct FastQRing *__ring = &self->ring[__fastq_ctx_np2r(self, from, to)];
-            assert(__ring);
-            LOG_DEBUG("add %d to %d, event fd = %d.\n", from, to, __ring->_evt_fd);
-            
-            struct epoll_event event;
-            event.data.fd = __ring->_evt_fd;
-            event.events = EPOLLIN; //必须采用水平触发
-            epoll_ctl(self->pepfd[to], EPOLL_CTL_ADD, event.data.fd, &event);
-        }
-    }
+    new_ring->_msg_size = msg_size + sizeof(size_t);
+    new_ring->_evt_fd = eventfd(0, EFD_CLOEXEC);
+    assert(new_ring->_evt_fd); //都TMD没有fd了，你也是厉害
     
-    return true;
-}
+    LOG_DEBUG("Create module %ld event fd = %d.\n", dst, new_ring->_evt_fd);
+    
+    _evtfd_to_ring[new_ring->_evt_fd]._ring = new_ring;
 
+    struct epoll_event event;
+    event.data.fd = new_ring->_evt_fd;
+    event.events = EPOLLIN; //必须采用水平触发
+    epoll_ctl(epfd, EPOLL_CTL_ADD, event.data.fd, &event);
+    LOG_DEBUG("Add eventfd %d to epollfd %d.\n", new_ring->_evt_fd, epfd);
+
+    return new_ring;
+    
+}
 
 
 always_inline void 
-FastQCtxPrint(FILE*fp, struct FastQContext *self) {
-    if(unlikely(!self) || unlikely(!fp)) {
-        fprintf(stderr, "[%s %d] invalid parameters.\n", __func__, __LINE__);
-        return ;
+FastQCreateModule(const unsigned long module_id, const unsigned int ring_size, const unsigned int msg_size) {
+    assert(module_id <= FASTQ_ID_MAX);
+    
+    int i, j;
+    
+    if(_AllModulesRings[module_id].already_register) {
+        LOG_DEBUG("Module %ld already register.\n", module_id);
+        return false;
     }
+    _AllModulesRings[module_id].already_register = true;
+    _AllModulesRings[module_id].epfd = epoll_create(1);
+    assert(_AllModulesRings[module_id].epfd);
+        
+    LOG_DEBUG("Create module %ld epoll fd = %d.\n", module_id, _AllModulesRings[module_id].epfd);
     
-    fprintf(fp, "nodes: %u, size: %u, msgsz: %lu\n", \
-                self->hdr->nodes, self->hdr->size, self->hdr->msg_size);
-    
-    unsigned int i;
-    for (i = 0; i < self->hdr->rings; i++) {
-        fprintf(fp, "%3i: %10u %10u\n", i, self->ring[i]._head, self->ring[i]._tail);
+    _AllModulesRings[module_id].ring_size = __power_of_2(ring_size);
+    _AllModulesRings[module_id].msg_size = msg_size;
+
+    for(i=1; i<=FASTQ_ID_MAX && i != module_id; i++) {
+        if(!_AllModulesRings[i].already_register) {
+            continue;
+        }
+        _AllModulesRings[module_id]._ring[i] = __fastq_create_ring(_AllModulesRings[module_id].epfd, i, module_id,\
+                                                                    __power_of_2(ring_size), msg_size);
+        if(!_AllModulesRings[i]._ring[module_id]) {
+            _AllModulesRings[i]._ring[module_id] = __fastq_create_ring(_AllModulesRings[i].epfd, module_id, i, \
+                                                    _AllModulesRings[module_id].ring_size, _AllModulesRings[i].msg_size);
+        }
     }
 }
 
-always_inline static struct FastQRing* 
-__fastq_ctx_get_ring(struct FastQContext *self, unsigned int from, unsigned int to) {
-    // TODO set errno and return error condition
-    assert(self->ptr != NULL);
-    return &self->ring[__fastq_ctx_np2r(self, from, to)];
-}
 
 always_inline static bool 
-__fastq_ctx_send(struct FastQContext *self, struct FastQRing *ring, const void *msg, size_t size) {
+__FastQSend(struct FastQRing *ring, const void *msg, const size_t size) {
+    assert(ring);
     assert(size <= (ring->_msg_size - sizeof(size_t)));
 
     unsigned int h = (ring->_head - 1) & ring->_size;
     unsigned int t = ring->_tail;
-    if (t == h)
+    if (t == h) {
         return false;
+    }
 
-    char *d = &self->data[self->ring->_offset + t*ring->_msg_size];
+    LOG_DEBUG("Send %ld->%ld.\n", ring->src, ring->dst);
+
+    char *d = &ring->_ring_data[t*ring->_msg_size];
     
     memcpy(d, &size, sizeof(size));
+    LOG_DEBUG("Send >>> memcpy size = %d\n", size);
     memcpy(d + sizeof(size), msg, size);
+    LOG_DEBUG("Send >>> memcpy addr = %x\n", *(unsigned long*)(d + sizeof(size)));
 
     // Barrier is needed to make sure that item is updated 
     // before it's made available to the reader
@@ -496,75 +224,63 @@ __fastq_ctx_send(struct FastQContext *self, struct FastQRing *ring, const void *
     return true;
 }
 
-always_inline  bool 
-FastQSendto(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
-    while (!__fastq_ctx_send(self, ring, msg, size)) {__relax();}
-    return true;
-}
-
-always_inline  bool 
-FastQSendNonblk(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
-    return __fastq_ctx_send(self, ring, msg, size);
-}
-
 always_inline bool 
-FastQSendMain(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
-    while (!__fastq_ctx_send(self, ring, msg, size)) {__relax();}
+FastQSend(unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct FastQRing *ring = _AllModulesRings[to]._ring[from];
+    while (!__FastQSend(ring, msg, size)) {__relax();}
     
     eventfd_write(ring->_evt_fd, 1);
     
+    LOG_DEBUG("Send done %ld->%ld, event fd = %d, msg = %p.\n", ring->src, ring->dst, ring->_evt_fd, msg);
     return true;
 }
 
 always_inline bool 
-FastQTrySendMain(struct FastQContext *self, unsigned int from, unsigned int to, const void *msg, size_t size) {
-    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
-    bool ret = __fastq_ctx_send(self, ring, msg, size);
+FastQTrySend(unsigned int from, unsigned int to, const void *msg, size_t size) {
+    struct FastQRing *ring = _AllModulesRings[to]._ring[from];
+    bool ret = __FastQSend(ring, msg, size);
     if(ret) {
         eventfd_write(ring->_evt_fd, 1);
+        LOG_DEBUG("Send done %ld->%ld, event fd = %d.\n", ring->src, ring->dst, ring->_evt_fd);
     }
     return ret;
 }
 
-
-
 always_inline static bool 
-__fastq_ctx_recv(struct FastQContext *self, struct FastQRing *ring, void *msg, size_t *size) {
+__FastQRecv(struct FastQRing *ring, void *msg, size_t *size) {
+
     unsigned int t = ring->_tail;
     unsigned int h = ring->_head;
-    if (h == t)
+    if (h == t) {
+//        LOG_DEBUG("Recv <<< %ld->%ld.\n", ring->src, ring->dst);
         return false;
+    }
+    
+    LOG_DEBUG("Recv <<< %ld->%ld.\n", ring->src, ring->dst);
 
-    char *d = &self->data[self->ring->_offset + h*ring->_msg_size];
+    char *d = &ring->_ring_data[h*ring->_msg_size];
 
     size_t recv_size;
     memcpy(&recv_size, d, sizeof(size_t));
+    LOG_DEBUG("Recv <<< memcpy recv_size = %d\n", recv_size);
     assert(recv_size <= *size && "buffer too small");
     *size = recv_size;
+    LOG_DEBUG("Recv <<< size\n");
     memcpy(msg, d + sizeof(size_t), recv_size);
+    LOG_DEBUG("Recv <<< memcpy addr = %x\n", *(unsigned long*)(d + sizeof(size_t)));
 
     // Barrier is needed to make sure that we finished reading the item
     // before moving the head
     mbarrier();
+    LOG_DEBUG("Recv <<< mbarrier\n");
 
-    ring->_head = (h + 1) & self->ring->_size;
+    ring->_head = (h + 1) & ring->_size;
     return true;
 }
 
-always_inline  bool 
-FastQRecvrom(struct FastQContext *self, unsigned int from, unsigned int to, void *msg, size_t *size) {
-    struct FastQRing *ring = __fastq_ctx_get_ring(self, from, to);
-    while (!__fastq_ctx_recv(self, ring, msg, size)) {
-        __relax();
-    }
-    return true;
-}
 
 always_inline  bool 
-FastQRecvMain(struct FastQContext *self, unsigned int node, msg_handler_t handler) {
+FastQRecv(unsigned int from, msg_handler_t handler) {
 
     eventfd_t cnt;
     int nfds;
@@ -575,19 +291,25 @@ FastQRecvMain(struct FastQContext *self, unsigned int node, msg_handler_t handle
     struct FastQRing *ring = NULL;
 
     while(1) {
-        nfds = epoll_wait(self->pepfd[node], events, 8, -1);
+        LOG_DEBUG("Recv start >>>>  epoll fd = %d.\n", _AllModulesRings[from].epfd);
+        nfds = epoll_wait(_AllModulesRings[from].epfd, events, 8, -1);
+        LOG_DEBUG("Recv epoll return epfd = %d.\n", _AllModulesRings[from].epfd);
+        
         for(;nfds--;) {
             ring = _evtfd_to_ring[events[nfds].data.fd]._ring;
-            eventfd_read(ring->_evt_fd, &cnt);
+            eventfd_read(events[nfds].data.fd, &cnt);
 //            if(cnt>1) {
 //                printf("cnt = =%ld\n", cnt);
 //            }
+            LOG_DEBUG("Event fd %d read return cnt = %ld.\n", events[nfds].data.fd, cnt);
             for(; cnt--;) {
-                while (!__fastq_ctx_recv(self, ring, &addr, &size)) {
+                LOG_DEBUG("<<< __FastQRecv.\n");
+                while (!__FastQRecv(ring, &addr, &size)) {
                     __relax();
                 }
-                
+                LOG_DEBUG("<<< __FastQRecv addr = %x, size = %ld.\n", addr, size);
                 handler(addr, size);
+                LOG_DEBUG("<<< __FastQRecv.\n");
                 addr = 0;
                 size = sizeof(unsigned long);
             }
@@ -598,19 +320,29 @@ FastQRecvMain(struct FastQContext *self, unsigned int node, msg_handler_t handle
 }
 
 
-always_inline  bool 
-FastQRecvNonblk(struct FastQContext *self, unsigned int from, unsigned int to, void *s, size_t *size) {
-    return __fastq_ctx_recv(self, __fastq_ctx_get_ring(self, from, to), s, size);
-}
-
-always_inline static ssize_t 
-FastQRecvNonblk2(struct FastQContext *self, unsigned int to, void *msg, size_t *size) {
-    // TODO "fair" receiving
-    unsigned int i;
-    for (i = 0; i < self->hdr->nodes; i++) {
-        if (to != i && FastQRecvNonblk(self, i, to, msg, size)) 
-            return true;
+always_inline void 
+FastQDump(FILE*fp) {
+    if(unlikely(!fp) || unlikely(!fp)) {
+        fp = stderr;
     }
-    return false;
+    
+    int i, j;
+    
+    for(i=1; i<=FASTQ_ID_MAX; i++) {
+        if(!_AllModulesRings[i].already_register) {
+            continue;
+        }
+        fprintf(fp, "\n------------------------------------------\n"\
+                    "ID: %3i, msgMax %4u, msgSize %4u\n"\
+                    "\t from-> to   %10s %10s\n", 
+                    i, _AllModulesRings[i].ring_size, _AllModulesRings[i].msg_size, "head", "tail");
+        
+        for(j=0; j<=FASTQ_ID_MAX; j++) { 
+            if(_AllModulesRings[i]._ring[j]) {
+                fprintf(fp, "\t %4i->%-4i  %10u %10u\n", \
+                                j, i, _AllModulesRings[i]._ring[j]->_head, _AllModulesRings[i]._ring[j]->_tail);
+            }
+        }
+    }
 }
 
