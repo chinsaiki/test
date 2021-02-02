@@ -54,6 +54,8 @@ typedef void (*msg_handler_t)(void*msg, size_t sz);
  */
 always_inline void 
 FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize);
+always_inline void 
+FastQCreateModuleStats(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize);
 
 /**
  *  FastQDump - 显示信息
@@ -62,6 +64,8 @@ FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, const
  */
 always_inline void 
 FastQDump(FILE*fp);
+always_inline void 
+FastQDumpStats(FILE*fp);
 
 /**
  *  FastQSend - 发送消息（轮询直至成功发送）
@@ -77,6 +81,8 @@ FastQDump(FILE*fp);
  */
 always_inline bool 
 FastQSend(unsigned int from, unsigned int to, const void *msg, size_t size);
+always_inline bool 
+FastQSendStats(unsigned int from, unsigned int to, const void *msg, size_t size);
 
 
 /**
@@ -93,6 +99,8 @@ FastQSend(unsigned int from, unsigned int to, const void *msg, size_t size);
  */
 always_inline bool 
 FastQTrySend(unsigned int from, unsigned int to, const void *msg, size_t size);
+always_inline bool 
+FastQTrySendStats(unsigned int from, unsigned int to, const void *msg, size_t size);
 
 /**
  *  FastQRecv - 接收消息
@@ -106,6 +114,8 @@ FastQTrySend(unsigned int from, unsigned int to, const void *msg, size_t size);
  */
 always_inline  bool 
 FastQRecv(unsigned int from, msg_handler_t handler);
+always_inline  bool 
+FastQRecvStats(unsigned int from, msg_handler_t handler);
 
 
 #endif /*<__fAStMQ_H>*/
