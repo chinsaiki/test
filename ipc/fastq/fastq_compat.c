@@ -390,7 +390,8 @@ _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
  */
 always_inline void 
 _FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
-    if(unlikely(!fp) || unlikely(!fp)) {
+    
+    if(unlikely(!fp)) {
         fp = stderr;
     }
     fprintf(fp, "\n FastQ Dump Information.\n");
