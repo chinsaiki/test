@@ -1,3 +1,12 @@
+/**********************************************************************************************************************\
+*  文件： fastq_compat.c
+*  介绍： 低时延队列 两套函数的接口 参见 fastq.h _FQ_NAME 定义
+*  作者： 荣涛
+*  日期：
+*       2021年2月2日 创建文件
+\**********************************************************************************************************************/
+
+
 
 // FastQRing
 struct _FQ_NAME(FastQRing) {
@@ -92,7 +101,14 @@ _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const uns
     
 }
 
-
+                      
+/**
+ *  FastQCreateModule - 注册消息队列
+ *  
+ *  param[in]   moduleID    模块ID， 范围 1 - FASTQ_ID_MAX
+ *  param[in]   msgMax      该模块 的 消息队列 的大小
+ *  param[in]   msgSize     最大传递的消息大小
+ */
 always_inline void 
 _FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ring_size, const unsigned int msg_size) {
     assert(module_id <= FASTQ_ID_MAX);
@@ -129,7 +145,9 @@ _FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ri
     }
 }
 
-
+/**
+ *  __FastQSend - 公共发送函数
+ */
 always_inline static bool 
 _FQ_NAME(__FastQSend)(struct _FQ_NAME(FastQRing) *ring, const void *msg, const size_t size) {
     assert(ring);
@@ -161,6 +179,18 @@ _FQ_NAME(__FastQSend)(struct _FQ_NAME(FastQRing) *ring, const void *msg, const s
     return true;
 }
 
+/**
+ *  FastQSend - 发送消息（轮询直至成功发送）
+ *  
+ *  param[in]   from    源模块ID， 范围 1 - FASTQ_ID_MAX 
+ *  param[in]   to      目的模块ID， 范围 1 - FASTQ_ID_MAX
+ *  param[in]   msg     传递的消息体
+ *  param[in]   size    传递的消息大小
+ *
+ *  return 成功true （轮询直至发送成功，只可能返回 true ）
+ *
+ *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
+ */
 always_inline bool 
 _FQ_NAME(FastQSend)(unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct _FQ_NAME(FastQRing) *ring = _FQ_NAME(_AllModulesRings)[to]._ring[from];
@@ -172,6 +202,18 @@ _FQ_NAME(FastQSend)(unsigned int from, unsigned int to, const void *msg, size_t 
     return true;
 }
 
+/**
+ *  FastQTrySend - 发送消息（尝试向队列中插入，当队列满是直接返回false）
+ *  
+ *  param[in]   from    源模块ID， 范围 1 - FASTQ_ID_MAX 
+ *  param[in]   to      目的模块ID， 范围 1 - FASTQ_ID_MAX
+ *  param[in]   msg     传递的消息体
+ *  param[in]   size    传递的消息大小
+ *
+ *  return 成功true 失败false
+ *
+ *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
+ */
 always_inline bool 
 _FQ_NAME(FastQTrySend)(unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct _FQ_NAME(FastQRing) *ring = _FQ_NAME(_AllModulesRings)[to]._ring[from];
@@ -218,7 +260,16 @@ _FQ_NAME(__FastQRecv)(struct _FQ_NAME(FastQRing) *ring, void *msg, size_t *size)
     return true;
 }
 
-
+/**
+ *  FastQRecv - 接收消息
+ *  
+ *  param[in]   from    从模块ID from 中读取消息， 范围 1 - FASTQ_ID_MAX 
+ *  param[in]   handler 消息处理函数，参照 msg_handler_t 说明
+ *
+ *  return 成功true 失败false
+ *
+ *  注意：from 需要使用 FastQCreateModule 注册后使用
+ */
 always_inline  bool 
 _FQ_NAME(FastQRecv)(unsigned int from, msg_handler_t handler) {
 
@@ -259,7 +310,11 @@ _FQ_NAME(FastQRecv)(unsigned int from, msg_handler_t handler) {
     return true;
 }
 
-
+/**
+ *  FastQDump - 显示信息
+ *  
+ *  param[in]   fp    文件指针
+ */
 always_inline void 
 _FQ_NAME(FastQDump)(FILE*fp) {
     if(unlikely(!fp) || unlikely(!fp)) {
@@ -274,8 +329,8 @@ _FQ_NAME(FastQDump)(FILE*fp) {
         }
 #ifdef FASTQ_STATISTICS //统计功能
         atomic64_t module_total_msgs[2];
-        atomic64_init(&module_total_msgs[0]); //总入队
-        atomic64_init(&module_total_msgs[1]); //总出队
+        atomic64_init(&module_total_msgs[0]); //总入队数量
+        atomic64_init(&module_total_msgs[1]); //总出队数量
 #endif        
         
         fprintf(fp, "\n------------------------------------------\n"\
