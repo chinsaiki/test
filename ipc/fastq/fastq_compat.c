@@ -33,7 +33,7 @@ struct _FQ_NAME(FastQRing) {
 // 从 event fd 查找 ring 的最快方法
 static  struct {
     struct _FQ_NAME(FastQRing) *_ring;
-} _FQ_NAME(_evtfd_to_ring)[FD_SETSIZE] = {NULL};
+} _FQ_NAME(_evtfd_to_ring)[FD_SETSIZE] = {{NULL}};
 
 
 //从 源module ID 和 目的module ID 到 _ring 最快的方法
@@ -57,7 +57,7 @@ static pthread_rwlock_t _FQ_NAME(_AllModulesRingsLock) = PTHREAD_RWLOCK_INITIALI
 /**
  *  FastQ 初始化 函数，初始化 _AllModulesRings 全局变量
  */
-static  __attribute__((constructor(101))) _FQ_NAME(__FastQInitCtor) () {
+static void __attribute__((constructor(101))) _FQ_NAME(__FastQInitCtor) () {
     int i, j;
     
     LOG_DEBUG("Init _module_src_dst_to_ring.\n");
@@ -76,7 +76,7 @@ static  __attribute__((constructor(101))) _FQ_NAME(__FastQInitCtor) () {
     }
 }
 
-always_inline  static struct _FQ_NAME(FastQRing) *
+always_inline  static inline struct _FQ_NAME(FastQRing) *
 _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const unsigned long dst, 
                       const unsigned int ring_size, const unsigned int msg_size) {
     struct _FQ_NAME(FastQRing) *new_ring = FastQMalloc(sizeof(struct _FQ_NAME(FastQRing)) + ring_size*(msg_size+sizeof(size_t)));
@@ -117,7 +117,7 @@ _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const uns
  *  param[in]   msgMax      该模块 的 消息队列 的大小
  *  param[in]   msgSize     最大传递的消息大小
  */
-always_inline void 
+always_inline void inline
 _FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ring_size, const unsigned int msg_size, \
                             const char *_file, const char *_func, const int _line) {
     assert(module_id <= FASTQ_ID_MAX && "Module ID out of range");
@@ -126,7 +126,7 @@ _FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ri
         assert(0 && "NULL pointer error");
     }
     
-    int i, j;
+    int i;
 
     pthread_rwlock_wrlock(&_FQ_NAME(_AllModulesRingsLock));
     
@@ -220,7 +220,7 @@ _FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ri
 /**
  *  __FastQSend - 公共发送函数
  */
-always_inline static bool 
+always_inline static bool inline
 _FQ_NAME(__FastQSend)(struct _FQ_NAME(FastQRing) *ring, const void *msg, const size_t size) {
     assert(ring);
     assert(size <= (ring->_msg_size - sizeof(size_t)));
@@ -236,7 +236,7 @@ _FQ_NAME(__FastQSend)(struct _FQ_NAME(FastQRing) *ring, const void *msg, const s
     char *d = &ring->_ring_data[t*ring->_msg_size];
     
     memcpy(d, &size, sizeof(size));
-    LOG_DEBUG("Send >>> memcpy size = %d\n", size);
+    LOG_DEBUG("Send >>> memcpy msg %lx( %lx) size = %d\n", msg, *(unsigned long*)msg, size);
     memcpy(d + sizeof(size), msg, size);
     LOG_DEBUG("Send >>> memcpy addr = %x\n", *(unsigned long*)(d + sizeof(size)));
 
@@ -263,7 +263,7 @@ _FQ_NAME(__FastQSend)(struct _FQ_NAME(FastQRing) *ring, const void *msg, const s
  *
  *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
  */
-always_inline bool 
+always_inline bool inline
 _FQ_NAME(FastQSend)(unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct _FQ_NAME(FastQRing) *ring = _FQ_NAME(_AllModulesRings)[to]._ring[from];
     while (!_FQ_NAME(__FastQSend)(ring, msg, size)) {__relax();}
@@ -286,9 +286,10 @@ _FQ_NAME(FastQSend)(unsigned int from, unsigned int to, const void *msg, size_t 
  *
  *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
  */
-always_inline bool 
+always_inline bool inline
 _FQ_NAME(FastQTrySend)(unsigned int from, unsigned int to, const void *msg, size_t size) {
     struct _FQ_NAME(FastQRing) *ring = _FQ_NAME(_AllModulesRings)[to]._ring[from];
+    LOG_DEBUG("Send >>> msg %lx( %lx) size = %d\n", msg, *(unsigned long*)msg, size);
     bool ret = _FQ_NAME(__FastQSend)(ring, msg, size);
     if(ret) {
         eventfd_write(ring->_evt_fd, 1);
@@ -297,7 +298,7 @@ _FQ_NAME(FastQTrySend)(unsigned int from, unsigned int to, const void *msg, size
     return ret;
 }
 
-always_inline static bool 
+always_inline static bool inline
 _FQ_NAME(__FastQRecv)(struct _FQ_NAME(FastQRing) *ring, void *msg, size_t *size) {
 
     unsigned int t = ring->_tail;
@@ -319,6 +320,7 @@ _FQ_NAME(__FastQRecv)(struct _FQ_NAME(FastQRing) *ring, void *msg, size_t *size)
     LOG_DEBUG("Recv <<< size\n");
     memcpy(msg, d + sizeof(size_t), recv_size);
     LOG_DEBUG("Recv <<< memcpy addr = %x\n", *(unsigned long*)(d + sizeof(size_t)));
+    LOG_DEBUG("Recv <<< memcpy msg %lx( %lx) size = %d\n", msg, *(unsigned long*)msg, *size);
 
     // Barrier is needed to make sure that we finished reading the item
     // before moving the head
@@ -342,7 +344,7 @@ _FQ_NAME(__FastQRecv)(struct _FQ_NAME(FastQRing) *ring, void *msg, size_t *size)
  *
  *  注意：from 需要使用 FastQCreateModule 注册后使用
  */
-always_inline  bool 
+always_inline  bool inline
 _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
 
     assert(handler && "NULL pointer error.");
@@ -351,8 +353,8 @@ _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
     int nfds;
     struct epoll_event events[8];
     
-    unsigned long addr;
-    size_t size = sizeof(unsigned long);
+    char addr[1024] = {0};
+    size_t size = sizeof(addr);
     struct _FQ_NAME(FastQRing) *ring = NULL;
 
     while(1) {
@@ -369,14 +371,14 @@ _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
             LOG_DEBUG("Event fd %d read return cnt = %ld.\n", events[nfds].data.fd, cnt);
             for(; cnt--;) {
                 LOG_DEBUG("<<< _FQ_NAME(__FastQRecv).\n");
-                while (!_FQ_NAME(__FastQRecv)(ring, &addr, &size)) {
+                while (!_FQ_NAME(__FastQRecv)(ring, addr, &size)) {
                     __relax();
                 }
-                LOG_DEBUG("<<< _FQ_NAME(__FastQRecv) addr = %x, size = %ld.\n", addr, size);
-                handler(addr, size);
-                LOG_DEBUG("<<< _FQ_NAME(__FastQRecv).\n");
-                addr = 0;
-                size = sizeof(unsigned long);
+                LOG_DEBUG("<<< _FQ_NAME(__FastQRecv) addr = %lx, size = %ld.\n", *(unsigned long*)addr, size);
+                handler((void*)addr, size);
+                LOG_DEBUG("<<< _FQ_NAME(__FastQRecv) done.\n");
+//                addr[0] = 0;
+//                size = sizeof(unsigned long);
             }
 
         }
@@ -390,7 +392,7 @@ _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
  *  param[in]   fp    文件指针,当 fp == NULL，默认使用 stderr 
  *  param[in]   module_id 需要显示的模块ID， 等于 0 时显示全部
  */
-always_inline void 
+always_inline void inline
 _FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
     
     if(unlikely(!fp)) {
@@ -398,7 +400,7 @@ _FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
     }
     fprintf(fp, "\n FastQ Dump Information.\n");
 
-    int i, j, max_module = FASTQ_ID_MAX;
+    unsigned long i, j, max_module = FASTQ_ID_MAX;
 
     if(module_id == 0 || module_id > FASTQ_ID_MAX) {
         i = 1;
@@ -425,7 +427,7 @@ _FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
 #endif        
         
         fprintf(fp, "------------------------------------------\n"\
-                    "ID: %3i, msgMax %4u, msgSize %4u\n"\
+                    "ID: %3ld, msgMax %4u, msgSize %4u\n"\
                     "\t from-> to   %10s %10s"
 #ifdef FASTQ_STATISTICS //统计功能
                     " %16s %16s %16s "
@@ -443,9 +445,9 @@ _FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
         
         for(j=0; j<=FASTQ_ID_MAX; j++) { 
             if(_FQ_NAME(_AllModulesRings)[i]._ring[j]) {
-                fprintf(fp, "\t %4i->%-4i  %10u %10u"
+                fprintf(fp, "\t %4ld->%-4ld  %10u %10u"
 #ifdef FASTQ_STATISTICS //统计功能
-                            " %16u %16u %16u"
+                            " %16ld %16ld %16ld"
 #endif                            
                             "\n" \
                             , j, i, 
@@ -466,10 +468,11 @@ _FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
         }
         
 #ifdef FASTQ_STATISTICS //统计功能
-        fprintf(fp, "\t Total enqueue %16u, dequeue %16u\n", atomic64_read(&module_total_msgs[0]), atomic64_read(&module_total_msgs[1]));
+        fprintf(fp, "\t Total enqueue %16ld, dequeue %16ld\n", atomic64_read(&module_total_msgs[0]), atomic64_read(&module_total_msgs[1]));
 #endif
     }
     fflush(fp);
     return;
 }
+
 

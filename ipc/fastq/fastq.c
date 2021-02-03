@@ -60,6 +60,10 @@
 #define cachelinealigned __attribute__((aligned(64)))
 #endif
 
+#ifndef _unused
+#define _unused             __attribute__((unused))
+#endif
+
 //#define FASTQ_DEBUG
 #ifdef FASTQ_DEBUG
 #define LOG_DEBUG(fmt...)  do{printf("\033[33m[%s:%d]", __func__, __LINE__);printf(fmt);printf("\033[m");}while(0)
@@ -74,20 +78,25 @@ typedef struct {
 	volatile int64_t cnt;  /**< Internal counter value. */
 } atomic64_t;
 
+#pragma GCC diagnostic push
+
+#pragma GCC diagnostic ignored "-Wattributes"
+
+
 
 // 内存屏障
-static inline void always_inline mbarrier() { asm volatile("": : :"memory"); }
+always_inline static void  inline _unused mbarrier() { asm volatile("": : :"memory"); }
 // This version requires SSE capable CPU.
-static inline void always_inline mrwbarrier() { asm volatile("mfence":::"memory"); }
-static inline void always_inline mrbarrier()  { asm volatile("lfence":::"memory"); }
-static inline void always_inline mwbarrier()  { asm volatile("sfence":::"memory"); }
-static inline void always_inline __relax()  { asm volatile ("pause":::"memory"); } 
-static inline void always_inline __lock()   { asm volatile ("cli" ::: "memory"); }
-static inline void always_inline __unlock() { asm volatile ("sti" ::: "memory"); }
+always_inline static void  inline _unused mrwbarrier() { asm volatile("mfence":::"memory"); }
+always_inline static void  inline _unused mrbarrier()  { asm volatile("lfence":::"memory"); }
+always_inline static void  inline _unused mwbarrier()  { asm volatile("sfence":::"memory"); }
+always_inline static void  inline _unused __relax()  { asm volatile ("pause":::"memory"); } 
+always_inline static void  inline _unused __lock()   { asm volatile ("cli" ::: "memory"); }
+always_inline static void  inline _unused __unlock() { asm volatile ("sti" ::: "memory"); }
 
 
 
-static inline int always_inline
+static inline int always_inline _unused 
 atomic64_cmpset(volatile uint64_t *dst, uint64_t exp, uint64_t src)
 {
 	uint8_t res;
@@ -106,7 +115,7 @@ atomic64_cmpset(volatile uint64_t *dst, uint64_t exp, uint64_t src)
 	return res;
 }
 
-static inline uint64_t always_inline
+static inline uint64_t always_inline _unused
 atomic64_exchange(volatile uint64_t *dst, uint64_t val)
 {
 	asm volatile(
@@ -118,25 +127,25 @@ atomic64_exchange(volatile uint64_t *dst, uint64_t val)
 	return val;
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_init(atomic64_t *v)
 {
 	atomic64_cmpset((volatile uint64_t *)&v->cnt, v->cnt, 0);
 }
 
-static inline int64_t always_inline
+static inline int64_t always_inline _unused
 atomic64_read(atomic64_t *v)
 {
     return v->cnt;
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_set(atomic64_t *v, int64_t new_value)
 {
     atomic64_cmpset((volatile uint64_t *)&v->cnt, v->cnt, new_value);
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_add(atomic64_t *v, int64_t inc)
 {
 	asm volatile(
@@ -148,7 +157,7 @@ atomic64_add(atomic64_t *v, int64_t inc)
 			);
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_sub(atomic64_t *v, int64_t dec)
 {
 	asm volatile(
@@ -160,7 +169,7 @@ atomic64_sub(atomic64_t *v, int64_t dec)
 			);
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_inc(atomic64_t *v)
 {
 	asm volatile(
@@ -171,7 +180,7 @@ atomic64_inc(atomic64_t *v)
 			);
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_dec(atomic64_t *v)
 {
 	asm volatile(
@@ -182,7 +191,7 @@ atomic64_dec(atomic64_t *v)
 			);
 }
 
-static inline int64_t always_inline
+static inline int64_t always_inline _unused
 atomic64_add_return(atomic64_t *v, int64_t inc)
 {
 	int64_t prev = inc;
@@ -197,13 +206,13 @@ atomic64_add_return(atomic64_t *v, int64_t inc)
 	return prev + inc;
 }
 
-static inline int64_t always_inline
+static inline int64_t always_inline _unused
 atomic64_sub_return(atomic64_t *v, int64_t dec)
 {
 	return atomic64_add_return(v, -dec);
 }
 
-static inline int always_inline
+static inline int always_inline _unused
 atomic64_inc_and_test(atomic64_t *v)
 {
 	uint8_t ret;
@@ -219,7 +228,7 @@ atomic64_inc_and_test(atomic64_t *v)
 	return ret != 0;
 }
 
-static inline int always_inline
+static inline int always_inline _unused
 atomic64_dec_and_test(atomic64_t *v)
 {
 	uint8_t ret;
@@ -234,20 +243,20 @@ atomic64_dec_and_test(atomic64_t *v)
 	return ret != 0;
 }
 
-static inline int always_inline
+static inline int always_inline _unused
 atomic64_test_and_set(atomic64_t *v)
 {
 	return atomic64_cmpset((volatile uint64_t *)&v->cnt, 0, 1);
 }
 
-static inline void always_inline
+static inline void always_inline _unused
 atomic64_clear(atomic64_t *v)
 {
 	atomic64_set(v, 0);
 }
 
 
-always_inline static unsigned int 
+always_inline static unsigned int  _unused
 __power_of_2(unsigned int size) {
     unsigned int i;
     for (i=0; (1U << i) < size; i++);
@@ -273,4 +282,7 @@ __power_of_2(unsigned int size) {
 #define FASTQ_STATISTICS //统计功能
 
 #include "fastq_compat.c"
+
+
+#pragma GCC diagnostic pop
 

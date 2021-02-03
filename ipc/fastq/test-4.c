@@ -1,5 +1,5 @@
 /**********************************************************************************************************************\
-*  文件： test-1.c
+*  文件： test-4.c
 *  介绍： 低时延队列 多入单出队列 通知+轮询接口测试例
 *  作者： 荣涛
 *  日期：
@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <pthread.h>
 
+//#define _FASTQ_STATS //开启统计功能
 #include <fastq.h>
 
 
@@ -39,8 +40,8 @@ enum {
 
 typedef struct  {
 #define TEST_MSG_MAGIC 0x123123ff    
-    int magic;
     unsigned long value;
+    int magic;
     uint64_t latency;
 }__attribute__((aligned(64))) test_msgs_t;
 
@@ -64,11 +65,11 @@ void *enqueue_task(void*arg){
     unsigned long send_cnt = 0;
     
     while(1) {
-//        usleep(100000);
+        usleep(1000000);
         pmsg = &ptest_msg[i++%TEST_NUM];
         pmsg->latency = RDTSC();
-        unsigned long addr = (unsigned long)pmsg;
-        FastQTrySend(parg->srcModuleId, NODE_1, &addr, sizeof(unsigned long));
+        printf("send %lx(%lx)\n", pmsg->value, *(unsigned long*)pmsg);
+        VOS_FastQTrySend(parg->srcModuleId, NODE_1, pmsg, sizeof(test_msgs_t));
 
         send_cnt++;
         
@@ -81,12 +82,9 @@ void *enqueue_task(void*arg){
 
 void handler_test_msg(void* msg, size_t size)
 {
-    unsigned long addr =  *(unsigned long*)msg;
-    test_msgs_t *pmsg;
-
-    pmsg = (test_msgs_t *)addr;
+    test_msgs_t *pmsg = (test_msgs_t *)msg;
     
-//    printf("recv %lx\n", pmsg->value);
+    printf("recv %lx\n", pmsg->value);
     
     latency_total += RDTSC() - pmsg->latency;
     pmsg->latency = 0;
@@ -106,13 +104,13 @@ void handler_test_msg(void* msg, size_t size)
 
 void *dequeue_task(void*arg) {
     
-    FastQRecv( NODE_1, handler_test_msg);
+    VOS_FastQRecv( NODE_1, handler_test_msg);
     pthread_exit(NULL);
 }
 
 int sig_handler(int signum) {
 
-    FastQDump(NULL, NODE_1);
+    VOS_FastQDump(NULL, NODE_1);
     exit(1);
 }
 
@@ -130,10 +128,10 @@ int main()
     int max_msg = 16;
     
     signal(SIGINT, sig_handler);
-    FastQCreateModule(NODE_1, max_msg, sizeof(unsigned long), __FILE__, __func__, __LINE__);
-    FastQCreateModule(NODE_2, max_msg, sizeof(unsigned long), __FILE__, __func__, __LINE__);
-    FastQCreateModule(NODE_3, max_msg, sizeof(unsigned long), __FILE__, __func__, __LINE__);
-    FastQCreateModule(NODE_4, max_msg, sizeof(unsigned long), __FILE__, __func__, __LINE__);
+    VOS_FastQCreateModule(NODE_1, max_msg, sizeof(test_msgs_t));
+    VOS_FastQCreateModule(NODE_2, max_msg, sizeof(test_msgs_t));
+    VOS_FastQCreateModule(NODE_3, max_msg, sizeof(test_msgs_t));
+    VOS_FastQCreateModule(NODE_4, max_msg, sizeof(test_msgs_t));
     
     unsigned int i =0;
     test_msgs21 = (test_msgs_t *)malloc(sizeof(test_msgs_t)*TEST_NUM);
@@ -185,6 +183,7 @@ int main()
 
     return EXIT_SUCCESS;
 }
+
 
 
 

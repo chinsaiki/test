@@ -52,7 +52,7 @@ typedef void (*fq_msg_handler_t)(void*msg, size_t sz);
  *  param[in]   msgMax      该模块 的 消息队列 的大小
  *  param[in]   msgSize     最大传递的消息大小
  */
-always_inline void 
+always_inline void inline
 VOS_FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize);
 
 /**
@@ -61,7 +61,7 @@ VOS_FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, c
  *  param[in]   fp    文件指针
  *  param[in]   module_id 需要显示的模块ID， 等于 0 时显示全部
  */
-always_inline void 
+always_inline void inline
 VOS_FastQDump(FILE*fp, unsigned long moduleID);
 
 /**
@@ -69,7 +69,7 @@ VOS_FastQDump(FILE*fp, unsigned long moduleID);
  *  
  *  param[in]   fp    文件指针
  */
-always_inline void 
+always_inline void inline
 VOS_FastQDumpAllModule(FILE*fp);
 
 
@@ -85,7 +85,7 @@ VOS_FastQDumpAllModule(FILE*fp);
  *
  *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
  */
-always_inline bool 
+always_inline bool inline
 VOS_FastQSend(unsigned int from, unsigned int to, const void *msg, size_t size);
 
 
@@ -101,7 +101,7 @@ VOS_FastQSend(unsigned int from, unsigned int to, const void *msg, size_t size);
  *
  *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
  */
-always_inline bool 
+always_inline bool inline
 VOS_FastQTrySend(unsigned int from, unsigned int to, const void *msg, size_t size);
 
 /**
@@ -114,7 +114,7 @@ VOS_FastQTrySend(unsigned int from, unsigned int to, const void *msg, size_t siz
  *
  *  注意：from 需要使用 FastQCreateModule 注册后使用
  */
-always_inline  bool 
+always_inline  bool inline
 VOS_FastQRecv(unsigned int from, fq_msg_handler_t handler);
 
 
@@ -156,10 +156,10 @@ VOS_FastQRecv(unsigned int from, fq_msg_handler_t handler);
  *  param[in]   msgMax      该模块 的 消息队列 的大小
  *  param[in]   msgSize     最大传递的消息大小
  */
-always_inline void 
+always_inline void inline
 FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize, 
                             const char *_file, const char *_func, const int _line);
-always_inline void 
+always_inline void inline
 FastQCreateModuleStats(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize, 
                             const char *_file, const char *_func, const int _line);
 
@@ -170,9 +170,9 @@ FastQCreateModuleStats(const unsigned long moduleID, const unsigned int msgMax, 
  *  param[in]   fp    文件指针
  *  param[in]   module_id 需要显示的模块ID， 等于 0 时显示全部
  */
-always_inline void 
+always_inline void inline
 FastQDump(FILE*fp, unsigned long module_id);
-always_inline void 
+always_inline void inline
 FastQDumpStats(FILE*fp, unsigned long module_id);
 
 /**
@@ -187,9 +187,9 @@ FastQDumpStats(FILE*fp, unsigned long module_id);
  *
  *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
  */
-always_inline bool 
+always_inline bool inline
 FastQSend(unsigned int from, unsigned int to, const void *msg, size_t size);
-always_inline bool 
+always_inline bool inline
 FastQSendStats(unsigned int from, unsigned int to, const void *msg, size_t size);
 
 
@@ -205,9 +205,9 @@ FastQSendStats(unsigned int from, unsigned int to, const void *msg, size_t size)
  *
  *  注意：from 和 to 需要使用 FastQCreateModule 注册后使用
  */
-always_inline bool 
+always_inline bool inline
 FastQTrySend(unsigned int from, unsigned int to, const void *msg, size_t size);
-always_inline bool 
+always_inline bool inline
 FastQTrySendStats(unsigned int from, unsigned int to, const void *msg, size_t size);
 
 /**
@@ -220,11 +220,12 @@ FastQTrySendStats(unsigned int from, unsigned int to, const void *msg, size_t si
  *
  *  注意：from 需要使用 FastQCreateModule 注册后使用
  */
-always_inline  bool 
+always_inline  bool inline
 FastQRecv(unsigned int from, fq_msg_handler_t handler);
-always_inline  bool 
+always_inline  bool inline
 FastQRecvStats(unsigned int from, fq_msg_handler_t handler);
 
 
 #endif /*<__fAStMQ_H>*/
+
 

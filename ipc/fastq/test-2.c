@@ -81,9 +81,10 @@ void *enqueue_task(void*arg){
 
 void handler_test_msg(void* msg, size_t size)
 {
+    unsigned long addr =  *(unsigned long*)msg;
     test_msgs_t *pmsg;
 
-    pmsg = (test_msgs_t *)msg;
+    pmsg = (test_msgs_t *)addr;
     
 //    printf("recv %lx\n", pmsg->value);
     
