@@ -345,6 +345,8 @@ _FQ_NAME(__FastQRecv)(struct _FQ_NAME(FastQRing) *ring, void *msg, size_t *size)
 always_inline  bool 
 _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
 
+    assert(handler && "NULL pointer error.");
+
     eventfd_t cnt;
     int nfds;
     struct epoll_event events[8];

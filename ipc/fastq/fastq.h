@@ -14,6 +14,7 @@
 *   
 *   VOS_FastQCreateModule   注册消息队列
 *   VOS_FastQDump           显示信息
+*   VOS_FastQDumpAllModule  显示信息（所有模块）
 *   VOS_FastQSend           发送消息（轮询直至成功发送）
 *   VOS_FastQTrySend        发送消息（尝试向队列中插入，当队列满是直接返回false）
 *   VOS_FastQRecv           接收消息
@@ -52,8 +53,7 @@ typedef void (*fq_msg_handler_t)(void*msg, size_t sz);
  *  param[in]   msgSize     最大传递的消息大小
  */
 always_inline void 
-VOS_FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize, 
-                            const char *_file, const char *_func, const int _line);
+VOS_FastQCreateModule(const unsigned long moduleID, const unsigned int msgMax, const unsigned int msgSize);
 
 /**
  *  VOS_FastQDump - 显示信息
