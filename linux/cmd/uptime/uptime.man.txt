@@ -1,0 +1,41 @@
+UPTIME(1)                                           Linux User's Manual                                           UPTIME(1)
+
+
+
+NAME(名
+       uptime - 告知系统运行了多久时间.
+
+SYNOPSIS(总
+       uptime
+       uptime [-V]
+
+DESCRIPTION(描
+       uptime 给出下列信息的一行显示.  当前时间, 系统运行了多久时间, 当前登陆的用户有多少, 以及前1,5和15分钟系统的平均负载.
+
+       这与通过 w(1) 显示的首行包括的信息相同.
+
+FILES(相
+       /var/run/utmp     关于当前谁在登录的信息
+       /proc     进程信息
+
+AUTHORS(作
+       Larry Greenfield <greenfie@gauss.rutgers.edu>和 Michael K. Johnson <johnsonm@sunsite.unc.edu>.
+
+       请将bug的报告发到<procps-bugs@redhat.com>
+
+SEE ALSO (另
+       ps(1), top(1), utmp(5), w(1)
+
+
+[中
+       riser <boomer@ccidnet.com>
+
+[中
+       2001/08/08
+
+《
+       http://cmpp.linuxforum.net
+
+
+
+Cohesive Systems                                       1993年1月26日                                              UPTIME(1)
