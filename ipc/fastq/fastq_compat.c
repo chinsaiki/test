@@ -43,10 +43,20 @@ struct _FQ_NAME(FastQModule) {
     unsigned long module_id; //是 1- FASTQ_ID_MAX 的任意值
     unsigned int ring_size; //队列大小，ring 节点数
     unsigned int msg_size; //消息大小， ring 节点大小
+    
+    char *_file; //调用注册函数的 文件名
+    char *_func; //调用注册函数的 函数名
+    int _line; //调用注册函数的 文件中的行号
+    
     struct _FQ_NAME(FastQRing) **_ring;
 };
-static struct _FQ_NAME(FastQModule) *_FQ_NAME(_AllModulesRings) = NULL;
 
+static struct _FQ_NAME(FastQModule) *_FQ_NAME(_AllModulesRings) = NULL;
+static pthread_rwlock_t _FQ_NAME(_AllModulesRingsLock) = PTHREAD_RWLOCK_INITIALIZER; //只在注册时保护使用
+
+/**
+ *  FastQ 初始化 函数，初始化 _AllModulesRings 全局变量
+ */
 static  __attribute__((constructor(101))) _FQ_NAME(__FastQInitCtor) () {
     int i, j;
     
@@ -70,8 +80,7 @@ always_inline  static struct _FQ_NAME(FastQRing) *
 _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const unsigned long dst, 
                       const unsigned int ring_size, const unsigned int msg_size) {
     struct _FQ_NAME(FastQRing) *new_ring = FastQMalloc(sizeof(struct _FQ_NAME(FastQRing)) + ring_size*(msg_size+sizeof(size_t)));
-    assert(new_ring);
-    assert(epfd);
+    assert(new_ring && "Allocate FastQRing Failed. (OOM error)");
     
     LOG_DEBUG("Create ring %ld->%ld.\n", src, dst);
     new_ring->src = src;
@@ -93,7 +102,6 @@ _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const uns
     LOG_DEBUG("Add eventfd %d to epollfd %d.\n", new_ring->_evt_fd, epfd);
 
 #ifdef FASTQ_STATISTICS //统计功能
-
     atomic64_init(&new_ring->nr_dequeue);
     atomic64_init(&new_ring->nr_enqueue);
 #endif
@@ -110,19 +118,39 @@ _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const uns
  *  param[in]   msgSize     最大传递的消息大小
  */
 always_inline void 
-_FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ring_size, const unsigned int msg_size) {
-    assert(module_id <= FASTQ_ID_MAX);
+_FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ring_size, const unsigned int msg_size, \
+                            const char *_file, const char *_func, const int _line) {
+    assert(module_id <= FASTQ_ID_MAX && "Module ID out of range");
+
+    if(unlikely(!_file) || unlikely(!_func) || unlikely(_line <= 0)) {
+        assert(0 && "NULL pointer error");
+    }
     
     int i, j;
+
+    pthread_rwlock_wrlock(&_FQ_NAME(_AllModulesRingsLock));
     
     if(_FQ_NAME(_AllModulesRings)[module_id].already_register) {
         LOG_DEBUG("Module %ld already register.\n", module_id);
-        return false;
+        fprintf(stderr, "\033[1;5;31mModule ID %ld already register in file <%s>'s function <%s> at line %d\033[m\n", \
+                        module_id,
+                        _FQ_NAME(_AllModulesRings)[module_id]._file,
+                        _FQ_NAME(_AllModulesRings)[module_id]._func,
+                        _FQ_NAME(_AllModulesRings)[module_id]._line);
+    
+        pthread_rwlock_unlock(&_FQ_NAME(_AllModulesRingsLock));
+        assert(0);
+        return ;
     }
+    
     _FQ_NAME(_AllModulesRings)[module_id].already_register = true;
     _FQ_NAME(_AllModulesRings)[module_id].epfd = epoll_create(1);
-    assert(_FQ_NAME(_AllModulesRings)[module_id].epfd);
-        
+    assert(_FQ_NAME(_AllModulesRings)[module_id].epfd && "Epoll create error");
+
+    _FQ_NAME(_AllModulesRings)[module_id]._file = FastQStrdup(_file);
+    _FQ_NAME(_AllModulesRings)[module_id]._func = FastQStrdup(_func);
+    _FQ_NAME(_AllModulesRings)[module_id]._line = _line;
+    
     LOG_DEBUG("Create module %ld epoll fd = %d.\n", module_id, _FQ_NAME(_AllModulesRings)[module_id].epfd);
     
     _FQ_NAME(_AllModulesRings)[module_id].ring_size = __power_of_2(ring_size);
@@ -132,17 +160,61 @@ _FQ_NAME(FastQCreateModule)(const unsigned long module_id, const unsigned int ri
     _FQ_NAME(_AllModulesRings)[module_id]._ring[0] = _FQ_NAME(__fastq_create_ring)(_FQ_NAME(_AllModulesRings)[module_id].epfd, 0, module_id,\
                                                                 __power_of_2(ring_size), msg_size);
 
+    /*建立住的模块和其他模块的连接关系
+        若注册前的连接关系如下：
+        下图为已经注册过两个模块 (模块 A 和 模块 B) 的数据结构
+
+                    +---+
+                    |   |
+                    | A |
+                    |   |
+                  / +---+
+                 /  /
+                /  /
+               /  /
+              /  /
+             /  /
+         +---+ /
+         |   |
+         | B |
+         |   |
+         +---+
+
+        在此基础上注册新的模块 (模块 C) 通过接下来的操作，将会创建四个 ring
+
+                    +---+
+                    |   |
+                    | A |
+                    |   |
+                  / +---+ \
+                 /  /   \  \
+                /  /     \  \
+               /  /       \  \
+              /  /         \  \
+             /  /           \  \
+         +---+ /             \ +---+ 
+         |   | <-------------- |   |
+         | B |                 | C |
+         |   | --------------> |   |
+         +---+                 +---+
+    */
     for(i=1; i<=FASTQ_ID_MAX && i != module_id; i++) {
         if(!_FQ_NAME(_AllModulesRings)[i].already_register) {
             continue;
         }
-        _FQ_NAME(_AllModulesRings)[module_id]._ring[i] = _FQ_NAME(__fastq_create_ring)(_FQ_NAME(_AllModulesRings)[module_id].epfd, i, module_id,\
+        _FQ_NAME(_AllModulesRings)[module_id]._ring[i] = \
+                            _FQ_NAME(__fastq_create_ring)(_FQ_NAME(_AllModulesRings)[module_id].epfd, i, module_id,\
                                                                     __power_of_2(ring_size), msg_size);
         if(!_FQ_NAME(_AllModulesRings)[i]._ring[module_id]) {
-            _FQ_NAME(_AllModulesRings)[i]._ring[module_id] = _FQ_NAME(__fastq_create_ring)(_FQ_NAME(_AllModulesRings)[i].epfd, module_id, i, \
+            _FQ_NAME(_AllModulesRings)[i]._ring[module_id] = \
+                    _FQ_NAME(__fastq_create_ring)(_FQ_NAME(_AllModulesRings)[i].epfd, module_id, i, \
                                                     _FQ_NAME(_AllModulesRings)[module_id].ring_size, _FQ_NAME(_AllModulesRings)[i].msg_size);
         }
     }
+    
+    pthread_rwlock_unlock(&_FQ_NAME(_AllModulesRingsLock));
+
+    return;
 }
 
 /**
@@ -264,14 +336,14 @@ _FQ_NAME(__FastQRecv)(struct _FQ_NAME(FastQRing) *ring, void *msg, size_t *size)
  *  FastQRecv - 接收消息
  *  
  *  param[in]   from    从模块ID from 中读取消息， 范围 1 - FASTQ_ID_MAX 
- *  param[in]   handler 消息处理函数，参照 msg_handler_t 说明
+ *  param[in]   handler 消息处理函数，参照 fq_msg_handler_t 说明
  *
  *  return 成功true 失败false
  *
  *  注意：from 需要使用 FastQCreateModule 注册后使用
  */
 always_inline  bool 
-_FQ_NAME(FastQRecv)(unsigned int from, msg_handler_t handler) {
+_FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
 
     eventfd_t cnt;
     int nfds;
@@ -313,27 +385,43 @@ _FQ_NAME(FastQRecv)(unsigned int from, msg_handler_t handler) {
 /**
  *  FastQDump - 显示信息
  *  
- *  param[in]   fp    文件指针
+ *  param[in]   fp    文件指针,当 fp == NULL，默认使用 stderr 
+ *  param[in]   module_id 需要显示的模块ID， 等于 0 时显示全部
  */
 always_inline void 
-_FQ_NAME(FastQDump)(FILE*fp) {
+_FQ_NAME(FastQDump)(FILE*fp, unsigned long module_id) {
     if(unlikely(!fp) || unlikely(!fp)) {
         fp = stderr;
     }
+    fprintf(fp, "\n FastQ Dump Information.\n");
+
+    int i, j, max_module = FASTQ_ID_MAX;
+
+    if(module_id == 0 || module_id > FASTQ_ID_MAX) {
+        i = 1;
+        max_module = FASTQ_ID_MAX;
+    } else {
+        i = module_id;
+        max_module = module_id;
+    }
     
-    int i, j;
     
-    for(i=1; i<=FASTQ_ID_MAX; i++) {
+    for(i=1; i<=max_module; i++) {
         if(!_FQ_NAME(_AllModulesRings)[i].already_register) {
             continue;
         }
+        fprintf(fp, "\033[1;31mModule ID %ld register in file <%s>'s function <%s> at line %d\033[m\n", \
+                        i,
+                        _FQ_NAME(_AllModulesRings)[i]._file,
+                        _FQ_NAME(_AllModulesRings)[i]._func,
+                        _FQ_NAME(_AllModulesRings)[i]._line);
 #ifdef FASTQ_STATISTICS //统计功能
         atomic64_t module_total_msgs[2];
         atomic64_init(&module_total_msgs[0]); //总入队数量
         atomic64_init(&module_total_msgs[1]); //总出队数量
 #endif        
         
-        fprintf(fp, "\n------------------------------------------\n"\
+        fprintf(fp, "------------------------------------------\n"\
                     "ID: %3i, msgMax %4u, msgSize %4u\n"\
                     "\t from-> to   %10s %10s"
 #ifdef FASTQ_STATISTICS //统计功能
@@ -378,5 +466,7 @@ _FQ_NAME(FastQDump)(FILE*fp) {
         fprintf(fp, "\t Total enqueue %16u, dequeue %16u\n", atomic64_read(&module_total_msgs[0]), atomic64_read(&module_total_msgs[1]));
 #endif
     }
+    fflush(fp);
+    return;
 }
 
