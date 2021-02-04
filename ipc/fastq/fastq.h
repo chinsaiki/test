@@ -148,6 +148,8 @@ VOS_FastQRecv(unsigned int from, fq_msg_handler_t handler);
 
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
 
 /**
  *  FastQCreateModule - 注册消息队列
@@ -225,6 +227,7 @@ FastQRecv(unsigned int from, fq_msg_handler_t handler);
 always_inline  bool inline
 FastQRecvStats(unsigned int from, fq_msg_handler_t handler);
 
+#pragma GCC diagnostic pop
 
 #endif /*<__fAStMQ_H>*/
 

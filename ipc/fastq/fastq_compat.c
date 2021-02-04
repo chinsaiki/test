@@ -79,9 +79,12 @@ static void __attribute__((constructor(101))) _FQ_NAME(__FastQInitCtor) () {
 always_inline  static inline struct _FQ_NAME(FastQRing) *
 _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const unsigned long dst, 
                       const unsigned int ring_size, const unsigned int msg_size) {
-    struct _FQ_NAME(FastQRing) *new_ring = FastQMalloc(sizeof(struct _FQ_NAME(FastQRing)) + ring_size*(msg_size+sizeof(size_t)));
+	unsigned long ring_real_size = sizeof(struct _FQ_NAME(FastQRing)) + ring_size*(msg_size+sizeof(size_t));
+    struct _FQ_NAME(FastQRing) *new_ring = FastQMalloc(ring_real_size);
     assert(new_ring && "Allocate FastQRing Failed. (OOM error)");
     
+	memset(new_ring, 0x00, ring_real_size);
+
     LOG_DEBUG("Create ring %ld->%ld.\n", src, dst);
     new_ring->src = src;
     new_ring->dst = dst;
