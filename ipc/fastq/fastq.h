@@ -36,6 +36,23 @@
  */
 #define VOS_FastQTmpModuleID    0 
 
+
+/**
+ *  FastQModuleMsgStatInfo - 统计信息
+ *  
+ *  src_module  源模块ID
+ *  dst_module  目的模块ID
+ *  enqueue     从 src_module 发往 dst_module 的统计， src_module 已发出的消息数
+ *  dequeue     从 src_module 发往 dst_module 的统计， dst_module 已接收的消息数
+ */
+struct FastQModuleMsgStatInfo {
+    unsigned long src_module;
+    unsigned long dst_module;
+    unsigned long enqueue;
+    unsigned long dequeue;
+};
+
+
 /**
  *  fq_msg_handler_t - FastQRecvMain 接收函数
  *  
@@ -43,6 +60,20 @@
  *  param[in]   sz 接收消息大小，与 FastQCreate (..., msg_size) 保持一致
  */
 typedef void (*fq_msg_handler_t)(void*msg, size_t sz);
+
+
+/**
+ *  fq_module_filter_t - 根据目的和源模块ID进行过滤
+ *  
+ *  param[in]   srcID 源模块ID
+ *  param[in]   dstID 目的模块ID
+ *
+ *  当 fq_module_filter_t 返回 true 时，该 源 到 目的 的消息队列将计入统计
+ */
+typedef bool (*fq_module_filter_t)(unsigned long srcID, unsigned long dstID);
+
+
+
 
 
 /**
@@ -71,6 +102,19 @@ VOS_FastQDump(FILE*fp, unsigned long moduleID);
  */
 always_inline void inline
 VOS_FastQDumpAllModule(FILE*fp);
+
+/**
+ *  VOS_FastQMsgStatInfo - 获取统计信息
+ *  
+ *  param[in]   buf     FastQModuleMsgStatInfo 信息结构体
+ *  param[in]   buf_mod_size    buf 信息结构体个数
+ *  param[in]   num     函数返回时填回 的 FastQModuleMsgStatInfo 结构个数
+ *  param[in]   filter  根据目的和源模块ID进行过滤 详见 fq_module_filter_t
+ */
+
+always_inline bool inline
+VOS_FastQMsgStatInfo(struct FastQModuleMsgStatInfo *buf, unsigned int buf_mod_size, unsigned int *num, 
+                fq_module_filter_t filter);
 
 
 /**
@@ -128,11 +172,13 @@ VOS_FastQRecv(unsigned int from, fq_msg_handler_t handler);
 #define FastQTmpModuleID    VOS_FastQTmpModuleID 
 
 
+
 #ifdef _FASTQ_STATS /* 带有统计类的接口 */
 //# pragma message "[FastQ] Statistic Class API"
 # define VOS_FastQCreateModule(moduleID, msgMax, msgSize)    FastQCreateModuleStats(moduleID, msgMax, msgSize, __FILE__, __func__, __LINE__)
 # define VOS_FastQDump(fp, moduleID)                            FastQDumpStats(fp, moduleID)
 # define VOS_FastQDumpAllModule(fp)                            FastQDumpStats(fp, 0)
+# define VOS_FastQMsgStatInfo(buf, bufSize, pnum, filter)       FastQMsgStatInfoStats(buf, bufSize, pnum, filter)
 # define VOS_FastQSend(moduleSrc, moduleDst, pmsg, msgSize)  FastQSendStats(moduleSrc, moduleDst, pmsg, msgSize)  
 # define VOS_FastQTrySend(moduleSrc, moduleDst, pmsg, msgSize)  FastQTrySendStats(moduleSrc, moduleDst, pmsg, msgSize)  
 # define VOS_FastQRecv(fromModule, msgHandlerFn)             FastQRecvStats(fromModule, msgHandlerFn)
@@ -142,13 +188,16 @@ VOS_FastQRecv(unsigned int from, fq_msg_handler_t handler);
 # define VOS_FastQCreateModule(moduleID, msgMax, msgSize)    FastQCreateModule(moduleID, msgMax, msgSize, __FILE__, __func__, __LINE__)
 # define VOS_FastQDump(fp, moduleID)                            FastQDump(fp, moduleID)
 # define VOS_FastQDumpAllModule(fp)                            FastQDump(fp, 0)
+# define VOS_FastQMsgStatInfo(buf, bufSize, pnum, filter)       FastQMsgStatInfo(buf, bufSize, pnum, filter)
 # define VOS_FastQSend(moduleSrc, moduleDst, pmsg, msgSize)  FastQSend(moduleSrc, moduleDst, pmsg, msgSize)  
 # define VOS_FastQTrySend(moduleSrc, moduleDst, pmsg, msgSize)  FastQTrySend(moduleSrc, moduleDst, pmsg, msgSize)  
 # define VOS_FastQRecv(fromModule, msgHandlerFn)             FastQRecv(fromModule, msgHandlerFn)
 
 #endif
 
+
 #pragma GCC diagnostic push
+
 #pragma GCC diagnostic ignored "-Wattributes"
 
 /**
@@ -176,6 +225,25 @@ always_inline void inline
 FastQDump(FILE*fp, unsigned long module_id);
 always_inline void inline
 FastQDumpStats(FILE*fp, unsigned long module_id);
+
+
+/**
+ *  FastQMsgStatInfo - 获取统计信息
+ *  
+ *  param[in]   buf    FastQModuleMsgStatInfo 信息结构体
+ *  param[in]   buf_mod_size    buf 信息结构体个数
+ *  param[in]   num 函数返回时填回 的 FastQModuleMsgStatInfo 结构个数
+ *  param[in]   filter    根据目的和源模块ID进行过滤 详见 fq_module_filter_t
+ */
+
+always_inline bool inline
+FastQMsgStatInfo(struct FastQModuleMsgStatInfo *buf, unsigned int buf_mod_size, unsigned int *num, 
+                fq_module_filter_t filter);
+always_inline bool inline
+FastQMsgStatInfoStats(struct FastQModuleMsgStatInfo *buf, unsigned int buf_mod_size, unsigned int *num, 
+                fq_module_filter_t filter);
+
+
 
 /**
  *  FastQSend - 发送消息（轮询直至成功发送）
@@ -227,7 +295,9 @@ FastQRecv(unsigned int from, fq_msg_handler_t handler);
 always_inline  bool inline
 FastQRecvStats(unsigned int from, fq_msg_handler_t handler);
 
+
 #pragma GCC diagnostic pop
+
 
 #endif /*<__fAStMQ_H>*/
 

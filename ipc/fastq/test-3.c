@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <stdint.h>
+#include <sys/time.h>
 #include <pthread.h>
 
 //#define _FASTQ_STATS //开启统计功能
@@ -73,8 +74,8 @@ void *enqueue_task(void*arg){
 
         send_cnt++;
         
-        if(send_cnt % 10000000 == 0) {
-            sleep(10);
+        if(send_cnt % 5000000 == 0) {
+            sleep(5);
         }
     }
     pthread_exit(NULL);
@@ -97,7 +98,7 @@ void handler_test_msg(void* msg, size_t size)
     
     total_msgs++;
 
-    if(total_msgs % 1000 == 0) {
+    if(total_msgs % 50000 == 0) {
         printf("dequeue. per msgs \033[1;31m%lf ns\033[m, msgs (total %ld, err %ld).\n", 
                 latency_total*1.0/total_msgs/3000000000*1000000000,
                 total_msgs, error_msgs);
@@ -113,10 +114,44 @@ void *dequeue_task(void*arg) {
 
 int sig_handler(int signum) {
 
-    VOS_FastQDump(NULL, NODE_1);
-    exit(1);
+    switch(signum) {
+        case SIGINT:
+            VOS_FastQDump(NULL, NODE_1);
+            exit(1);
+            break;
+        case SIGALRM:break;
+    }
 }
 
+
+bool moduleID_filter_fn(unsigned long srcID, unsigned long dstID){
+    if(srcID != NODE_1 && 
+       srcID != NODE_2 && 
+       srcID != NODE_3 && 
+       srcID != NODE_4 && 
+       srcID != 0) return false;
+    
+    if(dstID == NODE_1) return true;
+    else return false;
+}
+
+void sig_alarm_handler(int signum) {
+    struct FastQModuleMsgStatInfo buffer[32];
+    unsigned int num = 0;
+    VOS_FastQMsgStatInfo(buffer, 32, &num, moduleID_filter_fn);
+
+    if(num) {
+        printf( "\t SRC -> DST           Enqueue           Dequeue\r\n");
+        printf( "\t ----------------------------------------------------\r\n");
+    }
+    int i;
+    for(i=0;i<num;i++) {
+        
+        printf( "\t %3ld -> %3ld:  %16ld %16ld\r\n", 
+                buffer[i].src_module, buffer[i].dst_module, buffer[i].enqueue, buffer[i].dequeue);
+    }
+
+}
 int main()
 {
     pthread_t enqueueTask1;
@@ -131,6 +166,17 @@ int main()
     int max_msg = 16;
     
     signal(SIGINT, sig_handler);
+
+    struct itimerval sa;
+    sa.it_value.tv_sec = 5;
+    sa.it_value.tv_usec = 0;
+    sa.it_interval.tv_sec = 3;
+    sa.it_interval.tv_usec = 0;
+
+    signal(SIGALRM,sig_alarm_handler);  //注册信号捕捉函数
+    int ret;
+    ret = setitimer(ITIMER_REAL,&sa,NULL);
+    
     VOS_FastQCreateModule(NODE_1, max_msg, sizeof(unsigned long));
     VOS_FastQCreateModule(NODE_2, max_msg, sizeof(unsigned long));
     VOS_FastQCreateModule(NODE_3, max_msg, sizeof(unsigned long));

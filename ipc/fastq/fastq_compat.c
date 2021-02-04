@@ -79,7 +79,9 @@ static void __attribute__((constructor(101))) _FQ_NAME(__FastQInitCtor) () {
 always_inline  static inline struct _FQ_NAME(FastQRing) *
 _FQ_NAME(__fastq_create_ring)(const int epfd, const unsigned long src, const unsigned long dst, 
                       const unsigned int ring_size, const unsigned int msg_size) {
-	unsigned long ring_real_size = sizeof(struct _FQ_NAME(FastQRing)) + ring_size*(msg_size+sizeof(size_t));
+
+    unsigned long ring_real_size = sizeof(struct _FQ_NAME(FastQRing)) + ring_size*(msg_size+sizeof(size_t));
+                      
     struct _FQ_NAME(FastQRing) *new_ring = FastQMalloc(ring_real_size);
     assert(new_ring && "Allocate FastQRing Failed. (OOM error)");
     
@@ -388,6 +390,65 @@ _FQ_NAME(FastQRecv)(unsigned int from, fq_msg_handler_t handler) {
     }
     return true;
 }
+
+
+/**
+ *  FastQInfo - 查询信息
+ *  
+ *  param[in]   fp    文件指针,当 fp == NULL，默认使用 stderr 
+ *  param[in]   module_id 需要显示的模块ID， 等于 0 时显示全部
+ */
+always_inline bool inline
+_FQ_NAME(FastQMsgStatInfo)(struct FastQModuleMsgStatInfo *buf, unsigned int buf_mod_size, unsigned int *num, 
+                            fq_module_filter_t filter) {
+    
+    assert(buf && num && "NULL pointer error.");
+    assert(buf_mod_size && "buf_mod_size MUST bigger than zero.");
+
+#ifdef FASTQ_STATISTICS //统计功能
+
+    unsigned long dstID, srcID, bufIdx = 0;
+    *num = 0;
+
+    for(dstID=1; dstID<=FASTQ_ID_MAX; dstID++) {
+        if(!_FQ_NAME(_AllModulesRings)[dstID].already_register) {
+            continue;
+        }
+        if(!_FQ_NAME(_AllModulesRings)[dstID]._ring) {
+            continue;
+        }
+        for(srcID=0; srcID<=FASTQ_ID_MAX; srcID++) { 
+            
+            if(!_FQ_NAME(_AllModulesRings)[dstID]._ring[srcID]) {
+                continue;
+            }
+        
+            //过滤掉一些
+            if(filter) {
+                if(!filter(srcID, dstID)) continue;
+            }
+            buf[bufIdx].src_module = srcID;
+            buf[bufIdx].dst_module = dstID;
+
+            LOG_DEBUG("enqueue = %ld\n", atomic64_read(&_FQ_NAME(_AllModulesRings)[dstID]._ring[srcID]->nr_enqueue));
+            LOG_DEBUG("dequeue = %ld\n", atomic64_read(&_FQ_NAME(_AllModulesRings)[dstID]._ring[srcID]->nr_dequeue));
+            
+            buf[bufIdx].enqueue = atomic64_read(&_FQ_NAME(_AllModulesRings)[dstID]._ring[srcID]->nr_enqueue);
+            buf[bufIdx].dequeue = atomic64_read(&_FQ_NAME(_AllModulesRings)[dstID]._ring[srcID]->nr_dequeue);
+            
+            bufIdx++;
+            (*num)++;
+            if(buf_mod_size == bufIdx) 
+                return true;
+        }
+    }
+    return true;
+
+#else //不支持统计功能，直接返回失败
+    return false;
+#endif
+}
+
 
 /**
  *  FastQDump - 显示信息
