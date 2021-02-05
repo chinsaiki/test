@@ -1,0 +1,50 @@
+##############################################################
+Description
+##############################################################
+-This project is aimed to test the feasibility of scheduling the given tasksets which may contain various tasks in it using dynamic and static schedulabity algorithsm such as EDF, RM and DM.
+-Macros are created for EDF, RM and DM so that they can called from different files.
+-main_integrate.c file reads the input text file to find the number of tasks and its specifications. Based on the given data, the algorithm says whether the taskset is schedulable or not.
+-main_synthetic.c file generate synthetic task sets making use of unifast algorithm. 5000 tasksets of each 10 tasks and 25 tasks are generated with utilization of the taskset ranging from 0.05 to 0.95
+ and performed the tests using the macros created.
+-Graphs are generated based on the number of tasks that are feasible. 
+
+##############################################################
+
+
+Process to execute the test program:
+The goal of this assignment is to create different scheduling analysis 
+algorithms, and then to run synthetic task-sets to evaluate schedulability
+of the synthetic tasks.
+
+We do the following analysis based on the task-set information:-
+
+1. EDF(Earliest Deadline First) Schedulability Analysis-> We perform UB test
+   and Loading Factor Analysis for EDF Schedulability
+2. RM(Rate Monotonic) Schedulability Analysis-> We perform analysis tests
+   as follows:-
+   2.1 If deadline is same as period, we perform UB and RT Test
+   2.2 If deadline less than period and deadline order is same as period order,
+       we perform UB and RT Test
+   2.3 If deadline less than period and deadline order is not same as period order,
+       we perform Effective Utilization Test
+3. DM(Deadline Monotonic) Schedulability Analysis-> We perform analysis tests
+   as follows:-
+   3.1 If deadline is same as period, we perform UB and RT Test
+   3.2 If deadline is less than period, we perform RT test based on deadline 
+       ordering 
+
+Synthetic Taskset:-
+Synthetic task sets are generated with various wcet, period and deadline 
+configurations. These tasksets are then passed to various schedulability
+analysis based on their respective specifications. 
+
+change the .txt file to test.txt
+
+Following is the command required to build and execute the program:-
+source run_build.sh
+
+This command will execute two commands for build. 1st command will build the 
+task-set. Second command will integrate the taskset and run the analysis
+
+
+
