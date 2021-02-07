@@ -69,6 +69,8 @@
 * `process-manage`: 进程管理
 * `ptp`: PTP协议 （Precise Time Protocol 精准时间协议）
 * `qemu`: QEMU虚拟机
+* `rcu`: Read Copy Update
+* `real-time`: 实时操作系统 RTOS
 * `slab`: slab，slob，slub机制
 * `slob`: 同上
 * `slub`: 同上

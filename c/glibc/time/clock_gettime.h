@@ -5,6 +5,13 @@ struct timespec {
    long     tv_nsec;       /* nanoseconds */
 };
 
+//有多种获取当前时间的方法– gettimeofday，time，clock_gettime和其他一些特定于处理器的实现。
+//    其中一些，例如gettimeofday，将从系统时钟获取时间。系统时钟可以由其他进程修改。
+//    这意味着时钟可以回到过去。可以使用带有CLOCK_MONOTONIC时钟的clock_gettime来避免此问题。
+//    CLOCK_MONOTONIC 参数确保我们获得一个不可设置的单调递增时钟，该时钟测量从过去某个未指定点开始的时间，
+//    该时间在系统启动后不会更改[1]。确保不浪费大量CPU周期来获取当前时间也很重要。
+//    获得当前时间的特定于CPU的实现将在这里有所帮助。
+
 //The  function  clock_getres() finds the resolution (precision) of the specified clock clk_id, and, if res
 //       is non-NULL, stores it in the struct timespec pointed to by res.  
 int clock_gettime(clockid_t clk_id, struct timespec *tp);

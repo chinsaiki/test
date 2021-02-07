@@ -1,0 +1,2 @@
+CAP_IPC_LOCK
+	Lock memory (mlock(2), mlockall(2), mmap(2), shmctl(2)).
