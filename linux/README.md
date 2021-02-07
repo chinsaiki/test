@@ -51,6 +51,7 @@
 * `ldt-gdt`: 局部描述符表 和 全局描述符表
 * `linux-bridge`: 一种虚拟交换机，网桥技术
 * `LinuxKernelLearnCode`: LinuxKernelLearn
+* `LinuxTestProject`: Linux Test Project https://github.com/linux-test-project/ltp
 * `lru`: LRU（Least Recently Used, 最近最久未使用）算法
 * `lsm`: 内核安全模块 Linux Security Modules
 * `LTTng`: Linux Trace Toolkit next generation
