@@ -1,0 +1,15 @@
+# 可以通过读取以下/sys/devices/system/clocksource/clocksource0/current_clocksource文件来检查当前正在使用的时钟源：
+
+kvm-clock
+
+# 更改时钟源
+# 有时由于时钟上的已知问题，未使用系统主应用程序中性能最佳的时钟。排除所有有问题的时钟后，系统将剩下无法满足实时系统最低要求的硬件时钟。
+#
+# 关键应用程序的要求在每个系统上都不同。因此，每种应用的最佳时钟，进而每个系统的最佳时钟也各不相同。某些应用程序取决于时钟分辨率，并且提供可靠的纳秒读数的时钟可能更合适。经常读取时钟的应用程序可以受益于时钟成本较低的时钟（读取请求和结果之间的时间）。
+# 在所有这些情况下，都可以覆盖内核选择的时钟，前提是您了解此覆盖的副作用，并且可以创建不会触发给定硬件时钟的已知缺点的环境。为此，请从/sys/devices/system/clocksource/clocksource0/available_clocksource文件中显示的列表中选择一个时钟源，并将时钟名称写入/sys/devices/system/clocksource/clocksource0/current_clocksource文件中。例如，以下命令将HPET设置为使用中的时钟源：
+# 
+#  echo hpet > /sys/devices/system/clocksource/clocksource0/current_clocksource
+#
+# 注意
+# 有关广泛使用的硬件时钟的简要说明，并比较不同硬件时钟之间的性能，请参阅《适用于Red Hat Enterprise Linux的实时Red Hat Enterprise Linux参考指南》。
+#

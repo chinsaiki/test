@@ -1,0 +1,3 @@
+# 诸如NUMA或SMP之类的多处理器系统具有多个硬件时钟实例。在启动期间，内核会发现可用的时钟源并选择要使用的时钟源。有关系统中可用时钟源的列表，请查看/sys/devices/system/clocksource/clocksource0/available_clocksource : (在下面的示例中， kvm-clock tsc acpi_pm 时钟源可用)
+
+kvm-clock tsc acpi_pm 
