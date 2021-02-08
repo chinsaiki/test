@@ -13,6 +13,10 @@ if [ -f $file ]; then
 	swapfile=$(echo $file | sed "s/\//-/g")
 	 #  不要第一个 "-"
 	echo Copy ${swapfile:1} to $dst_dir 
+	if [ -f $dst_dir/${swapfile:1} ]; then
+		echo Exist: $dst_dir/${swapfile:1}
+		exit
+	fi
 	cp $file $dst_dir/${swapfile:1} 
 	chmod 0666 $dst_dir/${swapfile:1}
 else

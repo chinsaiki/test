@@ -15,6 +15,11 @@ enum
 //锁的拥有者死掉后，其他线程试图获取锁将直接返回 EOWNERDEAD
 int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust);
 
+//健壮的互斥锁：
+//所有者死亡时会释放健壮的互斥锁，但是这也会带来高昂的间接费用。_NP此字符串中的表示此选项是非POSIX或不可移植的。
+int pthread_mutexattr_setrobust_np(pthread_mutexattr_t *attr, int robust);
+
+
 //对thread的mutex，可以通过方法 pthread_mutexattr_setrobust()来设置健壮性属性
 //
 //属性为： PTHREAD_MUTEX_ROBUST

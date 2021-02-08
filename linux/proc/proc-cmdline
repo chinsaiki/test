@@ -1,0 +1,1 @@
+BOOT_IMAGE=/vmlinuz-5.9.1 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet

@@ -1,0 +1,10 @@
+# 如果一个SCHED_OTHER任务产生大量其他任务，则它们都将在同一CPU上运行。迁移任务或softirq将尝试平衡这些任务，以便它们可以在空闲CPU上运行。sched_nr_migrate可以设置该选项以指定一次将要移动的任务数。由于实时任务具有不同的迁移方式，因此它们不受此直接影响，但是，在softirq移动任务时，它将锁定禁用中断所需的运行队列自旋锁。如果需要移动大量任务，则将在禁用中断时发生，因此不会同时发生定时器事件或唤醒。将sched_nr_migrate设置为较大的值时，这可能会导致实时任务的严重延迟。
+#
+#调整sched_nr_migrate变量的值
+#
+# 增加sched_nr_migrate变量可以使SCHED_OTHER产生大量任务的线程获得高性能，但要牺牲实时延迟。为了以牺牲SCHED_OTHER任务性能为代价降低实时任务延迟，必须降低该值。预设值为8。
+# 要调整sched_nr_migrate变量的值，您可以echo将值直接更改为/proc/sys/kernel/sched_nr_migrate：
+# 
+# echo 2 > /proc/sys/kernel/sched_nr_migrate
+
+32
