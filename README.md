@@ -79,6 +79,7 @@
 * `high-performance`: 高性能Linux服务器
 * `hpc`: 高性能计算(High Performance Calculation)
 * `hugepage`: 大页内存
+* `Infiniband`: 直译为“无限带宽”技术，缩写为IB
 * `ipc`: 进程间通信
 * `java`: Java语言
 * `javascript`: JavaScript语言
