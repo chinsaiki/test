@@ -37,9 +37,35 @@
 /*
  * User-settable options (used with setsockopt).
  */
+//需要在每个发送的数据包上降低等待时间的应用程序必须在TCP_NODELAY启用的套接字上运行。
+//可以通过setsockopt套接字API通过以下命令启用它：
 #define	TCP_NODELAY		 1  /* Don't delay send to coalesce packets  */
+//# int one = 1;
+//# setsockopt(descriptor, SOL_TCP, TCP_NODELAY, &one, sizeof(one));
+//为了有效地使用它，应用程序必须避免进行小的，与逻辑相关的缓冲区写操作。
+//因为TCP_NODELAY启用了这些写操作，所以这些TCP将使这些多个缓冲区作为单独
+//的数据包发送，这可能会导致整体性能下降。
+//如果应用程序具有几个在逻辑上相关的缓冲区，并作为一个数据包发送，则可以
+//在内存中构建一个连续的数据包，然后在配置了的套接字上将该逻辑数据包发送到TCP TCP_NODELAY。
+//或者，创建一个I / O向量，并writev在配置了的套接字上使用，将其传递给内核TCP_NODELAY。
+
+
 #define	TCP_MAXSEG		 2  /* Set maximum segment size  */
+
+
+//另一种选择是使用TCP_CORK，它告诉TCP在发送任何数据包之前等待应用程序删除cork 。
+//此命令将导致其接收的缓冲区被追加到现有缓冲区。这允许应用程序在内核空间中构建一个数据包，
+//当使用不同的为层提供抽象的库时，可能需要这样做。要启用TCP_CORK，
+//请将其设置为1使用setsockopt套接字API的值（这称为“连接套接字”）：
 #define TCP_CORK		 3  /* Control sending of partial frames  */
+//# int one = 1;
+//# setsockopt(descriptor, SOL_TCP, TCP_CORK, &one, sizeof(one));
+//当应用程序中的各个组件已在内核中构建逻辑包时，请告诉TCP删除cork 。
+//TCP将立即发送累积的逻辑数据包，而无需等待应用程序发出任何其他数据包。
+//# int zero = 0;
+//# setsockopt(descriptor, SOL_TCP, TCP_CORK, &zero, sizeof(zero));
+
+
 #define TCP_KEEPIDLE		 4  /* Start keeplives after this period */
 #define TCP_KEEPINTVL		 5  /* Interval between keepalives */
 #define TCP_KEEPCNT		 6  /* Number of keepalives before death */
