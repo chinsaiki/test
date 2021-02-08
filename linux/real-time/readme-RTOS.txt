@@ -7,3 +7,4 @@ Real-Time OS 实时操作系统
 ----------------------------------------------
 * test/linux/real-time
 * test/c/real-time
+* test/linux/cmd/tuned 系统分区[隔离一组CPU内核]

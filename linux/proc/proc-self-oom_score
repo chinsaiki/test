@@ -1,0 +1,6 @@
+# 可以通过调整oom_killer分数来优先确定哪些进程被杀死。在有命名的两个文件和。有效分数在-16至+15之间。该值用于使用算法来计算流程的“不良”程度，该算法还考虑了流程运行了多长时间以及其他因素。要查看当前得分，请查看该过程。将首先杀死得分最高的进程。 /proc/PID/oom_adjoom_scoreoom_adjoom_killeroom_scoreoom_killer
+# 本示例调整oom_scorePID为12465的进程的，以使其更不可能被oom_killer杀死。
+# 还有一个特殊值-17，该值oom_killer对该进程禁用。在下面的示例中，oom_score返回的值O，指示该进程不会被终止。
+#
+
+666

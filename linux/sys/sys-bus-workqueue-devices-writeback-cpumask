@@ -1,0 +1,5 @@
+# /sys/bus/workqueue/devices/writeback/cpumask
+# /sys/devices/system/machinecheck/machinecheck*/ignore_ce
+# workqueue上面 的条目设置为隔离CPU掩码的倒数，而第二个条目关闭计算机检查异常。
+
+7fffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff
