@@ -126,9 +126,10 @@ struct thread *  create_other_thread(void *(*func) (void *), void *arg)
 void* f1(void*arg) {
     
 }
-
+#ifndef NO_CREATE_PTHREAD_MAIN_TEST
 int main()
 {
     create_fifo_thread(f1, NULL, 10);
     return 0;
 }
+#endif
