@@ -1,2 +1,0 @@
-/usr/bin/ar cq libcn.a  CMakeFiles/cn.dir/cn.c.o
-/usr/bin/ranlib libcn.a

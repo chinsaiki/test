@@ -1,7 +1,0 @@
-/home/rongtao/test/cmake/subdir/demo1/build/CMakeFiles/main.dir
-/home/rongtao/test/cmake/subdir/demo1/build/dim1/dim2/CMakeFiles/dim.dir
-/home/rongtao/test/cmake/subdir/demo1/build/mme/CMakeFiles/mme.dir
-/home/rongtao/test/cmake/subdir/demo1/build/cn/CMakeFiles/cn.dir
-/home/rongtao/test/cmake/subdir/demo1/build/cn/amf/CMakeFiles/amf.dir
-/home/rongtao/test/cmake/subdir/demo1/build/log/CMakeFiles/log.dir
-/home/rongtao/test/cmake/subdir/demo1/build/log/assert/CMakeFiles/assert.dir

@@ -1,1 +1,0 @@
-/usr/bin/cc      CMakeFiles/telnet-chatd.dir/telnet-chatd.c.o  -o telnet-chatd -rdynamic -llibtelnet 

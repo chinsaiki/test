@@ -1,1 +1,0 @@
-/usr/bin/cc -fPIC -g -Wall  -shared -Wl,-soname,libadd.so.1 -o ../lib/libadd.so.1.0 CMakeFiles/add_lib_shared.dir/src/add.c.o 

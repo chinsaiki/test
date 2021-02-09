@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/hello.dir/hello.cc.o CMakeFiles/hello.dir/src/show.cc.o CMakeFiles/hello.dir/vos/vos.cc.o  -o hello -rdynamic -lconfig /usr/lib64/mysql/libmysqlclient.so /usr/local/lib/libnetsnmp.so -Wl,-rpath,/usr/lib64/mysql:/usr/local/lib 

@@ -1,4 +1,0 @@
-/work/workspace/test/cmake/study/lib.so/build/CMakeFiles/rebuild_cache.dir
-/work/workspace/test/cmake/study/lib.so/build/CMakeFiles/edit_cache.dir
-/work/workspace/test/cmake/study/lib.so/build/CMakeFiles/add_lib_shared.dir
-/work/workspace/test/cmake/study/lib.so/build/CMakeFiles/add_lib_static.dir

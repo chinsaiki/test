@@ -1,2 +1,0 @@
-/usr/bin/ar cq libamf.a  CMakeFiles/amf.dir/amf.c.o
-/usr/bin/ranlib libamf.a

@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/ximage.dir/main.c.o CMakeFiles/ximage.dir/src/ximage.c.o  -o ximage -lconfig -lX11 -lpthread -lrt -lm 

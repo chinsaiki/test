@@ -1,1 +1,0 @@
-/usr/bin/cc      CMakeFiles/telnet-test.dir/telnet-test.c.o  -o telnet-test -rdynamic -llibtelnet 

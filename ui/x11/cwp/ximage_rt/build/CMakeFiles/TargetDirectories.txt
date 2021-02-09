@@ -1,3 +1,0 @@
-/work/workspace/test/ui/x11/cwp/ximage_rt/build/CMakeFiles/rebuild_cache.dir
-/work/workspace/test/ui/x11/cwp/ximage_rt/build/CMakeFiles/ximage.dir
-/work/workspace/test/ui/x11/cwp/ximage_rt/build/CMakeFiles/edit_cache.dir

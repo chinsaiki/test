@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/main.dir/main.c.o  -o main -rdynamic log/liblog.a mme/libmme.a cn/libcn.a dim1/dim2/libdim.a log/assert/libassert.a cn/amf/libamf.a 

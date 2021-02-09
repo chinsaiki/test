@@ -1,2 +1,0 @@
-/usr/bin/ar cq libdim.a  CMakeFiles/dim.dir/dim.c.o
-/usr/bin/ranlib libdim.a

@@ -1,2 +1,0 @@
-/usr/bin/ar cq libassert.a  CMakeFiles/assert.dir/assert.c.o
-/usr/bin/ranlib libassert.a

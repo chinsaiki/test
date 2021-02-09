@@ -1,1 +1,0 @@
-/usr/bin/cc      CMakeFiles/jt_sran_5G.dir/src/main.c.o  -o jt_sran_5G -rdynamic 

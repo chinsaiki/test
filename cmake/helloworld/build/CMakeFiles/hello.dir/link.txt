@@ -1,2 +1,0 @@
-# Copyright (C) Rong Tao @Sylincom Beijing, 2019年 06月 14日 星期五 09:05:43 CST. 
-/usr/bin/cc      CMakeFiles/hello.dir/hello.c.o CMakeFiles/hello.dir/src/show.c.o CMakeFiles/hello.dir/vos/vos.c.o  -o hello -rdynamic -lconfig /usr/lib64/mysql/libmysqlclient.so /usr/local/lib/libnetsnmp.so -Wl,-rpath,/usr/lib64/mysql:/usr/local/lib 

@@ -1,0 +1,7 @@
+2021年 01月 07日 星期四 05:39:00 CST
+=== Pstore unit tests (pstore_crash_test) ===
+UUID=17870daf-1fa5-487a-bde9-6673d241b27d
+Checking pstore backend is registered ... ok
+	backend=(null)
+	cmdline=BOOT_IMAGE=/vmlinuz-5.9.1 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet
+Causing kernel crash ...

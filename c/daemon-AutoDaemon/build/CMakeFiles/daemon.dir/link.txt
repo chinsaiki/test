@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/daemon.dir/execute.c.o CMakeFiles/daemon.dir/timer.c.o CMakeFiles/daemon.dir/xml.c.o CMakeFiles/daemon.dir/main.c.o CMakeFiles/daemon.dir/log.c.o  -o daemon -rdynamic -lm /usr/local/lib/libxml2.so -lpthread -Wl,-rpath,/usr/local/lib 

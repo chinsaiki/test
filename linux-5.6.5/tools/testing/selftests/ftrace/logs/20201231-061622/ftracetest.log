@@ -1,0 +1,22 @@
+2020年 12月 31日 星期四 06:16:22 CST
+=== Ftrace unit tests ===
+[1] Basic trace file check	[PASS]
+[2] Basic test for tracers	[PASS]
+[3] Basic trace clock test	[PASS]
+[4] Basic event tracing check	[PASS]
+[5] Change the ringbuffer size	[PASS]
+[6] Snapshot and tracing setting	[PASS]
+[7] trace_pipe and trace_marker	[PASS]
+[8] Generic dynamic event - add/remove kprobe events	[PASS]
+[9] Generic dynamic event - add/remove synthetic events	[UNSUPPORTED]
+[10] Generic dynamic event - selective clear (compatibility)	[UNSUPPORTED]
+[11] Generic dynamic event - generic clear event	[UNSUPPORTED]
+[12] event tracing - enable/disable with event level files	[PASS]
+[13] event tracing - restricts events based on pid	[PASS]
+[14] event tracing - enable/disable with subsystem level files	[PASS]
+[15] event tracing - enable/disable with top level files	[PASS]
+[16] Test trace_printk from module	[UNRESOLVED]
+[17] ftrace - function graph filters with stack tracer	[PASS]
+[18] ftrace - function graph filters	[PASS]
+[19] ftrace - function trace with cpumask	[PASS]
+[20] ftrace - test for function event triggers

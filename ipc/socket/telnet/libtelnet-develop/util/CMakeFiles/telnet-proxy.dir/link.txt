@@ -1,1 +1,0 @@
-/usr/bin/cc      CMakeFiles/telnet-proxy.dir/telnet-proxy.c.o  -o telnet-proxy -rdynamic -llibtelnet 

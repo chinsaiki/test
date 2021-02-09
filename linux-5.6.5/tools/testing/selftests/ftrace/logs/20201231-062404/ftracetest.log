@@ -1,0 +1,6 @@
+2020年 12月 31日 星期四 06:24:04 CST
+=== Ftrace unit tests ===
+[1] Basic trace file check	[PASS]
+[2] Basic test for tracers	[PASS]
+[3] Basic trace clock test	[PASS]
+[4] Basic event tracing check

@@ -1,4 +1,0 @@
-/work/workspace/test/ipc/socket/telnet/libtelnet-develop/util/CMakeFiles/telnet-chatd.dir
-/work/workspace/test/ipc/socket/telnet/libtelnet-develop/util/CMakeFiles/telnet-client.dir
-/work/workspace/test/ipc/socket/telnet/libtelnet-develop/util/CMakeFiles/telnet-proxy.dir
-/work/workspace/test/ipc/socket/telnet/libtelnet-develop/util/CMakeFiles/telnet-test.dir

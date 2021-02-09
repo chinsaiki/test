@@ -1,1 +1,0 @@
-/usr/bin/cc  -fPIC -g -Wall   -shared -Wl,-soname,libhello.so.1 -o libhello.so.1.0 CMakeFiles/acc_lib_shared.dir/hello.c.o -ldl -lrt -lm 
