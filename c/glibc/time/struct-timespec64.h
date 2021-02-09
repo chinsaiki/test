@@ -1,3 +1,6 @@
+/* Copyright (c) Colorado School of Mines, CST.*/
+/* All rights reserved.                       */
+
 struct timespec64 {
 	time64_t	tv_sec;			/* seconds */
 	long		tv_nsec;		/* nanoseconds */

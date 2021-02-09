@@ -1,3 +1,6 @@
+/* Copyright (c) Colorado School of Mines, CST.*/
+/* All rights reserved.                       */
+
 //https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_for_real_time/7/html/tuning_guide/using_coarse_posix_clocks_for_application_timestamping
 //
 //使用_COARSE POSIX时钟进行应用程序时间戳记

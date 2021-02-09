@@ -1,3 +1,6 @@
+/* Copyright (c) Colorado School of Mines, CST.*/
+/* All rights reserved.                       */
+
 
 #  ifdef __USE_POSIX199309
 /* Identifier for system-wide realtime clock.  */

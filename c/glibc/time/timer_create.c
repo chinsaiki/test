@@ -1,3 +1,6 @@
+/* Copyright (c) Colorado School of Mines, CST.*/
+/* All rights reserved.                       */
+
 #include <signal.h>
 #include <time.h>
 #include <stdio.h>

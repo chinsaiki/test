@@ -1,3 +1,6 @@
+/* Copyright (c) Colorado School of Mines, CST.*/
+/* All rights reserved.                       */
+
 #include <time.h>
 
 //获取从1970.01.01 00:00:00:00开始的秒数

@@ -1,3 +1,6 @@
+/* Copyright (c) Colorado School of Mines, CST.*/
+/* All rights reserved.                       */
+
 #include <time.h>
 
 //clock_getcpuclockid - obtain ID of a process CPU-time clock
