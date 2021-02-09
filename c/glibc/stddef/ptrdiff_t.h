@@ -24,3 +24,15 @@
  *	This will probably be one of the standard signed integer types (short int, int or
  *	long int), but might be a nonstandard type that exists only for this purpose.
  */
+///usr/include/asm-generic/posix_types.h:69:
+typedef int       __kernel_ptrdiff_t;
+
+///usr/include/asm-generic/posix_types.h:73:
+typedef __kernel_long_t   __kernel_ptrdiff_t;
+
+///usr/include/nspr4/obsolete/protypes.h:139:
+typedef PRUptrdiff uptrdiff_t;
+
+///usr/include/tcl-private/generic/tclInt.h:54:
+typedef int ptrdiff_t;
+

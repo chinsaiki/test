@@ -26,3 +26,16 @@
  *	Usage Note: size_t is the preferred way to declare any arguments or variables that
  *	hold the size of an object.
  */
+
+///usr/include/glob.h:30:
+typedef __SIZE_TYPE__ size_t;
+
+///usr/include/jsoncpp/json/value.h:658:  
+typedef unsigned int size_t;
+
+///usr/include/jsoncpp/json/value.h:725:  
+//typedef unsigned int size_t;
+
+///usr/include/jsoncpp/json/value.h:774:  
+typedef unsigned int size_t;
+

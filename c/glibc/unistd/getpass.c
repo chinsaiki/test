@@ -25,7 +25,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-ssize_t my_getpass (char **lineptr, size_t *n, FILE *stream)
+ssize_t my_getpass(char **lineptr, size_t *n, FILE *stream)
 {
 	struct termios old, new;
 	int nread;

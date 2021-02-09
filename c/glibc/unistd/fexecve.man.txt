@@ -1,0 +1,59 @@
+FEXECVE(3)                            Linux Programmer's Manual                           FEXECVE(3)
+
+
+
+NAME
+       fexecve - execute program specified via file descriptor
+
+SYNOPSIS
+       #include <unistd.h>
+
+       int fexecve(int fd, char *const argv[], char *const envp[]);
+
+   Feature Test Macro Requirements for glibc (see feature_test_macros(7)):
+
+       fexecve():
+           Since glibc 2.10:
+               _XOPEN_SOURCE >= 700 || _POSIX_C_SOURCE >= 200809L
+           Before glibc 2.10:
+               _GNU_SOURCE
+
+DESCRIPTION
+       fexecve()  performs  the same task as execve(2), with the difference that the file to be exe‐
+       cuted is specified via a file descriptor, fd, rather than via a pathname.  The file  descrip‐
+       tor fd must be opened read-only, and the caller must have permission to execute the file that
+       it refers to.
+
+RETURN VALUE
+       A successful call to fexecve() never returns.  On error, the function returns, with a  result
+       value of -1, and errno is set appropriately.
+
+ERRORS
+       Errors are as for execve(2), with the following additions:
+
+       EINVAL fd is not a valid file descriptor, or argv is NULL, or envp is NULL.
+
+       ENOSYS The /proc file system could not be accessed.
+
+VERSIONS
+       fexecve() is implemented since glibc 2.3.2.
+
+CONFORMING TO
+       POSIX.1-2008.  This function is not specified in POSIX.1-2001, and is not widely available on
+       other systems.
+
+NOTES
+       On Linux, fexecve() is implemented using the proc(5)  file  system,  so  /proc  needs  to  be
+       mounted and available at the time of the call.
+
+SEE ALSO
+       execve(2)
+
+COLOPHON
+       This  page  is  part  of  release  3.53 of the Linux man-pages project.  A description of the
+       project,    and    information    about    reporting    bugs,     can     be     found     at
+       http://www.kernel.org/doc/man-pages/.
+
+
+
+Linux                                        2010-09-15                                   FEXECVE(3)

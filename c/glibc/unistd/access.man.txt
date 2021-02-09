@@ -1,0 +1,135 @@
+ACCESS(3P)                            POSIX Programmer's Manual                           ACCESS(3P)
+
+
+
+PROLOG
+       This  manual page is part of the POSIX Programmer's Manual.  The Linux implementation of this
+       interface may differ (consult the corresponding Linux manual page for details of Linux behav‐
+       ior), or the interface may not be implemented on Linux.
+
+NAME
+       access - determine accessibility of a file
+
+SYNOPSIS
+       #include <unistd.h>
+
+       int access(const char *path, int amode);
+
+
+DESCRIPTION
+       The access() function shall check the file named by the pathname pointed to by the path argu‐
+       ment for accessibility according to the bit pattern contained in amode, using the  real  user
+       ID  in  place  of the effective user ID and the real group ID in place of the effective group
+       ID.
+
+       The value of amode is either the bitwise-inclusive OR of the access permissions to be checked
+       (R_OK, W_OK, X_OK) or the existence test (F_OK).
+
+       If  any  access  permissions are checked, each shall be checked individually, as described in
+       the Base Definitions volume of IEEE Std 1003.1-2001, Chapter 3, Definitions. If  the  process
+       has  appropriate  privileges, an implementation may indicate success for X_OK even if none of
+       the execute file permission bits are set.
+
+RETURN VALUE
+       If the requested access is permitted, access() succeeds and shall  return  0;  otherwise,  -1
+       shall be returned and errno shall be set to indicate the error.
+
+ERRORS
+       The access() function shall fail if:
+
+       EACCES Permission bits of the file mode do not permit the requested access, or search permis‐
+              sion is denied on a component of the path prefix.
+
+       ELOOP  A loop exists in symbolic links encountered during resolution of the path argument.
+
+       ENAMETOOLONG
+              The length of the path argument exceeds {PATH_MAX} or a pathname component  is  longer
+              than {NAME_MAX}.
+
+       ENOENT A component of path does not name an existing file or path is an empty string.
+
+       ENOTDIR
+              A component of the path prefix is not a directory.
+
+       EROFS  Write access is requested for a file on a read-only file system.
+
+
+       The access() function may fail if:
+
+       EINVAL The value of the amode argument is invalid.
+
+       ELOOP  More  than {SYMLOOP_MAX} symbolic links were encountered during resolution of the path
+              argument.
+
+       ENAMETOOLONG
+              As a result of encountering a symbolic link in resolution of the  path  argument,  the
+              length of the substituted pathname string exceeded {PATH_MAX}.
+
+       ETXTBSY
+              Write  access  is requested for a pure procedure (shared text) file that is being exe‐
+              cuted.
+
+
+       The following sections are informative.
+
+EXAMPLES
+   Testing for the Existence of a File
+       The following example tests whether a file named myfile exists in the /tmp directory.
+
+
+              #include <unistd.h>
+              ...
+              int result;
+              const char *filename = "/tmp/myfile";
+
+
+              result = access (filename, F_OK);
+
+APPLICATION USAGE
+       Additional values of amode other than the set defined in the description may  be  valid;  for
+       example, if a system has extended access controls.
+
+RATIONALE
+       In early proposals, some inadequacies in the access() function led to the creation of an eac‐
+       cess() function because:
+
+        1. Historical implementations of access()  do  not  test  file  access  correctly  when  the
+           process'  real  user ID is superuser. In particular, they always return zero when testing
+           execute permissions without regard to whether the file is executable.
+
+        2. The superuser has complete access to all files on a system. As  a  consequence,  programs
+           started  by  the  superuser  and switched to the effective user ID with lesser privileges
+           cannot use access() to test their file access permissions.
+
+       However, the historical model of eaccess() does not resolve problem (1), so  this  volume  of
+       IEEE Std 1003.1-2001  now allows access() to behave in the desired way because several imple‐
+       mentations have corrected the problem. It was also argued that problem  (2)  is  more  easily
+       solved  by  using open(), chdir(), or one of the exec functions as appropriate and responding
+       to the error, rather than creating a new function that would not be as  reliable.  Therefore,
+       eaccess() is not included in this volume of IEEE Std 1003.1-2001.
+
+       The  sentence  concerning appropriate privileges and execute permission bits reflects the two
+       possibilities implemented by historical implementations when checking  superuser  access  for
+       X_OK.
+
+       New implementations are discouraged from returning X_OK unless at least one execution permis‐
+       sion bit is set.
+
+FUTURE DIRECTIONS
+       None.
+
+SEE ALSO
+       chmod(), stat(), the Base Definitions volume of IEEE Std 1003.1-2001, <unistd.h>
+
+COPYRIGHT
+       Portions of this text are reprinted and reproduced in electronic form from IEEE  Std  1003.1,
+       2003  Edition,  Standard  for  Information  Technology -- Portable Operating System Interface
+       (POSIX), The Open Group Base Specifications Issue 6, Copyright (C) 2001-2003 by the Institute
+       of Electrical and Electronics Engineers, Inc and The Open Group. In the event of any discrep‐
+       ancy between this version and the original IEEE and The Open  Group  Standard,  the  original
+       IEEE  and  The  Open  Group  Standard  is  the referee document. The original Standard can be
+       obtained online at http://www.opengroup.org/unix/online.html .
+
+
+
+IEEE/The Open Group                             2003                                      ACCESS(3P)
