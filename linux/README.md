@@ -21,7 +21,7 @@
 * `barrier`: 内存屏障
 * `block`: 块
 * `bus`: bus总线
-* `cgroup`: Control Groups
+* `cgroup`: Control Groups(资源限制)
 * `checkpoint`: 检测点
 * `cma`: Contiguous Memory Allocation 连续内存分配
 * `cmd`: 命令行 / ABI
@@ -58,7 +58,7 @@
 * `macro`: 宏
 * `mm`: 内存管理
 * `module`: 模块
-* `namespace`: 命名空间
+* `namespace`: 命名空间 （隔离资源，名称隔离）
 * `NDL`: Like Devil
 * `net`: 网络
 * `netlink`: Netlink套接字是用以实现用户进程和内核进程通信的一种特殊的进程间通信

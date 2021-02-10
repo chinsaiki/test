@@ -1,0 +1,14 @@
+总用量 0
+dr-xr-xr-x 5 root root  0 2月   8 13:56 blkio
+lrwxrwxrwx 1 root root 11 2月   8 13:56 cpu -> cpu,cpuacct
+lrwxrwxrwx 1 root root 11 2月   8 13:56 cpuacct -> cpu,cpuacct
+dr-xr-xr-x 5 root root  0 2月   8 13:56 cpu,cpuacct
+dr-xr-xr-x 2 root root  0 2月   8 13:56 cpuset
+dr-xr-xr-x 5 root root  0 2月   8 13:56 devices
+dr-xr-xr-x 2 root root  0 2月   8 13:56 freezer
+dr-xr-xr-x 2 root root  0 2月   8 13:56 hugetlb
+dr-xr-xr-x 5 root root  0 2月   8 13:56 memory
+dr-xr-xr-x 2 root root  0 2月   8 13:56 net_cls
+dr-xr-xr-x 2 root root  0 2月   8 13:56 perf_event
+dr-xr-xr-x 5 root root  0 2月   8 13:56 pids
+dr-xr-xr-x 5 root root  0 2月   8 13:56 systemd

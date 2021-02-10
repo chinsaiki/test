@@ -1,0 +1,319 @@
+namespace(3tcl)                               Tcl Built-In Commands                              namespace(3tcl)
+
+
+
+________________________________________________________________________________________________________________
+
+NAME
+       namespace - 建立及操作给命令和变量的上下文
+
+总
+       namespace ?option? ?arg ...?
+_________________________________________________________________
+
+
+描
+       namespace  命令让你建立、访问、和销毁给命令和变量的独立的上下文。名字空间的概述参见下面的WHAT IS A NAMES‐
+       PACE? (什么是名字空间) 章节。下面列出了合法的 option 。注意你可以缩写这些 option 。
+
+       namespace children ?namespace? ?pattern?
+              返回属于名字空间              namespace               的所有子名字空间的一个列表。如果未指定names‐
+              pace，则返回当前名字空间的所有子名字空间。这个命令返回完全限制的(fully-qualified)的名字，它们以 ::
+              开始。如果给出了可选的                                                                     pattern
+              ，则这个命令只返回匹配通配符式样模式的名字。确定实际使用的模式如下:              以             ::
+              开始的模式直接使用，否则把命令空间           namespace            (或当前名字空间的完全限制的名字)
+              加在这个模式的前面。
+
+       namespace code script
+              为以后执行脚本    script   而捕获(Capture)当前的名字空间上下文。它返回一个新脚本，在这个结果脚本中
+              script                      被包裹在一个                     namespace                     inscope
+              命令中。新脚本有两个重要的特性。首先，它可以在任何名字空间中被求值，而导致                  script
+              在当前的名字空间(调用                                                                    namespace
+              code命令的那个名字空间)中被求值。其次，可以向结果脚本添加补充的参数
+              并且它们将被作为补充参数而传递给  script    。例如，假设在名字空间  ::a::b  中调用命令set   script
+              [namespace   code  {foo  bar}]。则可以在任何名字空间中执行  eval  "$script  x  y"    (假定  script
+              的值已经被正确的传递进来)    而与命令    namespace    eval    ::a::b     {foo     bar     x     y}
+              有相同的效果。这个命令是必须有的，因为象                                                        Tk
+              这样的扩展一般在全局名字空间中执行回调脚本。一个有作用域的(scoped)命令把一个命令和它的名字空间上下文一起捕获，在这种方式下就能在以后正确的执行它。如何使用这个命令建立回调脚本的例子参见SCOPED
+              VALUES (有作用域的值)章节。
+
+       namespace current
+              返回给当前名字空间的完全限定的名字。全局名字空间的实际的名字是“”(一个空串)，但这个命令为了编程者的方便而为全局名字空间返回
+              ::。
+
+       namespace delete ?namespace namespace ...?
+              删除所有的名字空间                                                                       namespace
+              和这些名字空间包含的所有变量、过程、和子名字空间。如果在名字空间中一个过程正在执行，在这个过程返回之前这个过程保持存在；但是，会标记这个名字空间来防止其他代码通过名字查找它。如果一个名字空间不存在，这个命令返回一个错误。如果未给出名字空间名字，这个命令什么也不做。
+
+       namespace eval namespace arg ?arg ...?
+              激活叫                                                                                   namespace
+              的名字空间并在这个上下文中对某些脚本进行求值。如果这个名字空间不存在，则建立它。如果指定了多于一个
+              arg    参数，则用与 eval命令一样的方式把这些参数串联起来并用空格彼此分隔，并对结果进行求值。
+
+              如果 namespace  有前导的名字空间限定符并且有的前导名字空间不存在，则自动建立它们。
+
+       namespace export ?-clear? ?pattern pattern ...?
+              指定从一个名字空间中导出那些命令。导出的那些命令以后可以被其他名字空间用     namespace      import
+              命令导入。在一个名字空间中定义的命令和这个名字空间以前导入的命令二者都可以被这个名字空间导出。在执行names‐
+              pace        export         命令的时候，这些(要导出的)命令不是必须已经被定义了。每个        pattern
+              可以包含通配符式样的特殊字符，但不可以包含任何名字空间限定符。就是说，模式只能指定在当前(导出)的名字空间中的命令。把所有
+              pattern    添加到这个名字空间的导出模式列表上。如果给出了  -clear   标志，则在添加任何     pattern
+              参数之前，重置这个名字空间的导出模式列表为空。如果未给出            patterns            并且未给出
+              -clear标志，这个命令返回这个名字空间当前的导出列表。
+
+       namespace forget ?pattern pattern ...?
+              删除以前从一个名字空间导入的命令。所有      pattern      都是一个限定的命令如      foo::x       或
+              a::b::p*。限定的名字包含         ::并且用一个或多个名字空间的名字限制一个名字。每个        pattern
+              被一个导出名字空间的名字所限制，并且在限定的名字的结束处可以有通配符式样的特殊字符。通配字符可以不出现在名字空间的名字中。这个命令首先查找匹配的导出命令。接着检查是否有些命令是以前由当前名字空间导入的。如果有，这个命令删除相应的导入的命令。效果上，这个命令撤消
+              namespace import命令的动作。
+
+       namespace import ?-force? ?pattern pattern ...?
+              导入命令到一个名字空间中。所有                 pattern都是一个限定的命令如foo::x                或
+              a::p*。就是说，它包括一个导出名字空间的名字，并且在限定的名字的结束处可以有通配符式样的特殊字符。通配字符可以不出现在名字空间的名字中。把所有匹配某个
+              pattern
+              字符串并且被它们的名字空间导出的命令添加到当前名字空间中。这是通过在当前名字空间中建立一个新命令，这个新命令指向在它的原始名字空间中的导出命令；当调用这个新导入的命令的时候，它调用那个导出的命令。如果一个导入的命令与一个现存的命令有冲突，则这个命令通常返回一个错误。但是，如果给出了
+              -force    选项，在则导入命令将悄无声息的替换现存的命令。namespace   import    命令有当前快照(snap‐
+              shot)语义:
+              就是说，在要求(导入)的命令中，只导入在导出的名字空间中定义了的那些命令。换句话说，你只能导入在执行
+              namespace                                                                                   import
+              的时候在一个名字空间中(已经存在)的命令。如果此后又定义并导出了其他命令，则不会导入它们。
+
+       namespace inscope namespace arg ?arg ...?
+              在一个特定的名字空间的上下文中执行一个脚本。不希望编程者直接执行这个命令；例如，在应用使用  names‐
+              pace code命令建立回调脚本，并且应用接着要向 Tk组件注册它的时候，隐式的生成对它的调用。除了有  lap‐
+              pend语义并且名字空间必须已经存在之外，namespace         inscope命令与        namespace        eval
+              命令非常相似。它把第一个参数作为一个列表来对待，接着把后面的所有参数作为适当的列表元素添加到第一个参数的尾部。names‐
+              pace  inscope  ::foo  a  x  y  z  等价于namespace  eval  ::foo  [concat a [list x y z]]。这个 lap‐
+              pend>语义很重要，因为许多回调 脚本实际上是前缀。
+
+       namespace origin command
+              返回导入的命令                                                                                com‐
+              mand所引用的原始命令的完全限定的名字。当一个命令被导入一个名字空间的时候，在这个名字空间中建立一个新命令，它指向在导出名字空间中的实际命令。如果一个命令被导入到一个名字空间的序列
+              a,                                                                                         b,...,n
+              之中，这里每一个后续的名字空间只从前面的名字空间中导入命令，这个命令返回在第一个名字空间中的原始命令的完全限定的名字
+              a。如果 command不引用一个导入的命令，返回这个(command)命令自己的完全限定的名字。
+
+       namespace parent ?namespace?
+              返回给名字空间         namespace          的父名字空间的完全限定的名字。如果未指定          names‐
+              pace，返回当前名字空间的父名字空间的完全限定的命令。
+
+       namespace qualifiers string
+              返回给    string    的所有前导的名字空间限定符。限定符是由   ::分隔的名字空间的名字。对于   string
+              ::foo::bar::x，这个命令返回   ::foo::bar，而对于   ::它返回一个空串。这个命令与   namespace   tail
+              命令互补。注意，它不检查名字空间的名字事实上是否是目前定义的名字空间的名字。
+
+       namespace tail string
+              返回在一个限定的字符串尾部的简单名字。限定符是由        ::分隔的名字空间的名字。对于        string
+              ::foo::bar::x，这个命令返回    x，而对于     ::它返回一个空串。这个命令与     namespace     quali‐
+              fiers命令互补。它不检查名字空间的名字事实上是否是目前定义的名字空间的名字。
+
+       namespace which ?-command? ?-variable? name
+              把         name         作为一个命令或者变量来查找并返回它的完全限定的名字。例如，如果        name
+              在当前名字空间中不存在但在全局名字空间中存在，这个命令返回在全局名字空间中的一个完全限定的名字。如果这个命令或变量不存在，这个命令返回空串。如果变量已经建立但未被定义，比如通过
+              variable
+              命令或通过在变量上trace(进行追踪)，这个命令返回这个变量的完全限定的名字。如果未给出标志，name被作为一个命令的名字。关于名字解析的规则的解释请参见下面的NAME
+              RESOLUTION (名字解析)章节。
+
+
+什
+       一个名字空间是命令和变量的一个集合(collec‐
+       tion)。它封装命令和变量来确保它们不会被其他名字空间中命令和变量所干扰。Tcl
+       总是有一个这样的集合，它被引用为global                                                          namespace
+       (全局名字空间)。全局名字空间持有所有全局变量和命令。namespace eval命令让你建立一个新的名字空间。例如，
+              namespace eval Counter {
+                  namespace export bump
+                  variable num 0
+
+                  proc bump {} {
+                      variable num
+                      incr num
+                  }
+              }
+       建立包含变量                          num                           和过程                           bump
+       的一个新的名字空间。在这个名字空间中的命令和变量独立于在同一个程序中的其他命令和变量。例如，如果在全局名字空间中有一个叫
+       bump的命令，它不同的于在 Counter 名字空间中的 bump  命令。
+
+       名字空间变量类似于在                                                                                  Tcl
+       中的全局变量。它们存在于名字空间中的过程之外，但象在上面的例子中展示的那样，在同一个名字空间中的过程可以通过
+       variable 命令访问它。
+
+       名字空间是动态的。你可以在任意时候增加及删除命令和变量，所以你可以使用一系列                    namespace
+       eval命令分几次(over time)来建造一个名字空间的内容。例如，下面的一系列命令与上面展示的定义有相同的效果:
+              namespace eval Counter {
+                  variable num 0
+                  proc bump {} {
+                      variable num
+                      return [incr num]
+                  }
+              }
+              namespace eval Counter {
+                  proc test {args} {
+                      return $args
+                  }
+              }
+              namespace eval Counter {
+                  rename test ""
+              }
+       注意在例子中向 Counter  名字空间增加了 test 过程，后来又用 rename命令把它删除了。
+
+       在名字空间内可以又其他的名字空间，它们是有层次的嵌套。一个嵌套的名字空间被封装在它的父名字空间中并且不会被其他名字空间所干扰。
+
+
+限
+       每个名字空间都有一个文本名字比如history                                                                或
+       ::safe::interp。因为名字空间可以嵌套，使用限定的名字来引用在名字空间中的命令、变量、和包含子名字空间。除了使用
+       ::作为分隔符而不是     /     或     .     之外，限定的(qualified)名字类似于给     Unix     文件或      Tk
+       组件的有层次的路径，最顶层或全局名字空间拥有名字“”     (一个空串)，而     ::     是它的同义词。例如，名字
+       ::safe::interp::create  引用在名字空间 ::safe 的子名字空间 interp 中的命令 create，::safe  是全局名字空间
+       :: 的子名字空间。
+
+       如果你打算从其他的名字空间中访问命令和变量，你必须使用额外的语法。名字必须被包含它们的名字空间所限定。例如我们可以象下面这样访问
+       Counter 的过程:
+              Counter::bump 5
+              Counter::Reset
+       我们可以象下面这样访问当前的 count (变量的值):
+              puts "count = $Counter::num"
+       当一个名字空间包含另一个的时候，要到达它的元素你可能需要多于一个的限定符。如果我们有一个名字空间
+       Foo，它包含名字空间 Counter，你可以象下面这样从全局名字空间调用它的 bump 过程:
+              Foo::Counter::bump 3
+
+       你还可以在建立和重命名命令的时候使用限定的名字。例如，你可以象下面这样向 Foo增加一个过程:
+              proc Foo::Test {args} {return $args}
+       你可以象下面这样把同一个过程移动到另一个名字空间中:
+              rename Foo::Test Bar::Test
+
+       我们覆盖(cover)剩下的一些关于限定的名字的要点。除了全局名字空间之外名字空间有非空的名字。除了作为名字空间分隔符，不允许
+       ::    在简单命令、变量、和名字空间名字中使用。在限定的名字中忽略额外的   :    ；就是说，两个或更多的    :
+       被作为一个名字空间分隔符。在一个限定的变量或命令名字中的尾随的           ::          引用叫做          {}
+       的变量或命令。但是忽略在一个限定的名字空间名中的尾随的 ::。
+
+
+NAME
+       一般的，所有接受变量和命令的名字的                                                                    Tcl
+       命令都支持限定的名字。这意味着你可以把限定的名字给这样的命令如set、proc、rename、和                interp
+       alias。如果你提供了以                                                                                  ::
+       开始的一个完全限定的名字，对任何命令、变量、或名字空间多没有问题。但是，如果这个名字不以一个           ::
+       开始(它是相对的)，Tcl                                                         依据一个固定的规则来查找它:
+       解析命令和变量名字总是首先在当前的名字空间中查找，接着在全局名字空间中查找。另一方面，解析名字空间总是在当前名字空间中查找。
+
+       在下列例子中,
+              set traceLevel 0
+              namespace eval Debug {
+                  printTrace $traceLevel
+              }
+       Tcl   在名字空间   Debug   中查找    traceLevel接着在全局名字空间中查找，它以相同的方式查找命令    print‐
+       Trace。如果一个变量或命令的名字在这两个上下文中都找不到，则这个名字是未定义的。为了使这一点绝对清楚，考虑下列例子:
+              set traceLevel 0
+              namespace eval Foo {
+                  variable traceLevel 3
+
+                  namespace eval Debug {
+                      printTrace $traceLevel
+                  }
+              }
+       这里       Tcl       首先在名字空间       Foo::Debug       中查找       traceLevel。因为在这里未找到，Tcl
+       接着在全局名字空间中查找。在名字解析过程中完全忽略了变量 Foo::traceLevel。
+
+       你可以使用 namespace which  命令来清除关于名字解析的任何问题:
+              namespace eval Foo::Debug {namespace which -variable traceLevel}
+       返回  ::traceLevel。另一方面，命令，
+              namespace eval Foo {namespace which -variable traceLevel}
+       返回 ::Foo::traceLevel.
+
+       如上面提及的那样，查找名字空间名字与变量和命令的名字不同。总是在当前名字空间中解析名字空间名字。这意味除非新名字空间的名字以一个
+       ::开始，否则建立一个新名字空间的 namespace eval 命令总是建立当前名字空间的一个子名字空间。
+
+       Tcl
+       对你可以引用的变量、命令、或名字空间没有访问控制。如果你能提供一个限定的名字来通过名字解析规则解析到一个元素，你就可以访问这个元素。
+
+       你可以通过      variable       命令从同一个名字空间中的一个过程中访问一个名字空间变量。非常象      global
+       命令，它建立到名字空间变量的一个本地连接。如果需要，这个命令还在当前的名字空间中建立这个变量并初始化它。注意：global命令只建立到在全局名字空间中的变量的连接。如果你总是使用一个适当的限定的名字来引用名字空间变量，则使用
+       variable 命令不是必须的。
+
+
+导
+       名字空间经常用来表示库。一些库命令使用的如此频繁以至于键入它们的限定的名字是极其烦人的。例如，
+       假设在一个包如 BLT 中的所有命令都包含在一个叫 Blt 的名字空间中。则你可以象下面这样访问这些命令:
+              Blt::graph .g -background red
+              Blt::table . .g 0,0
+       如果你频繁使用            graph            和           table            命令，你可能希望访问它们而不用加
+       Blt::前缀。你可以通过把它导入到当前名字空间中的方式来达到此目的。例如:
+              namespace import Blt::*
+       这个例子把从 Blt名字空间导出的所有命令增加到当前名字空间上下文中，所以你可以象下面这样写代码:
+              graph .g -background red
+              table . .g 0,0
+       namespace import命令从一个名字空间导入的命令只能是那个名字空间中用 namespace export命令导出的命令。
+
+       从一个名字空间导入所有命令一般是一个坏主意，因为你不知道你将会得到些什么。更好的方式是只导入你需要的命令。例如，命令
+              namespace import Blt::graph Blt::table
+       只把 graph 和 table  命令导入到当前上下文。
+
+       如果你要导入一个已经存在的命令，你将得到一个错误。这防止你从两个不同的包导入同一个命令。但是有的时候(可能在调试时)，你可能希望超越这个限制。你可能希望重新发起(reis‐
+       sue)                                   namespace                                    import命令来导入(pick
+       up)一个新命令，而同名的命令在这个名字空间中已经出现过了。在这种情况下，你可以使用                  -force
+       选项，现存命令将悄无声息的被覆写(overwritten):
+              namespace import -force Blt::graph Blt::table
+       如果出于某种原因，你打算停止使用导入的命令，你可以用 namespace forget 命令删除它们，例如:
+              namespace forget Blt::*
+       它在当前名子空间中查找从      Blt      导入的所有命令，如果找到则删除它们。否则，它什么都不做。此后，访问
+       Blt命令必须使用 Blt::  前缀。
+
+       当你从导出(命令的)名字空间删除一个命令的时候，例如:
+              rename Blt::graph ""
+       则从所有导入它的名字空间中自动删除这个命令。
+
+
+导
+       你可以从一个名字空间中导出命令，例如:
+              namespace eval Counter {
+                  namespace export bump reset
+                  variable Num 0
+                  variable Max 100
+
+                  proc bump {{by 1}} {
+                      variable Num
+                      incr Num $by
+                      Check
+                      return $Num
+                  }
+                  proc reset {} {
+                      variable Num
+                      set Num 0
+                  }
+                  proc Check {} {
+                      variable Num
+                      variable Max
+                      if {$Num > $Max} {
+                          error "too high!"
+                      }
+                  }
+              }
+       过程 bump  和 reset  被导出，所以当你从 Counter 名字空间导入的时候，它们被包括在内。例如:
+              namespace import Counter::*
+       但是 Check  过程未被导出，所以它被导入操作所忽略。
+
+       namespace                  import，命令只导入被它们的名字空间导出的命令。namespace                 export
+       命令指定什么命令可以被其他名字空间导入。如果一个                                                namespace
+       import命令指定了一个未被导出的命令，则不导入这个命令。
+
+
+参
+       variable(n)
+
+
+关
+       exported, internal, variable
+
+
+[中
+       寒
+
+[中
+       2001/10/12
+
+《
+       http://cmpp.linuxforum.net
+
+
+
+Tcl                                                    8.0                                       namespace(3tcl)

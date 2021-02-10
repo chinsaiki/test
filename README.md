@@ -32,7 +32,6 @@
 * `bus`: 总线
 * `c`: C语言相关
 * `cas`: Copy and Swap
-* `cgroups`: Control Groups
 * `cmake`: cmake
 * `cmdline`: 命令行
 * `compile`: 编译原理，编译器 

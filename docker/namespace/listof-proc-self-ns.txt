@@ -1,0 +1,11 @@
+总用量 0
+lrwxrwxrwx 1 root root 0 2月  10 08:40 cgroup -> cgroup:[4026531835]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 ipc -> ipc:[4026531839]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 mnt -> mnt:[4026531840]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 net -> net:[4026531992]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 pid -> pid:[4026531836]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 pid_for_children -> pid:[4026531836]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 time -> time:[4026531834]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 time_for_children -> time:[4026531834]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 user -> user:[4026531837]
+lrwxrwxrwx 1 root root 0 2月  10 08:40 uts -> uts:[4026531838]
