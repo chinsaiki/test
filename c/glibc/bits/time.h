@@ -59,6 +59,10 @@ extern long int __sysconf (int);
 #  ifdef __USE_POSIX199309
 /* Identifier for system-wide realtime clock.  */
 #   define CLOCK_REALTIME		0
+//CLOCK_REALTIME：它代表现实世界中的时间，也称为“墙上时间”，表示从墙上的时钟读取的时间。
+//    该时钟用于给事件加时间戳，以及与用户进行接口时。可以由具有正确权限的用户修改。
+//    但是，应谨慎使用用户修改，因为如果时钟的值在两次读取之间改变，则可能导致错误的数据。
+
 /* Monotonic system-wide clock.  */
 #   define CLOCK_MONOTONIC		1
 //有多种获取当前时间的方法– gettimeofday，time，clock_gettime和其他一些特定于处理器的实现。
@@ -68,6 +72,10 @@ extern long int __sysconf (int);
 //    该时间在系统启动后不会更改[1]。确保不浪费大量CPU周期来获取当前时间也很重要。
 //    获得当前时间的特定于CPU的实现将在这里有所帮助。
 
+//CLOCK_MONOTONIC：表示系统启动后单调增加的时间。该时钟无法通过任何进程设置，
+//    它是计算事件之间时间差的首选时钟。本节中的以下示例CLOCK_MONOTONIC用作POSIX时钟。
+
+
 /* High-resolution timer from the CPU.  */
 #   define CLOCK_PROCESS_CPUTIME_ID	2
 /* Thread-specific CPU-time clock.  */
@@ -76,8 +84,12 @@ extern long int __sysconf (int);
 #   define CLOCK_MONOTONIC_RAW		4
 /* Identifier for system-wide realtime clock, updated only on ticks.  */
 #   define CLOCK_REALTIME_COARSE	5
+
 /* Monotonic system-wide clock, updated only on ticks.  */
+//所述_COARSE时钟具有一个一毫秒的精度，因此只的前三个数字tv_nsec的timespec结构的场是显著。
 #   define CLOCK_MONOTONIC_COARSE	6
+
+
 /* Monotonic system-wide clock that includes time spent in suspension.  */
 #   define CLOCK_BOOTTIME		7
 /* Like CLOCK_REALTIME but also wakes suspended system.  */
