@@ -1,1 +1,5 @@
+# 系统启动参数在这里显示
+# 如若修改了 /boot/grub2/grub/cfg 中添加了 isolcpus=2,3
+# 那么 系统重启后，在下面的命令行中应该也添加了 isolcpus=2,3
+
 BOOT_IMAGE=/vmlinuz-5.9.1 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet

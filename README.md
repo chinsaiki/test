@@ -22,6 +22,7 @@
 * `ai`: 人工智能
 * `aio`: 异步IO
 * `algorithm`: 算法
+* `arch`: 体系结构相关
 * `arm`: arm架构相关
 * `asm`: 汇编
 * `assembler`: assembler language
