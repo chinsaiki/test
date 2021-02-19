@@ -84,6 +84,9 @@ function __rt_config_bios_SMI() {
 	done
 }
 
-__rt_config_bios_pm
-__rt_config_bios_EDAC
-__rt_config_bios_SMI
+function rt_config_BIOS() {
+	__rt_config_bios_pm
+	__rt_config_bios_EDAC
+	__rt_config_bios_SMI
+}
+

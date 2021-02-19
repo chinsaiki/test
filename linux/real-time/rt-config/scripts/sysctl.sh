@@ -1,4 +1,5 @@
 #!/bin/bash
+# 荣涛 2021年2月19日
 
 rc_local="/etc/rc.local"
 
