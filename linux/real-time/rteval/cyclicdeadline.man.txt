@@ -1,0 +1,45 @@
+CYCLICDEADLINE(8)                            System Manager's Manual                           CYCLICDEADLINE(8)
+
+
+
+NAME
+       cyclicdeadline  - This program is used to test the deadline scheduler (SCHED_DEADLINE) using a cyclictest
+       style program
+
+SYNOPSIS
+       cyclicdeadline [-a [CPUSET]] [-D TIME] [-h]  [-i INTV] [-s STEP] [-t NUM] [-q]
+
+DESCRIPTION
+       cyclicdeadline is a cyclictest style program for testing the deadline scheduler
+
+OPTIONS
+       -a --affinity [CPUSET]
+              Comma / hypen separated list of CPUs to run deadline tasks on
+
+       -D --duration TIME
+              Specify a length for the test to run Append 'm', 'h', or 'd' to specify minutes, hours, or days
+
+       -h --help
+              Show this help menu
+
+       -i --interval INTV
+              The shortest deadline for the tasks in us. (default 1000us)
+
+       -s --step STEP
+              The amount to increase the deadline for each task in us. (default 500us)
+
+       -t --threads NUM
+              The number of threads to run as deadline (default 1)
+
+       -q, --quiet
+              Print a summary only on exit. Useful for automated tests, where only the summary output  needs  to
+              be captured.
+
+AUTHOR
+       cyclicdeadline was written by Steven Rostedt <rostedt@goodmis.org>
+
+       This manual page was written by John Kacur <jkacur@redhat.com>
+
+
+
+                                                January 16, 2020                               CYCLICDEADLINE(8)

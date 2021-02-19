@@ -1,0 +1,207 @@
+CYCLICTEST(8)                                System Manager's Manual                               CYCLICTEST(8)
+
+
+
+NAME
+       cyclictest - High resolution test program
+
+SYNOPSIS
+       cyclictest  [  -hfmnqrsvMS ] [-a proc ] [-A align ] [-b usec ] [-c clock ] [-d dist ] [-h histogram ] [-i
+       intv ] [-l loop ] [-o red ] [-p prio ] [-t num ] [-D time] [-w] [-W] [-y policy ] [ -S | -U ]
+
+
+OPTIONS
+       These programs follow the usual GNU command line syntax, with  long  options  starting  with  two  dashes
+       ('--').
+       A summary of options is included below.
+
+       -a, --affinity[=PROC-SET]
+              Run threads on the set of processors given by PROC-SET.  If PROC-SET is not specified, all proces‐
+              sors will be used.  Threads will be assigned to processors in the  set  in  numeric  order,  in  a
+              round-robin fashion.
+              The  set of processors can be specified as A,B,C, or A-C, or A-B,D-F, and so on*.  The ! character
+              can be used to negate a set.  For example, !B-D means to use all available CPUs except  B  through
+              D.   The  cpu  numbers are the same as shown in the processor field in /proc/cpuinfo.  See numa(3)
+              for more information on specifying CPU sets.  * Support for CPU sets requires libnuma  version  >=
+              2.  For libnuma v1, PROC-SET, if specified, must be a single CPU number.
+
+       -A, --align=USEC
+              Align thread wakeups to a specific offset in microseconds
+
+       -b, --breaktrace=USEC
+              Send break trace command when latency > USEC
+
+       -B, --preemptirqs
+              Both preempt and irqsoff tracing (used with -b)
+
+       -c, --clock=CLOCK
+              select clock
+              0 = CLOCK_MONOTONIC (default)
+              1 = CLOCK_REALTIME
+
+       -C, --context
+              context switch tracing (used with -b)
+
+       -d, --distance=DIST
+              Distance of thread intervals in us, default = 500
+
+       -D, --duration=TIME
+              Specify a length for the test run.
+              Append 'm', 'h', or 'd' to specify minutes, hours or days.
+
+       -E, --event
+              event tracing (used with -b)
+
+       -f, --ftrace
+              Enable function tracing using ftrace as tracer. This option is available only with -b.
+
+       -F, --fifo=<path>
+              Create a named pipe at path and write stats to it
+
+       -h, --histogram=US
+              Dump  latency  histogram  to  stdout after the run. US is the max latency time to be be tracked in
+              microseconds. This option runs all threads at the same priority.
+
+       -H, --histofall=MAXLATENCYINUS
+              Same as -h except that an additional histogram column is displayed at the right that contains sum‐
+              mary  data  of  all  thread  histograms. If cyclictest runs a single thread only, the -H option is
+              equivalent to -h.
+
+       --histfile=<path>
+              Dump the latency histogram to <path> instead of stdout.
+
+       -i, --interval=INTV
+              Set the base interval of the thread(s) in microseconds (default is 1000us). This sets the interval
+              of the first thread. See also -d.
+
+       -I, --irqsoff
+              Irgsoff tracing (used with -b)
+
+       -l, --loops=LOOPS
+              Set  the  number  of  loops. The default is 0 (endless). This option is useful for automated tests
+              with a given number of test cycles. Cyclictest is stopped once the number of timer  intervals  has
+              been reached.
+
+       --laptop
+              Save  battery  when  running  cyclictest. This will give you poorer realtime results, but will not
+              drain your battery so quickly.
+
+       -m, --mlockall
+              Lock current and future memory allocations to prevent being paged out
+
+       -M, --refresh_on_max
+              Delay updating the screen until a new max latency is hit. (useful for running cyclictest  on  low-
+              bandwidth connections)
+
+       -n, --nanosleep
+              Use  clock_nanosleep  instead  of  posix  interval timers. Setting this option runs the tests with
+              clock_nanosleep instead of posix interval timers.
+
+       --notrace
+              suppress tracing
+
+       -N, --nsecs
+              Show results in nanoseconds instead of microseconds, which is the default unit.
+
+       -o, --oscope=RED
+              Oscilloscope mode, reduce verbose output by RED.
+
+       -O, --traceopt=TRACING_OPTION
+              Used to pass tracing options to ftrace tracers. May be invoked multiple times for  multiple  trace
+              options. For example trace options look at /sys/kernel/debug/tracing/trace_options
+
+       -p, --prio=PRIO
+              Set  the  priority  of  the first thread. The given priority is set to the first test thread. Each
+              further thread gets a lower priority: Priority(Thread N) = max(Priority(Thread N-1) - 1, 0)
+
+       -P, --preemptoff
+              Preempt off tracing (used with -b)
+
+       --policy=NAME
+              set the scheduler policy of the measurement threads where NAME is one of:  other,  normal,  batch,
+              idle, fifo, rr
+
+       --priospread
+              spread priority levels starting at a specified value
+
+       -q, --quiet
+              Print  a  summary only on exit. Useful for automated tests, where only the summary output needs to
+              be captured.
+
+       -r, --relative
+              Use relative timers instead of absolute. The default behaviour of the tests  is  to  use  absolute
+              timers. This option is there for completeness and should not be used for reproducible tests.
+
+       -R, --resolution
+              Check  clock resolution, calling clock_gettime() many times. List of lock_gettime() values will be
+              reported with -X
+
+       --secaligned [USEC]
+              align thread wakeups to the next full second and apply the optional offset.
+
+       -s, --system
+              Use sys_nanosleep and sys_setitimer instead of posix timers. Note, that -s can only be  used  with
+              one  thread because itimers are per process and not per thread. -s in combination with -n uses the
+              nanosleep syscall and is not restricted to one thread.
+
+       -S, --smp
+              Set options for standard testing on SMP systems. Equivalent to using the options: "-t  -a  -n"  as
+              well keeping any specified priority equal across all threads
+
+       --spike=<trigger>
+              record all spikes > trigger
+
+       --spike-nodes=[num of nodes]
+              These are the maximum number of spikes we can record.
+              The default is 1024 if not specified.
+
+       --smi  Enable SMI count/detection on processors with SMI count support.
+
+       -t, --threads[=NUM]
+              Set  the  number of test threads (default is 1). Create NUM test threads. If NUM is not specified,
+              NUM is set to the number of available CPUs. See -d, -i and -p for further information.
+
+       --tracemark
+              write a trace mark when -b latency is exceeded.
+
+       -T, --tracer=TRACEFUNC
+              set the ftrace tracer function. Used with the -b option. Must be one of the trace functions avail‐
+              able from <debugfs-mountpoint>/kernel/debug/tracing/available_tracers
+
+       -u, --unbuffered
+              force unbuffered output for live processing
+
+       -U, --numa
+              Standard NUMA testing (similar to SMP option) thread data structures allocated from local node.
+
+       -v, --verbose
+              Output  values  on  stdout  for  statistics. This option is used to gather statistical information
+              about the latency distribution. The output is sent to stdout. The output format is:
+
+              n:c:v
+
+              where n=task number c=count v=latency value in us.
+
+       -w, --wakeup
+              task wakeup tracing (used with -b)
+
+       -W, --wakeuprt
+              rt-task wakeup tracing (used with -b)
+
+       --dbg_cyclictest
+              Print info userful for debugging cyclictest
+
+
+SEE ALSO
+       numa(3), numactl(8),
+
+AUTHOR
+       cyclictest was written by Thomas Gleixner <tglx@linuxtronix.de>.
+
+       This manual page was written by Alessio Igor Bogani <abogani@texware.it>, for the Debian project (but may
+       be used by others).
+       Updated by John Kacur <jkacur@redhat.com>
+
+
+
+                                                 April 22, 2016                                    CYCLICTEST(8)
