@@ -10,3 +10,5 @@ default: pci_debug
 
 pci_debug: pci_debug.c
 
+clean:
+	rm -f pci_debug
