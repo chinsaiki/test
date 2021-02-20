@@ -87,19 +87,23 @@ function __rt_config_set_irq_smp_affinity_list() {
 
 	curr_cpu_list=`cat /proc/irq/$1/smp_affinity_list`
 
-
+	# 所有中断的 CPU 都将设置为 $all_IRQ_cpu_list
 	if [ -z $all_IRQ_cpu_list ]; then	
 	
 		echo -e "[IRQ] 中断号:\033[1;31m$1\033[m $Introduction"
 		
 		read -r -p "[IRQ]      该中断的 CPUs 将从 \"$curr_cpu_list\" 设置为[例:0,2-3]: " cpu_list
 
-		# 如果输入的list不合法
-		while echo $cpu_list | grep -E "^([0-9]\\w*[,|-])*[0-9]\\w*$" 2>&1 > /dev/null
-		[ $? != 0 ]
-		do
-			read -r -p "[IRQ]      该中断的 CPUs 将从 \"$curr_cpu_list\" 设置为[例:0,2-3]: " cpu_list
-		done
+		# 如果为空，不能继续判断，代表使用上一次配置的
+		if [ ! -z $cpu_list ]; then
+			
+			# 如果输入的list不合法
+			while echo $cpu_list | grep -E "^([0-9]\\w*[,|-])*[0-9]\\w*$" 2>&1 > /dev/null
+			[ $? != 0 ]
+			do
+				read -r -p "[IRQ]      不合法的输入 $cpu_list [例:0,2-3]: " cpu_list
+			done
+		fi
 	else
 		cpu_list=$all_IRQ_cpu_list
 	fi
@@ -111,13 +115,13 @@ function __rt_config_set_irq_smp_affinity_list() {
 			exit 1
 		fi
 		echo -e "[IRQ]      使用上一次的 CPU list \"$g_cpu_list\" 配置 \033[1;31m$1\033[m."
-		echo $g_cpu_list > /proc/irq/$1/smp_affinity_list
+		echo $g_cpu_list > /proc/irq/$1/smp_affinity_list 2>/dev/null
 		
 	# 更新全局的 CPU list，直接回车的情况
 	else
 		g_cpu_list=$cpu_list
 		echo $cpu_list > /proc/irq/$1/smp_affinity_list 2>/dev/null
-		echo -e "[IRQ]      中断号:\033[1;31m$1\033[m 从 \"$curr_cpu_list\" 设置为 \"$cpu_list\" 成功。"
+		echo -e "[IRQ]      中断号:\033[1;31m$1\033[m 的 CPU list 从 \"$curr_cpu_list\" 设置为 \"$cpu_list\" 成功。"
 	fi
 	
 	#echo "echo $cpu_list > /proc/irq/$1/smp_affinity_list"
@@ -144,7 +148,10 @@ function __rt_config_set_all_irq_smp_affinity_list() {
 
 
 #禁用irqbalance守护程序
-function __rt_config_disable_irqblance() {
+function __rt_config_disable_irqblance() {	
+
+	echo -e "[IRQ]\n[IRQ] =============== 关闭 irqbalance 服务"
+
 	systemctl status irqbalance	2>&1 > /dev/null
 	systemctl stop irqbalance	2>&1 > /dev/null
 	systemctl disable irqbalance	2>&1 > /dev/null
@@ -153,18 +160,38 @@ function __rt_config_disable_irqblance() {
 
 #从IRQ Balancing中排除CPU
 function __rt_config_disable_cpu_irqblance() {
-	echo "[IRQ]config \"IRQBALANCE_BANNED_CPUS=\" in \"/etc/sysconfig/irqbalance\". \033[1;31mTODO...\033[m"
+	echo -e "[IRQ]\n[IRQ] =============== 从IRQ Balancing中排除CPU"
+	echo -e "[IRQ]config \"IRQBALANCE_BANNED_CPUS=\" in \"/etc/sysconfig/irqbalance\". \033[1;31mTODO...\033[m"
 }
 
-#__for_each_IRQ __rt_config_set_irq_smp_affinity_list 
-#__rt_config_set_all_irq_smp_affinity_list
 
-#__rt_config_disable_irqblance
-#__rt_config_disable_cpu_irqblance
+function __rt_config_smp_affinity  () {
+	echo -e "[IRQ]\n[IRQ] =============== 建议输入 all 一次性配置所有中断"
+	while read -r -p "[IRQ] 配置 IRQ 的 CPU 亲和性 [一次性|单独配置] [all|one]: " cfg_irq_type
+	do
+		
+		case $cfg_irq_type in
+		all)
+			# 配置所有的中断到指定的 CPU
+			__rt_config_set_all_irq_smp_affinity_list
+			break
+		;;
+		one)
+			# 逐个配置每个中断的 CPU
+			__for_each_IRQ __rt_config_set_irq_smp_affinity_list 
+			break
+		;;
+		*) 
+			echo -e '[IRQ]		\033[1;31m错误的输入！"\033[m需要[all|one]'
+		;;
+		esac
+	done
+}
 
 function rt_config_IRQs() {
 	__rt_config_disable_irqblance
 	__rt_config_disable_cpu_irqblance
-	__rt_config_set_all_irq_smp_affinity_list
+	__rt_config_smp_affinity
 }
 
+#rt_config_IRQs

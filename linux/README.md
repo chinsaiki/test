@@ -34,6 +34,7 @@
 * `dma`: 直接内存访问
 * `driver`: 驱动
 * `drm`: DRM 是Linux目前的主流图形显示框架
+* `eBPF`: extend BPF
 * `env`: 牛逼的环境变量，例如 LD_PRELOAD
 * `essential`: 基础性内容
 * `etc`: 配置文件夹
