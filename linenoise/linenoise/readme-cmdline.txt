@@ -10,3 +10,5 @@
 *** Redis linenoise: test/redis/linenoise/linenoise [*一个完整的实例*]
 *** VOS cli: test/vos/cli [赵志刚VOS命令行]
 *** CRTL: test/cmdline/crtl
+*** readline: test/readline 
+*** readline: test/c/glibc/readline [头文件]

@@ -1,0 +1,47 @@
+NSNTRACE(1)                                          nsntrace                                         NSNTRACE(1)
+
+
+
+NAME
+       nsntrace - Perform a network trace of a process by using Linux network namespaces
+
+SYNOPSIS
+       nsntrace [options] program [arguments]
+
+DESCRIPTION
+       nsntrace uses Linux network namespaces to perform network traces of the specified program. The traces are
+       stored as pcap files. And can later be analyzed by applications such as wireshark.
+
+       nsntrace creates a new network namespace and launches the specified program in it. This will ensure that
+       all the packets we trace come from the system or the specified program.
+
+       To get around the isolation caused by the network namespace a virtual network interface is created. And in
+       order for the program network traffic to reach the root network namespace iptables is used.
+
+       Since nsntrace uses iptables and traces raw sockets it needs to be run as root.
+
+OPTIONS
+       The following options are understood:
+
+       --device dev, -d dev
+           The network device to use in trace.
+
+       --outfile file, -o file
+           Write the trace output to the file file. Default is nsntrace.pcap.
+
+       --user user, -u user
+           Run program with the user ID, group ID and supplementary groups of user.
+
+       --filter filter, -f filter
+           The capture filter to use while capturing. See pcap-filter(7) for filter syntax.
+
+EXIT STATUS
+       On success, 0 is returned; otherwise, a non-zero failure code is returned.
+
+AUTHOR
+       Jonas Danielsson <jonas@threetimestwo.org>
+           Original author
+
+
+
+nsntrace                                            02/22/2021                                        NSNTRACE(1)

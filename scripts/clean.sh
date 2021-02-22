@@ -1,10 +1,8 @@
 #!/bin/sh
 # 荣涛 
-function clean {
-	echo $PWD | grep "\/test" 2>&1 > /dev/null
-	if [ $? != 0 ]; then
-		return 1
-	fi
+
+
+function cleanall {
 	filename=("*.o" "*.d" "*.gch" "*~"  "*.out" "core.*" "vgcore.*" "*.exe" "*.so" "*.a")
 	for name in ${filename[@]}; do
 	    #echo $name
@@ -12,3 +10,13 @@ function clean {
 	done 
 	return 0
 }
+
+function clean {
+	echo $PWD | grep "\/test" 2>&1 > /dev/null
+	if [ $? != 0 ]; then
+		return 1
+	fi
+	cleanall
+	return 0
+}
+
