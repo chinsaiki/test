@@ -1,0 +1,49 @@
+NOHUP(1)                                               FSF                                               NOHUP(1)
+
+
+
+NAME
+       nohup - 使程序运行时不挂起, 不向 tty 输出信息
+
+
+总
+       nohup COMMAND [ARG]...
+       nohup OPTION
+
+
+描
+       执行 COMMAND 命令, 忽略 hangup (挂起) 信号.
+
+       --help 显示此帮助, 然后退出
+
+       --version
+              显示版本信息, 然后退出
+
+
+报
+       发现错误请联系 <sh-utils-bugs@gnu.org>.
+
+
+另
+       nohup 的完整文档以 Texinfo 手册的形式维护. 如果正确安装了 info 和 nohup 程序, 使用命令
+
+              info nohup
+
+       应该能够显示完整的手册.
+
+
+[中
+       徐
+
+[中
+       2004/02/8
+
+《
+       http://cmpp.linuxforum.net
+
+
+
+
+
+
+GNU sh-utils 2.0                                   August 1999                                           NOHUP(1)

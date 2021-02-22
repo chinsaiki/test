@@ -58,7 +58,7 @@ function __rt_centos7_grub_kernel_select {
 
 					# 如果当前内核 不是 选择的内核，进行配置
 					else
-						grub2-set-default 'CentOS Linux \($selected_kernel\) 7 (Core)'
+						grub2-set-default "CentOS Linux ($selected_kernel) 7 (Core)"
 						echo "[grub] 配置内核为 \"CentOS Linux ($selected_kernel) 7 (Core)\""
 					fi
 					break
