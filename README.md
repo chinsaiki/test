@@ -132,6 +132,7 @@
 * `openstack`: 云计算开源框架
 * `openvswitch`: OVS虚拟交换机
 * `ovs`: 见上
+* `perf-tools`: brendangregg/[perf-tools](https://github.com/brendangregg/perf-tools)
 * `perl`: Perl语言
 * `php`: PHP语言
 * `pmdk`: 持久性内存开发套件

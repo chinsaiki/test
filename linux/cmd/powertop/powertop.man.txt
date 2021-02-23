@@ -1,0 +1,76 @@
+POWERTOP(8)                                      powertop manual                                     POWERTOP(8)
+
+
+
+NAME
+       powertop - a power consumption and power management diagnosis tool.
+
+SYNOPSIS
+       powertop [ options ]
+
+DESCRIPTION
+       powertop  is a program that helps to diagnose various issues with power consumption and power management.
+       It also has an interactive mode allowing one to experiment with various power management  settings.  When
+       invoking powertop without arguments powertop starts in interactive mode.
+
+OPTIONS
+       --auto-tune
+              Set all tunable options to their good setting without interaction.
+
+       -c, --calibrate
+              runs  powertop  in calibration mode. When running on battery, powertop can track power consumption
+              as well as system activity. When there are enough measurements, powertop can start to report power
+              estimates. One can get more accurate estimates by using this option to enable a calibration cycle.
+              This will cycle through various display levels and USB device activities and workloads.
+
+       -C[FILENAME], --csv[=FILENAME]
+              generate a CSV report. If a filename is not specified then  the  default  name  "powertop.csv"  is
+              used.  If  filename is "-" then STDOUT is used.  The CSV report can be used for reporting and data
+              analysis.
+
+       -d[FILENAME], --dump[=FILENAME]
+              generate a plain text report. If a filename is not specified or it is "-" then STDOUT is used.
+
+       --debug
+               run in "debug" mode.
+
+       --extech=devnode
+              use the Extech Power Analyzer for measurements. This allows one to specify the serial device  node
+              of the serial to USB adaptor connecting to the Extech Power Analyzer, for example /dev/ttyUSB0.
+
+       --help
+               show the help message.
+
+       -r[FILENAME], --html[=FILENAME]
+              generate  an  HTML report. If a filename is not specified then the default name "powertop.html" is
+              used. If filename is "-" then STDOUT is used.  The HTML report can be sent to others to help diag‐
+              nose power issues.
+
+       --iteration[=iterations]
+              number of times to run each test.
+
+       --workload[=workload]
+              file to execute for workload.
+
+       --quiet
+               supress stderr output.
+
+       --time[=seconds]
+              generate a report for a specified number of seconds.
+
+       --version
+              print version information and exit.
+
+BUGS
+       Send bug reports to <powertop@lists.01.org>
+
+SEE ALSO
+       The program is more fully described at https://01.org/powertop
+
+AUTHOR
+       powertop  was written by Arjan van de Ven <arjan@linux.intel.com>, and is currently maintained by Chris E
+       Ferron <chris.e.ferron@linux.intel.com>.
+
+
+
+Linux                                             June 1, 2012                                       POWERTOP(8)
