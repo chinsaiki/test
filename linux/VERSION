@@ -1,0 +1,5 @@
+
+版本 major.minor.patch
+major: 主版本号
+minor: 次版本号, 偶数标识稳定版, 奇数标识不稳定版
+patch: 轻微修订的内核
